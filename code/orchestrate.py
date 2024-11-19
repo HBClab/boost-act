@@ -9,6 +9,7 @@ import shutil
 from io import StringIO
 import src.match
 import argparse
+import sys
 
 OBSDIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-Experiment/data/bids'
 INTDIR = '/Volumes/vosslabhpc/Projects/BOOST/ObersvationalStudy/3-Experiment/data'
@@ -26,13 +27,13 @@ def init_servers():
     #this should connect the linux machine to the RDSS and LSS
 
     try:
-        os.system(""sudo mount -t cifs "//itf-rs-store24.hpc.uiowa.edu/vosslabhpc" /home/vosslab-svc/tmp/vosslabhpc -o uid=vosslab-svc,username=vosslab-svc,vers=3.0)
+        os.system("sudo mount -t cifs //itf-rs-store24.hpc.uiowa.edu/vosslabhpc /home/vosslab-svc/tmp/vosslabhpc -o uid=vosslab-svc,username=vosslab-svc,vers=3.0")
     except Exception as e:
         print(f'An error occured trying to connect to LSS: {e}')
 
     try:
-        os.system(""sudo mount -t cifs //rdss.iowa.uiowa.edu/rdss_mwvoss/VossLab /mnt/nfs/rdss/rdss_vosslab -o user=vosslab-svc,uid=2418317,gid=900001021)
-    except Excpetion as e:
+        os.system("sudo mount -t cifs //rdss.iowa.uiowa.edu/rdss_mwvoss/VossLab /mnt/nfs/rdss/rdss_vosslab -o user=vosslab-svc,uid=2418317,gid=900001021")
+    except Exception as e:
         print(f'An error occured trying to connect to RDSS: {e}')
 
     return None
@@ -40,12 +41,14 @@ def init_servers():
 def check_files():
     from src.match import get_files, compare
 
-    rdss_files = get_files(placeholder_RDSS_dir)
+    rdss_files = get_files(#placeholder_RDSS_dir
+                           )
 
-    if len(rdss_files) == 0;
+    if len(rdss_files) == 0:
         print("error: RDSS files were not grabbed - find out why")
 
-    need = compare(files, placeholder_text_file)
+    need = compare(rdss_files, placeholder_text_file)
+
 
     if len(need) == 0:
         print("no files need GGIR at the moment. quitting...")
@@ -69,7 +72,7 @@ def create_comparable_dataframe(need):
             errors.append(f"Row {index} has an invalid lab id: {row[0]}")
 
         #check if second column is valid filepath
-        if not os.path.isfile(row[1])
+        if not os.path.isfile(row[1]):
             errors.append(f"Row {index} has an invalid filepath: {row[1]}")
 
         if errors:
@@ -84,13 +87,13 @@ def create_comparable_dataframe(need):
 
 def get_redcap_list_and_compare(token, files, list):
 
-    from src.match import get_list, compare_ids, add_to_sub_list, evaluate_run
+    from src.match import get_list, compare_ids, add_sub_to_sublist, evaluate_run
     sub_lab_id = get_list(token)
 
     matched_df = compare_ids(files, list)
 
-    add_to_sub_list(matched_df)
-    
+    add_sub_to_sublist(matched_df)
+
     matched_df = evaluate_run(matched_df)
 
     return matched_df
