@@ -176,21 +176,47 @@ def save_n_rename_files(matched, dir):
         outputs.append(dest)
 
     return outputs
-    
-def GGIR(matched):
 
+def GGIR(matched):
+    import subprocess
     os.system('R') #start R term
 
-    for index, row in matched.iterrows():
-        # Use regex to extract the year from the file name
-        match = re.search(r'\((\d{4})-\d{2}-\d{2}\)', row['raw_file'])
+    if isinstance(matched, list):
+        for item in matched:
+            if os.path.exists(item):
+                try:
+                    result = subprocess.run(
+                           [f"Rscript code/src/accel.R --project_dir {item.split('/')[:-1]} --project_deriv_dir {item.split('/')[:-1]}/derivatives --files {item} --verbose TRUE"], 
+                            check=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE
+                            )
+                    print(f"Command output: {result.stdout.decode().strip()}")
+                except subprocess.CalledProcessError as e:
+                    print(f"Command failed with exit status: {e.returncode}")
+                    print(f"Error output: {e.stderr.decode().strip()}")
 
-        if row['subject_id']<7000:
-            outdir = os.path.join(OBS_DIR, 'derivatives', 'GGIR-3.1.4', f"sub-{row['subject_id']")
-        else:
-            outdir = os.path.join(INT_DIR, 'derivatives', 'GGIR-3.1.4', f"sub-{row['subject_id']")
-        #run the GGIR script
-        os.system(f"Rscript code/src/accel.R --project_dir {outdir} --project_deriv_dir {outdir}/derivatives --files {row['raw_file']} --verbose TRUE")
+    elif isinstance(matched, pd.DataFrame):
+        for index, row in matched.iterrows():
+            # Use regex to extract the year from the file name
+            match = re.search(r'\((\d{4})-\d{2}-\d{2}\)', row['raw_file'])
+            if row['subject_id']<7000:
+                outdir = os.path.join(OBS_DIR, 'derivatives', 'GGIR-3.1.4', f"sub-{row['subject_id']}")
+            else:
+                outdir = os.path.join(INT_DIR, 'derivatives', 'GGIR-3.1.4', f"sub-{row['subject_id']}")
+            try:
+                result = subprocess.run(
+                        [f"Rscript code/src/accel.R --project_dir {outdir} --project_deriv_dir {outdir}/derivatives --files {row['raw_file']} --verbose TRUE"],
+                        check=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE
+                        )
+                print(f"Command output: {result.stdout.decode().strip()}")
+
+            except subprocess.CalledProcessError as e:
+               print(f"Command failed with exit status: {e.returncode}")
+               print(f"Error output: {e.stderr.decode().strip()}") 
+            os.system(f"Rscript code/src/accel.R --project_dir {outdir} --project_deriv_dir {outdir}/derivatives --files {row['raw_file']} --verbose TRUE")
     os.system('q()')
     return None
 
