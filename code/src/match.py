@@ -8,7 +8,6 @@ from io import StringIO
 
 INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/bids'
 OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/'
-    
 
 def parse_args():
     argparser = argparse.ArgumentParser(description='Match files to REDCap')
@@ -29,7 +28,6 @@ def save_files(dir, txt):
         f.close()
     return txt
 
-        
 def get_files(dir):
     data = os.listdir(dir)
     return data
@@ -39,7 +37,6 @@ def compare(files, txt):
     with open(txt, 'r') as f:
         data = f.read().splitlines()
     f.close()
-    
     for file in files:
         if file not in data:
             need.append(file)
@@ -72,26 +69,54 @@ def get_list(token):
     df = pd.read_csv(StringIO(r.text))
     return df
 
+
 def compare_ids(files, list):
+    """
+    Compare IDs between two DataFrames and log matched and unmatched entries.
+    Args:
+        files (pd.DataFrame): DataFrame containing 'labid' and 'file' columns.
+        list (pd.DataFrame): DataFrame containing 'lab_id' and 'boost_id' columns.
+    Returns:
+        pd.DataFrame: Matched rows with columns 'lab_id', 'raw_file', and 'subject_id'.
+    """
     # Ensure both columns are of the same type before merging
     files['labid'] = files['labid'].astype(str)
     list['lab_id'] = list['lab_id'].astype(str)
-    
     # Merge files and list dataframes with validation
     matched = pd.merge(
-        files, 
-        list, 
-        left_on='labid', 
-        right_on='lab_id', 
-        how='inner', 
+        files,
+        list,
+        left_on='labid',
+        right_on='lab_id',
+        how='inner',
         validate='many_to_one'
     )
     
     # Rename columns to match the desired output
     matched = matched[['lab_id', 'file', 'boost_id']].rename(columns={'file': 'raw_file', 'boost_id': 'subject_id'})
     
-    # Print matched lab_ids
-    print('Matched lab_ids:', matched['lab_id'].unique())
+    # Identify unmatched files and subs
+    unmatched_files = files[~files['labid'].isin(matched['lab_id'])]
+    unmatched_subs = list[~list['lab_id'].isin(matched['lab_id'])]
+    
+    # Log matched IDs
+    print("Matched IDs:")
+    print(f"- Total Matched: {len(matched)}")
+    print(f"- Matched Lab IDs: {', '.join(matched['lab_id'].unique())}")
+    
+    # Log unmatched files
+    if not unmatched_files.empty:
+        print("Unmatched Files:")
+        print(unmatched_files[['labid', 'file']].to_string(index=False))
+    else:
+        print("No unmatched files found.")
+    
+    # Log unmatched subs
+    if not unmatched_subs.empty:
+        print("Unmatched Subs:")
+        print(unmatched_subs[['lab_id', 'boost_id']].to_string(index=False))
+    else:
+        print("No unmatched subs found.")
     
     return matched
 
@@ -140,7 +165,7 @@ import shutil
 import re
 
 def save_n_rename_files(matched, dir):
-    outputs = []    
+    outputs = []
     for index, row in matched.iterrows():
         # Use regex to extract the year from the file name
         match = re.search(r'\((\d{4})-\d{2}-\d{2}\)', row['raw_file'])
@@ -149,7 +174,7 @@ def save_n_rename_files(matched, dir):
             outdir = OBS_DIR
         else:
             outdir = INT_DIR
-        
+
         if match:
             year = int(match.group(1))
         else:
