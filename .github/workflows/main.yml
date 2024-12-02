@@ -1,4 +1,5 @@
 name: act-workflow
+
 on:
   push:
     branches:
@@ -16,42 +17,39 @@ permissions:
   pages: write
 
 jobs:
-  install-reqs-n-run-scripts:
-    name: install-py-reqs
+  install-py-reqs:
+    name: Install Python Requirements
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: set up python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
-      - name: install pyreqs
+      - name: Install Python requirements
         run: pip install -r requirements.txt
 
-    name: install-r-reqs
+  install-r-reqs:
+    name: Install R Requirements
     runs-on: ubuntu-latest
-
     steps:
-      - name: set up R
+      - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
-      - name: install rreqs
+      - name: Install R requirements
         run: Rscript ./R_requirements.R
 
-
-  name: run orchestrator
-  runs-on: ubuntu-latest
-
-  steps:
-      - name: run orchestrator
-        run: current_date=$(date +"%Y-%m-%d")\
-          python3 ./code/orchestrate.py -i '/Volumes/VossLab/Repositories/Accelerometer_Data/' -token 'DE4E2DB72778DACA9B8848574107D2F5P' | tee > ./out/log-{}.txt'
-
-      - name: checkout code
+  run-orchestrator:
+    name: Run Orchestrator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
 
-
+      - name: Run orchestrator script
+        run: |
+          current_date=$(date +"%Y-%m-%d")
+          python3 ./code/orchestrate.py -i '/Volumes/VossLab/Repositories/Accelerometer_Data/' -token 'DE4E2DB72778DACA9B8848574107D2F5P' | tee ./out/log-${current_date}.txt
