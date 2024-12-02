@@ -14,4 +14,7 @@ This repo contains a minimal amount of hard-coding to allow for reproducibility 
     - [x] GGIR is formatted as GGIR-#.# with no more version numbers after the second. Full version number should be put into the readme
  - [x] Finish adding all required code to move to linux
  - [x] move to linux?
-- [ ] Test on linux and prepare prelims
+ - [ ] screw linux let's move to github actions
+    - [x] complete yml files
+    - [ ] test yml 
+ 

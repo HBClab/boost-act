@@ -38,6 +38,11 @@ def init_servers():
     except Exception as e:
         print(f'An error occured trying to connect to RDSS: {e}')
         sys.exit(1)
+
+    print("""
+          Server check passed -> checking rdss files
+          *----------------------------* 
+          """)
     return None
 
 def check_files():
@@ -47,6 +52,7 @@ def check_files():
 
     if len(rdss_files) == 0:
         print("error: RDSS files were not grabbed - find out why")
+        sys.exit(1)
 
     need = compare(rdss_files, TXT)
 
@@ -62,7 +68,10 @@ def create_comparable_dataframe(need):
     from src.match import parse_files
 
     if type(need) != list:
-        print("need is not a list... you need to figure out why")
+        print("""
+             need is not a list... you need to figure out why
+             *----------------------------* 
+              """)
         exit()
 
     lab_id_file = parse_files(need)
@@ -81,7 +90,10 @@ def create_comparable_dataframe(need):
                 print(error)
             sys.exit(1)
         else:
-            print("All rows are valid")
+            print("""
+                  All rows are valid
+                  *----------------------------*
+                  """)
 
     return lab_id_file
 
@@ -111,6 +123,7 @@ def GGIR(outs):
     #this is where we run GGIR using the GGIR function in matched
     from src.match import GGIR
     GGIR(outs)
+    print("GGIR completed -> moving to validation")
     return None
 
 
@@ -131,7 +144,7 @@ def main():
 
     return None
 
-if __name__ == 'main':
+if __name__ == '__main__':
     main()
 
 

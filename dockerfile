@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY R_requirements.R /app/
 
 # Install R dependencies
-RUN python3 code/orchestrate.py -token {INSERT TOKEN HERE}
+RUN python3 code/orchestrate.py -i = -token {INSERT TOKEN HERE}
 # Copy the rest of the application code into the image
 COPY . /app/
 

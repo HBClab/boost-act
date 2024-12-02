@@ -43,7 +43,7 @@ def rename_dirs(list, dir):
                     # Rename the directory
                     print('Renaming', os.path.join(dir, d), final)
                     os.rename(os.path.join(dir, d), final)
-    
+
     return renamed_dirs
 
 def structure_dirs(list, dir):
@@ -61,7 +61,7 @@ def structure_dirs(list, dir):
         # move the renamed directory to the new subject directory
         print('Moving', d, new_sub)
         shutil.move(d, new_sub)
-
+    return None
 
 
 
@@ -69,6 +69,6 @@ def main():
     arg = args()
     dirs = gather_dirs(arg.dir)
     structure_dirs(rename_dirs(dirs, arg.dir), arg.dir)
-    
+
 if __name__ == '__main__':
     main()

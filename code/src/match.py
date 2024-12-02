@@ -91,7 +91,7 @@ def compare_ids(files, list):
         how='inner',
         validate='many_to_one'
     )
-    
+
     # Rename columns to match the desired output
     matched = matched[['lab_id', 'file', 'boost_id']].rename(columns={'file': 'raw_file', 'boost_id': 'subject_id'})
     
@@ -194,7 +194,9 @@ def save_n_rename_files(matched, dir):
         src = os.path.join(dir, row['raw_file'])
         dest = os.path.join(output_dir, f"sub-{row['subject_id']}_{row['session']}.csv")
         
-        print('source: ',  src, ' ', 'destination: ', dest)
+
+
+print('source: ',  src, ' ', 'destination: ', dest)
         
         # Copy the file to the destination
         #shutil.copy(src, dest)
