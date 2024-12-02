@@ -50,7 +50,7 @@ jobs:
           echo "current wkdir:"
           pwd
           echo "files in dir"
-          ls -al
+          ls -a
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
