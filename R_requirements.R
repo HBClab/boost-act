@@ -1,2 +1,2 @@
-install.packages("GGIR", dependenceies = TRUE)
+install.packages("GGIR", dependencies = TRUE)
 library(GGIR)
