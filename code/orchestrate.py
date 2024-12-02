@@ -11,9 +11,9 @@ import src.match
 import argparse
 import sys
 
-OBSDIR = '/mnt/vosslab-svc/vosslabhpc/Projects/BOOST/InterventionStudy/3-Experiment/data/bids'
-INTDIR = '/mnt/vosslab-svc/vosslabhpc/Projects/BOOST/ObersvationalStudy/3-Experiment/data/bids'
-RDSSDIR = 'mnt/vosslab-svc/rdss_vosslab/Repositories/Accelerometer_Data/'
+OBSDIR = 'mnt/vosslab-svc/tmp/vosslabhpc/Projects/BOOST/InterventionStudy/3-Experiment/data/bids'
+INTDIR = 'mnt/vosslab-svc/tmp/vosslabhpc/Projects/BOOST/ObersvationalStudy/3-Experiment/data/bids'
+RDSSDIR = 'mnt/vosslab-svc/tmp/rdss_vosslab/Repositories/Accelerometer_Data/'
 TXT = './resources/files.txt'
 
 
@@ -27,14 +27,14 @@ def parse_args():
 
 def init_servers():
     #this should connect the linux machine to the RDSS and LSS
-    os.system("mkdir -p /mnt/vosslab-svc/tmp")
+    os.system("mkdir -p mnt/vosslab-svc/tmp")
     try:
-        os.system("sudo mount -t cifs //itf-rs-store24.hpc.uiowa.edu/vosslabhpc /mnt/vosslab-svc/tmp/vosslabhpc -o uid=vosslab-svc,username=vosslab-svc,vers=3.0")
+        os.system("sudo mount -t cifs //itf-rs-store24.hpc.uiowa.edu/vosslabhpc mnt/vosslab-svc/tmp/vosslabhpc -o uid=vosslab-svc,username=vosslab-svc,vers=3.0")
     except Exception as e:
         print(f'An error occured trying to connect to LSS: {e}')
         sys.exit(1)
     try:
-        os.system("sudo mount -t cifs //rdss.iowa.uiowa.edu/rdss_mwvoss/VossLab /mnt/vosslab-svc/tmp/rdss_vosslab -o user=vosslab-svc,uid=2418317,gid=900001021")
+        os.system("sudo mount -t cifs //rdss.iowa.uiowa.edu/rdss_mwvoss/VossLab mnt/vosslab-svc/tmp/rdss_vosslab -o user=vosslab-svc,uid=2418317,gid=900001021")
     except Exception as e:
         print(f'An error occured trying to connect to RDSS: {e}')
         sys.exit(1)
