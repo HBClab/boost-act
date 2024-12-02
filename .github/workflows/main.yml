@@ -37,6 +37,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: install-py-reqs
     steps:
+      - name: debug env
+        run: |
+          echo "current wkdir:"
+          pwd
+          echo "files in dir"
+          ls -al
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
