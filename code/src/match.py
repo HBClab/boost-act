@@ -195,9 +195,9 @@ def save_n_rename_files(matched, dir):
         dest = os.path.join(output_dir, f"sub-{row['subject_id']}_{row['session']}.csv")
         
 
-
-print('source: ',  src, ' ', 'destination: ', dest)
-        
+        ##
+        print('source: ',  src, ' ', 'destination: ', dest)
+        outputs =[]
         # Copy the file to the destination
         #shutil.copy(src, dest)
         outputs.append(dest)
