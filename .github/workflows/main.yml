@@ -21,6 +21,14 @@ jobs:
     name: Install Python Requirements
     runs-on: ubuntu-latest
     steps:
+      - name: debug env
+        run: |
+          echo "current wkdir:"
+          pwd
+          echo "files in wkdir:"
+          ls -al
+
+
       - name: Checkout code
         uses: actions/checkout@v4
 
