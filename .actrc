@@ -1,0 +1,20 @@
+# .actrc
+
+# Paths
+INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/bids'
+OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/'
+RDSS_DIR = `'/Volumes/VossLab/Repositories/Accelerometer_Data'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
