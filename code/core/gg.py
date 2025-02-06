@@ -1,7 +1,6 @@
 import os
 import subprocess
 
-
 class GG:
     def __init__(self, matched, intdir, obsdir):
         # Start an R session as a persistent subprocess.
@@ -31,7 +30,6 @@ class GG:
             for record in records:
                 study = record.get('study', 'default')
                 file_path = record.get('file_path')
-                # Extract the session from the record (assuming the key is 'run')
                 session = record.get('run')
 
                 if not file_path or not os.path.exists(file_path):

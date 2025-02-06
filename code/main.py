@@ -19,3 +19,7 @@ class pipe:
     def _create_syms(self):
         return create_symlinks('../mnt')
 
+
+
+if __name__ == 'main':
+    pipe().run_pipe()
