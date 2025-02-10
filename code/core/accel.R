@@ -265,23 +265,23 @@ post_process_file <- function(r, project_dir, project_deriv_dir, verbose=false) 
     if (verbose) cat("no files to process in", dir, "\n")
     return()
   }
-  
+
   if (verbose) cat("post-processing", length(files), "files for", r, "\n")
-  
+
   # initialize data frames
-  removed <- data.frame(crit = c("1","3","4b","totals"), 
-                        nights = rep(0,4), 
+  removed <- data.frame(crit = c("1","3","4b","totals"),
+                        nights = rep(0,4),
                         participants_affected = rep(0,4),
-                        participants_no_valid = rep(0,4), 
+                        participants_no_valid = rep(0,4),
                         participants_zero_days = rep(0,4))
-  removed_person <- data.frame(id = files, 
-                               nights_crit1 = 0, 
+  removed_person <- data.frame(id = files,
+                               nights_crit1 = 0,
                                nights_crit3 = 0,
                                nights_crit4b = 0,
                                nights_allcrit = 0)
   datacleanmm <- data.frame()
   datacleanww <- data.frame()
-  
+
   for (i in seq_along(files)) {
     load(file.path(dir, files[i]))
     # [insert data cleaning code here]
@@ -290,7 +290,7 @@ post_process_file <- function(r, project_dir, project_deriv_dir, verbose=false) 
     if (!dir.exists(output_ms5_clean)) dir.creat-e(output_ms5_clean, recursive = true)
     save(output, file = file.path(output_ms5_clean, files[i]))
   }
-  
+
   # write csv files
   writepath <- file.path(outputdir, "output_beh/meta")
   if (!dir.exists(writepath)) dir.create(writepath, recursive = true)
@@ -298,7 +298,7 @@ post_process_file <- function(r, project_dir, project_deriv_dir, verbose=false) 
   write.csv(removed_person, file.path(writepath, "excluded_nights_person.csv"), row.names = false)
   write.csv(datacleanmm, file.path(writepath, "dcleanmm.csv"), row.names = false)
   write.csv(datacleanww, file.path(writepath, "dcleanww.csv"), row.names = false)
-  
+
   if (verbose) cat("post-processing completed for", r, "\n")
 }
 
