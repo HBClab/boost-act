@@ -13,7 +13,10 @@ class pipe:
     def run_pipe(self):
         self._create_syms()
         matched = Save(intdir=INT_DIR, obsdir=OBS_DIR, rdssdir=RDSS_DIR).save()
-        GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
+        with open('res/data.json', 'w') as file:
+            file.write('{\n}')
+            file.write(',\n'.join(f'   "{key}": "{value}"' for key, value in matched.items()))
+        #GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
         return None
 
     def _create_syms(self):
