@@ -4,23 +4,28 @@ import subprocess
 class GG:
     def __init__(self, matched, intdir, obsdir):
         # Start an R session as a persistent subprocess.
-        # We use --no-save and --slave for a non-interactive, quiet session.
         self.r_process = subprocess.Popen(
-            ['R', '--no-save', '--slave'],
+            ['R', '--no-save'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            bufsize=1,
+            text=True,
+            universal_newlines=True,
         )
         # Source the R requirements file in the R session.
         # The path to R_requirements.R is relative to the working directory.
         self.r_process.stdin.write("source('core/R_requirements.R')\n")
         self.r_process.stdin.flush()
 
+        for line in self.r_process.stdout:
+            print(line, end='')
         # Check for R errors
-        stderr_output = self.r_process.stderr.read()
+        stderr_output = self.r_process.stderr.readline()
+        self.r_process.stdin.flush()
         if stderr_output.strip():
             raise RuntimeError(f"Error in sourcing R script: {stderr_output}")
+        print(f"R process started with PID: {self.r_process.pid}")
         self.matched = matched
         self.INTDIR = intdir
         self.OBSDIR = obsdir
@@ -39,10 +44,10 @@ class GG:
                 # Build the output directory based on study type.
                 if study.lower() == 'obs':
                     outdir = os.path.join(self.OBSDIR, 'derivatives', 'GGIR-3.1.4',
-                                          f"sub-{subject_id}_ses-{session}")
+                                          f"sub-{subject_id}", "ses-{session}")
                 else:
                     outdir = os.path.join(self.INTDIR, 'derivatives', 'GGIR-3.1.4',
-                                          f"sub-{subject_id}_ses-{session}")
+                                          f"sub-{subject_id}", "ses-{session}")
 
                 try:
                     # Create the derivative subdirectory within outdir.
@@ -54,12 +59,12 @@ class GG:
                     )
 
                     # Run the command in a new subprocess.
+                    print(f"running GGIR for {file_path}")
                     result = subprocess.run(
                         command,
-                        shell=True,
                         check=True,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE
+                        stdout=sys.stdout,
+                        stderr=sys.stderr
                     )
                     # Decode and print the output.
                     print(f"Command output: {result.stdout.decode().strip()}")

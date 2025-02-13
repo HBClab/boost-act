@@ -4,6 +4,7 @@
 # (Include any other libraries your processing function requires)
 # For example, if ggir is used, make sure it is installed and loaded:
 # library(ggir)
+interactive_session <- FALSE
 suppressMessages(library(optparse))
 
 # Define command-line options: input_file and output_location (plus an optional verbose flag)
@@ -57,7 +58,6 @@ process_file <- function(input_file, output_dir, verbose = FALSE) {
   # Adjust the arguments below to suit your processing needs.
   tryCatch({
     if (verbose) cat("Starting ggir processing...\n")
-    if (FALSE) {
         g.shell.ggir(
         mode = 1:5,                    # Parts of ggir to run
         datadir = data_dir,            # Use the directory where the input file resides
@@ -108,7 +108,6 @@ process_file <- function(input_file, output_dir, verbose = FALSE) {
         visualreport = TRUE,
         do.parallel = TRUE
         )
-    }
 
     if (verbose) cat("ggir processing completed for", input_file, "\n")
   }, error = function(e) {

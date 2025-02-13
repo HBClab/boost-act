@@ -33,8 +33,8 @@ import json
 from collections import defaultdict
 
 # Define your directory paths
-INT_DIR = "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test"
-OBS_DIR = "/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test"
+INT_DIR = "/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test"
+OBS_DIR = "/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test"
 
 def extract_info_from_filename(filename):
     """
@@ -119,3 +119,4 @@ def _determine_location(matches):
 # Execute function and print output as JSON
 matches_dict = recreate_matches(INT_DIR, OBS_DIR)
 print(json.dumps(matches_dict, indent=4))
+GG(matches_dict, INT_DIR, OBS_DIR).run_gg()
