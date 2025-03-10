@@ -1,31 +1,9 @@
 import os
 import subprocess
+import sys
 
 class GG:
     def __init__(self, matched, intdir, obsdir):
-        # Start an R session as a persistent subprocess.
-        self.r_process = subprocess.Popen(
-            ['R', '--no-save'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            bufsize=1,
-            text=True,
-            universal_newlines=True,
-        )
-        # Source the R requirements file in the R session.
-        # The path to R_requirements.R is relative to the working directory.
-        self.r_process.stdin.write("source('core/R_requirements.R')\n")
-        self.r_process.stdin.flush()
-
-        for line in self.r_process.stdout:
-            print(line, end='')
-        # Check for R errors
-        stderr_output = self.r_process.stderr.readline()
-        self.r_process.stdin.flush()
-        if stderr_output.strip():
-            raise RuntimeError(f"Error in sourcing R script: {stderr_output}")
-        print(f"R process started with PID: {self.r_process.pid}")
         self.matched = matched
         self.INTDIR = intdir
         self.OBSDIR = obsdir
@@ -33,7 +11,7 @@ class GG:
     def run_gg(self):
         for subject_id, records in self.matched.items():
             for record in records:
-                study = record.get('study', 'default')
+                study = record.get('study')
                 file_path = record.get('file_path')
                 session = record.get('run')
 
@@ -55,7 +33,9 @@ class GG:
 
                     # Construct the Rscript command.
                     command = (
-                        f"Rscript core/basic_accel.R  --input_file {file_path} --output_location {outdir} --verbose"
+                        f"""
+                        Rscript core/basic_accel.R  --input_file {file_path} --output_location {outdir} --verbose
+                        """
                     )
 
                     # Run the command in a new subprocess.
@@ -71,19 +51,4 @@ class GG:
                 except subprocess.CalledProcessError as e:
                     print(f"Command failed for subject {subject_id} with exit status: {e.returncode}")
                     print(f"Error output: {e.stderr.decode().strip()}")
-
-        # Once processing is complete, gracefully close the R subprocess.
-        self.close_r_process()
-
-    def close_r_process(self):
-        if self.r_process and self.r_process.poll() is None:  # Check if process is still running
-            try:
-                self.r_process.stdin.write("q('no')\n")
-                self.r_process.stdin.flush()
-                self.r_process.stdin.close()
-            except (BrokenPipeError, IOError):
-                print("Attempted to close an already closed R process.")
-            finally:
-                self.r_process.wait()
-                self.r_process = None
 

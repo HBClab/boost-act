@@ -7,36 +7,37 @@ from io import StringIO
 
 
 class ID_COMPARISONS:
-
+    
     def __init__(self, mnt_dir) -> None:
        self.token = 'DE4E2DB72778DACA9B8848574107D2F5'
        self.mnt_dir = mnt_dir
-
+       self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+       self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+       logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def compare_ids(self):
         """
         Pulls all files from RDSS
         Pulls the list from RedCap
-        Compares IDs and returns a dict with matches with the following structure:
-        key: subject ID (boost_id),
-            values: list of dictionaries with keys: filename, labID, date
+        Compares IDs and returns a dictionary with two keys:
+          - 'matches': normal matches mapping boost_id to a list of dicts (filename, labID, date)
+          - 'duplicates': a list of dictionaries each with lab_id, boost_id, filenames (list), and dates (list)
         """
-        # Retrieve the RedCap report and RDSS file list
-        report = self._return_report()
-        rdss = self._rdss_file_list()
+        # Retrieve the RedCap report and duplicates from report
+        report, report_duplicates = self._return_report()
+        # Retrieve the full RDSS file list and duplicate files merged with duplicates from report
+        rdss, file_duplicates = self._rdss_file_list(report_duplicates)
 
-        # Initialize the result dictionary
+        # Initialize the result dictionary for normal (non-duplicate) matches
         result = {}
 
-        # Iterate over the rows in the RedCap report
+        # Iterate over the rows in the cleaned RedCap report
         for _, row in report.iterrows():
             boost_id = str(row['boost_id'])
             lab_id = str(row['lab_id'])
-
-            # Filter RDSS DataFrame to find matching files for the lab_id
+            
+            # Find matching files in the RDSS list
             rdss_matches = rdss[rdss['ID'] == lab_id]
-
-            # If matches are found, add them to the result dictionary
             if not rdss_matches.empty:
                 if boost_id not in result:
                     result[boost_id] = []
@@ -46,14 +47,35 @@ class ID_COMPARISONS:
                         'labID': lab_id,
                         'date': match_row['Date']
                     })
+        
+        # Process duplicates into the desired structure.
+        duplicates_dict = []
+        if not file_duplicates.empty:
+            # Group by lab_id and boost_id; each group represents one duplicate combination.
+            grouped = file_duplicates.groupby(['lab_id', 'boost_id'])
+            for (lab_id, boost_id), group in grouped:
+                duplicates_dict.append({
+                    'lab_id': lab_id,
+                    'boost_id': boost_id,
+                    'filenames': group['filename'].tolist(),
+                    'dates': group['Date'].tolist()
+                })
+        else:
+            logging.info("Found no duplicates.")
 
-        return result
+        return {'matches': result, 'duplicates': duplicates_dict}
 
     def _return_report(self):
         """
-        Pulls the ID report from the RDSS
-        Reads the report as a dataframe
-
+        Pulls the ID report from the RDSS via RedCap API.
+        Reads the report as a DataFrame.
+        Checks for boost_ids that are associated with multiple lab_ids, logs a critical error,
+        and removes these rows from the DataFrame.
+        Separates duplicate rows (based on any column) from the cleaned data.
+        
+        Returns:
+            df_cleaned: DataFrame with duplicates removed and problematic boost_ids excluded
+            duplicate_rows: DataFrame of duplicate rows
         """
         url = 'https://redcap.icts.uiowa.edu/redcap/api/'
         data = {
@@ -66,40 +88,67 @@ class ID_COMPARISONS:
         if r.status_code != 200:
             print(f"Error! Status code is {r.status_code}")
             sys.exit(1)
+        
         df = pd.read_csv(StringIO(r.text))
-        return df
+        
+        # Identify boost_ids associated with multiple lab_ids.
+        boost_id_counts = df.groupby('boost_id')['lab_id'].nunique()
+        problematic_boost_ids = boost_id_counts[boost_id_counts > 1].index.tolist()
+        
+        if problematic_boost_ids:
+            logging.critical(f"Found boost_id(s) with multiple lab_ids: {', '.join(problematic_boost_ids)}. "
+                            "These entries will be removed from processing.")
+            # Remove rows with these problematic boost_ids from the dataframe.
+            df = df[~df['boost_id'].isin(problematic_boost_ids)]
+        
+        # Identify and separate duplicate rows based on any column.
+        duplicate_rows = df[df.duplicated(keep=False)]
+        df_cleaned = df.drop_duplicates(keep=False)
+        
+        if not duplicate_rows.empty:
+            logging.info(f"Duplicate rows found:\n{duplicate_rows}")
+        
+        return df_cleaned, duplicate_rows
 
-    def _rdss_file_list(self):
+    def _rdss_file_list(self, duplicates):
         """
         Extracts the first string before the space and the date from filenames ending with .csv
         in the specified folder and stores them in a DataFrame.
-
-        Args:
-            folder_path (str): Path to the folder containing the .csv files.
-
+        
+        Also, merges the file list with duplicate report entries based on lab_id.
+        
         Returns:
-            pd.DataFrame: A DataFrame with columns 'ID', 'Date' and 'filename'.
+            df: DataFrame of all file entries
+            merged_df: DataFrame of file entries that match duplicate lab_ids from the report
         """
-        # Initialize an empty list to store the extracted data
         extracted_data = []
 
-        # Loop through all files in the folder
-        for filename in os.listdir(os.path.join(self.mnt_dir, 'rdss_dir')):
-            if filename.endswith('.csv'):  # Check for .csv files
-                # Split the filename to extract the required parts
+        # Loop through all files in the rdss_dir folder.
+        rdss_dir = os.path.join(self.mnt_dir, 'rdss_dir')
+        for filename in os.listdir(rdss_dir):
+            if filename.endswith('.csv'):
                 try:
-                    base_name = filename.split(' ')[0]  # Extract the first part before the space
-                    date_part = filename.split('(')[1].split(')')[0]  # Extract the date inside parentheses
+                    base_name = filename.split(' ')[0]  # Extract lab_id
+                    date_part = filename.split('(')[1].split(')')[0]  # Extract date
                     extracted_data.append({'ID': base_name, 'Date': date_part, 'filename': filename})
                 except IndexError:
                     print(f"Skipping file with unexpected format: {filename}")
 
-        # Convert the list of dictionaries to a DataFrame
         df = pd.DataFrame(extracted_data)
 
-        return df
+        if not df.empty:
+            df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+            df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
 
+        # Filter the file list to only include rows where ID is in the duplicate report (if any)
+        if not duplicates.empty:
+            matched_df = df[df['ID'].isin(duplicates['lab_id'])]
+            # Merge with the duplicates to bring in boost_id information from the report
+            merged_df = matched_df.merge(duplicates, left_on='ID', right_on='lab_id')
+        else:
+            merged_df = pd.DataFrame()
 
+        return df, merged_df
 
 
 # REPORT EXAMPLE

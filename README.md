@@ -14,6 +14,9 @@
 
 
 ### Tasks
-- [ ] create layout
-- [ ] build accel transfer
-- [ ] transfer current data
+- [x] create layout
+- [x] build accel transfer
+- [x] transfer current data
+- [ ] add study rule ->
+    - if sub already in obs -> move to int 
+    - all need to be after start date 

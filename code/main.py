@@ -8,7 +8,7 @@ RDSS_DIR = '/Volumes/VossLab/Repositories/Accelerometer_Data'
 
 class pipe:
     def __init__(self):
-        self.funny = False
+        self.funny = False # i happen to be pretty lame
 
     def run_pipe(self):
         self._create_syms()

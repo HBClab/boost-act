@@ -4,6 +4,7 @@
 # (Include any other libraries your processing function requires)
 # For example, if ggir is used, make sure it is installed and loaded:
 # library(ggir)
+source('core/R_requirements.R')
 interactive_session <- FALSE
 suppressMessages(library(optparse))
 

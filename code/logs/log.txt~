@@ -1,0 +1,13 @@
+# IPython log file
+
+INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+RDSS_DIR = '/Volumes/VossLab/Repositories/Accelerometer_Data'
+get_ipython().run_line_magic('cd', 'code')
+touch log.txt
+get_ipython().run_line_magic('ls', '')
+get_ipython().run_line_magic('ls', '')
+from utils.save import Save
+get_ipython().run_line_magic('logstart', 'logs/log.txt')
+Save(INT_DIR, OBS_DIR, RDSS_DIR).save()
+get_ipython().run_line_magic('logstop', '')
