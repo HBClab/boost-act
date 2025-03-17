@@ -5,8 +5,8 @@ from utils.comparison_utils import ID_COMPARISONS
 
 class Save:
 
-    def __init__(self, intdir, obsdir, rdssdir):
-        results = ID_COMPARISONS('../mnt').compare_ids()
+    def __init__(self, intdir, obsdir, rdssdir, daysago=None):
+        results = ID_COMPARISONS('../mnt', daysago).compare_ids()
         self.matches = results['matches']
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
@@ -25,7 +25,7 @@ class Save:
             matches = self._handle_and_merge_duplicates(self.dupes)
         
         # Move the files based on the final matches.
-        self._move_files(matches=matches)
+        #self._move_files(matches=matches)
         return matches
 
     def _move_files_test(self, matches):

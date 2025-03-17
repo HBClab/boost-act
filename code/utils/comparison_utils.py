@@ -3,16 +3,18 @@ import sys
 import logging
 import pandas as pd
 import requests
+from datetime import datetime, timedelta
 from io import StringIO
 
 
 class ID_COMPARISONS:
     
-    def __init__(self, mnt_dir) -> None:
+    def __init__(self, mnt_dir, daysago=None) -> None:
        self.token = 'DE4E2DB72778DACA9B8848574107D2F5'
        self.mnt_dir = mnt_dir
        self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
        self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+       self.daysago = daysago
        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def compare_ids(self):
@@ -26,7 +28,7 @@ class ID_COMPARISONS:
         # Retrieve the RedCap report and duplicates from report
         report, report_duplicates = self._return_report()
         # Retrieve the full RDSS file list and duplicate files merged with duplicates from report
-        rdss, file_duplicates = self._rdss_file_list(report_duplicates)
+        rdss, file_duplicates = self._rdss_file_list(report_duplicates, self.daysago)
 
         # Initialize the result dictionary for normal (non-duplicate) matches
         result = {}
@@ -110,7 +112,7 @@ class ID_COMPARISONS:
         
         return df_cleaned, duplicate_rows
 
-    def _rdss_file_list(self, duplicates):
+    def _rdss_file_list(self, duplicates, daysago=None):
         """
         Extracts the first string before the space and the date from filenames ending with .csv
         in the specified folder and stores them in a DataFrame.
@@ -138,7 +140,12 @@ class ID_COMPARISONS:
 
         if not df.empty:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-            df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
+
+            if daysago:
+                cutoff_date = datetime.today() - timedelta(days=daysago)
+                df = df[df['Date'] >= cutoff_date]  # Filter files within the last `daysago` days
+            else:
+                df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
 
         # Filter the file list to only include rows where ID is in the duplicate report (if any)
         if not duplicates.empty:
