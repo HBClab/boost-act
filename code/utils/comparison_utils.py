@@ -98,9 +98,8 @@ class ID_COMPARISONS:
         problematic_boost_ids = boost_id_counts[boost_id_counts > 1].index.tolist()
         
         if problematic_boost_ids:
-            logging.critical(f"Found boost_id(s) with multiple lab_ids: {', '.join(problematic_boost_ids)}. "
+            logging.critical(f"Found boost_id(s) with multiple lab_ids: {', '.join(map(str, problematic_boost_ids))}. "
                             "These entries will be removed from processing.")
-            # Remove rows with these problematic boost_ids from the dataframe.
             df = df[~df['boost_id'].isin(problematic_boost_ids)]
         
         # Identify and separate duplicate rows based on any column.
