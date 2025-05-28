@@ -25,7 +25,7 @@ class Save:
             matches = self._handle_and_merge_duplicates(self.dupes)
         
         # Move the files based on the final matches.
-        #self._move_files(matches=matches)
+        self._move_files(matches=matches)
         return matches
 
     def _move_files_test(self, matches):
@@ -97,7 +97,7 @@ class Save:
                     print(f"File already exists at destination: {destination_path}. Skipping.")
                 else:
                     try:
-                        #shutil.copy(source_path, destination_path)
+                        shutil.copy(source_path, destination_path)
                         print(f"Moved {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
@@ -187,7 +187,7 @@ class Save:
                     filename = f"sub-{subject_id}_ses-{session}_accel.csv"
 
                     # Construct full path
-                    file_path = f"{study_dir}/{subject_folder}/accel/{filename}"
+                    file_path = f"{study_dir}/{subject_folder}/accel/ses-{session}/{filename}"
 
                     # Append file path to record
                     record['file_path'] = file_path
