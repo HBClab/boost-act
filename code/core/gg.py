@@ -17,7 +17,7 @@ class GG:
         self.matched = matched
         self.INTDIR = intdir.rstrip('/') + '/'
         self.OBSDIR = obsdir.rstrip('/') + '/'
-        self.DERIVATIVES = "/derivatives/GGIR-3.1.4"  # Defined within the class
+        self.DERIVATIVES = "/derivatives/GGIR-3.2.6-test"  # Defined within the class
 
     def run_gg(self):
         """
@@ -28,7 +28,7 @@ class GG:
         from utils.qc import QC 
 
         for project_dir in [self.INTDIR, self.OBSDIR]:
-            command = f"Rscript core/acc.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
+            command = f"Rscript core/acc_new.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
 
             try:
                 # Execute the command in a new subprocess
