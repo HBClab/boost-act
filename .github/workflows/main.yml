@@ -19,7 +19,8 @@ jobs:
 
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages(c("ggplot2", "plyr", "optparse", "tidyr", "GGIR"), repos="https://cloud.r-project.org", dependencies=TRUE)'
+          Rscript -e 'install.packages(c("ggplot2","plyr","optparse","tidyr","remotes"), repos="https://cloud.r-project.org", dependencies=TRUE)'
+          Rscript -e 'remotes::install_version("GGIR", version = "3.2.6", repos = "https://cloud.r-project.org")'
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
