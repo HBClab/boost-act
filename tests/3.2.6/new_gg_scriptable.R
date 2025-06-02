@@ -109,7 +109,7 @@ main <- function() {
           colid = 1,
           coln1 = 2,
           sleepwindowType = "SPT",
-          timewindow = c("WW", "MM"),
+          timewindow = c("WW", "MM", "OO"),
           part6CR = TRUE
         )
       })

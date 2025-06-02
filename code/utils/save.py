@@ -5,8 +5,8 @@ from utils.comparison_utils import ID_COMPARISONS
 
 class Save:
 
-    def __init__(self, intdir, obsdir, rdssdir, daysago=None):
-        results = ID_COMPARISONS('../mnt', daysago).compare_ids()
+    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
+        results = ID_COMPARISONS('../mnt', token, daysago).compare_ids()
         self.matches = results['matches']
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")

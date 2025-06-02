@@ -8,16 +8,25 @@ OBS_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experimen
 RDSS_DIR = '/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data'
 
 class pipe:
-    def __init__(self, daysago=None):
+    def __init__(self, token, daysago):
+        self.token = token
         self.daysago = daysago
 
     def run_pipe(self):
         self._create_syms()
-        matched = Save(intdir=INT_DIR, obsdir=OBS_DIR, rdssdir=RDSS_DIR, daysago=self.daysago).save()
+        matched = Save(
+            intdir=INT_DIR,
+            obsdir=OBS_DIR,
+            rdssdir=RDSS_DIR,
+            token=self.token,
+            daysago=self.daysago
+        ).save()
+
         with open('code/res/data.json', 'w') as file:
             file.write('{\n}')
             file.write(',\n'.join(f'   "{key}": "{value}"' for key, value in matched.items()))
-        #GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
+
+        # GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
         return None
 
     def _create_syms(self):
@@ -25,14 +34,24 @@ class pipe:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:  # Ensure there's an argument
-        try:
-            daysago = int(sys.argv[1])  # Convert argument to integer
-        except ValueError:
-            print("Error: daysago must be an integer")
-            sys.exit(1)  # Exit script with error
-    else:
-        daysago = None  # Default to None if no argument is provided
+    # Expect exactly 2 arguments: daysago (integer) and token (string)
+    if len(sys.argv) != 3:
+        print("Usage: python main.py <daysago> <token>")
+        print("  <daysago> must be an integer, <token> must be a non-empty string.")
+        sys.exit(1)
 
-    p = pipe(daysago=daysago)
+    # Parse daysago
+    try:
+        daysago = int(sys.argv[1])
+    except ValueError:
+        print("Error: <daysago> must be an integer.")
+        sys.exit(1)
+
+    # Parse token
+    token = sys.argv[2]
+    if not token:
+        print("Error: <token> cannot be empty.")
+        sys.exit(1)
+
+    p = pipe(token, daysago)
     p.run_pipe()

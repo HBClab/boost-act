@@ -33,7 +33,10 @@ jobs:
           if [ -f code/requirements.txt ]; then pip install -r code/requirements.txt; fi
 
       - name: Run Python script
-        run: python code/main.py
+        env:
+          RC_TOKEN: ${{ secrets.RC_TOKEN }}
+        run: |
+          python code/main.py 1 "$RC_TOKEN"
 
       - name: Commit and push changes to main
         run: |
@@ -43,7 +46,3 @@ jobs:
           git add .
           git commit -m "Automated changes from GitHub Actions"
           git push origin main
-
-
-
-

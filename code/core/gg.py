@@ -15,14 +15,18 @@ class GG:
             obsdir (str): Path to the observational directory.
         """
         self.matched = matched
-        self.INTDIR = intdir+'/'
-        self.OBSDIR = obsdir+'/'
+        self.INTDIR = intdir.rstrip('/') + '/'
+        self.OBSDIR = obsdir.rstrip('/') + '/'
         self.DERIVATIVES = "/derivatives/GGIR-3.1.4"  # Defined within the class
 
     def run_gg(self):
         """
         Run GGIR for both the internal and observational project directories.
+        After each GGIR run, invoke the QC pipeline for that project.
         """
+        # Assume QC is available at this import path
+        from utils.qc import QC 
+
         for project_dir in [self.INTDIR, self.OBSDIR]:
             command = f"Rscript core/acc.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
 
@@ -47,3 +51,30 @@ class GG:
 
                 if process.returncode != 0:
                     raise subprocess.CalledProcessError(process.returncode, command)
+
+                print(f"GGIR completed successfully for {project_dir}.")
+
+                # Determine project type for QC ('int' for internal, 'obs' for observational)
+                if project_dir.rstrip('/') == self.INTDIR.rstrip('/'):
+                    project_type = 'int'
+                else:
+                    project_type = 'obs'
+
+                # Run QC for this project
+                print(f"Starting QC pipeline for {project_type} project.")
+                qc_runner = QC(project_type)
+                qc_runner.qc()
+                print(f"QC pipeline finished for {project_type} project.")
+
+            except subprocess.CalledProcessError as e:
+                print(f"Error running GGIR for {project_dir}: {e}")
+                # Optionally, continue to next project or break, depending on desired behavior
+            except Exception as e:
+                print(f"Unexpected error when processing {project_dir}: {e}")
+                # Optionally, continue to next project or break
+
+
+# Example usage:
+# matched_dict = {...}
+# gg = GG(matched_dict, "/path/to/internal", "/path/to/observational")
+# gg.run_gg()

@@ -9,8 +9,8 @@ from io import StringIO
 
 class ID_COMPARISONS:
     
-    def __init__(self, mnt_dir, daysago=None) -> None:
-       self.token = 'DE4E2DB72778DACA9B8848574107D2F5'
+    def __init__(self, mnt_dir, token, daysago=None) -> None:
+       self.token = token
        self.mnt_dir = mnt_dir
        self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
        self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
