@@ -5,6 +5,13 @@
 library(tidyr)
 library(plyr)
 library(optparse)
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+if (!requireNamespace("GGIR", quietly = TRUE) || packageVersion("GGIR") != "3.2.6") {
+  remotes::install_version("GGIR", version = "3.2.6", repos = "https://cloud.r-project.org")
+}
+
 library(GGIR)
 
 main <- function() {
