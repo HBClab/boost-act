@@ -1,119 +1,446 @@
 {
   "int": {
     "UI": {
-      "8006": {},
-      "8037": {},
-      "8008": {},
-      "8036": {},
-      "8022": {},
-      "8014": {},
-      "8015": {},
-      "8024": {},
-      "8023": {},
-      "8005": {},
-      "8002": {},
-      "8035": {},
-      "8003": {},
-      "8004": {},
-      "8019": {},
-      "8026": {},
-      "8021": {},
-      "8011": {},
-      "8016": {},
-      "8020": {},
-      "8018": {}
+      "8006": [
+        "plots/int/UI/8006/daily_plot.png",
+        "plots/int/UI/8006/summary_plot.png"
+      ],
+      "8037": [
+        "plots/int/UI/8037/daily_plot.png",
+        "plots/int/UI/8037/summary_plot.png"
+      ],
+      "8008": [
+        "plots/int/UI/8008/daily_plot.png",
+        "plots/int/UI/8008/summary_plot.png"
+      ],
+      "8036": [
+        "plots/int/UI/8036/daily_plot.png",
+        "plots/int/UI/8036/summary_plot.png"
+      ],
+      "8022": [
+        "plots/int/UI/8022/daily_plot.png",
+        "plots/int/UI/8022/summary_plot.png"
+      ],
+      "8014": [
+        "plots/int/UI/8014/daily_plot.png",
+        "plots/int/UI/8014/summary_plot.png"
+      ],
+      "8015": [
+        "plots/int/UI/8015/daily_plot.png",
+        "plots/int/UI/8015/summary_plot.png"
+      ],
+      "8024": [
+        "plots/int/UI/8024/daily_plot.png",
+        "plots/int/UI/8024/summary_plot.png"
+      ],
+      "8023": [
+        "plots/int/UI/8023/daily_plot.png",
+        "plots/int/UI/8023/summary_plot.png"
+      ],
+      "8005": [
+        "plots/int/UI/8005/daily_plot.png",
+        "plots/int/UI/8005/summary_plot.png"
+      ],
+      "8002": [
+        "plots/int/UI/8002/daily_plot.png",
+        "plots/int/UI/8002/summary_plot.png"
+      ],
+      "8035": [
+        "plots/int/UI/8035/daily_plot.png",
+        "plots/int/UI/8035/summary_plot.png"
+      ],
+      "8003": [
+        "plots/int/UI/8003/daily_plot.png",
+        "plots/int/UI/8003/summary_plot.png"
+      ],
+      "8004": [
+        "plots/int/UI/8004/daily_plot.png",
+        "plots/int/UI/8004/summary_plot.png"
+      ],
+      "8019": [
+        "plots/int/UI/8019/daily_plot.png",
+        "plots/int/UI/8019/summary_plot.png"
+      ],
+      "8026": [
+        "plots/int/UI/8026/daily_plot.png",
+        "plots/int/UI/8026/summary_plot.png"
+      ],
+      "8021": [
+        "plots/int/UI/8021/daily_plot.png",
+        "plots/int/UI/8021/summary_plot.png"
+      ],
+      "8011": [
+        "plots/int/UI/8011/daily_plot.png",
+        "plots/int/UI/8011/summary_plot.png"
+      ],
+      "8016": [
+        "plots/int/UI/8016/daily_plot.png",
+        "plots/int/UI/8016/summary_plot.png"
+      ],
+      "8020": [
+        "plots/int/UI/8020/daily_plot.png",
+        "plots/int/UI/8020/summary_plot.png"
+      ],
+      "8018": [
+        "plots/int/UI/8018/daily_plot.png",
+        "plots/int/UI/8018/summary_plot.png"
+      ]
     }
   },
   "obs": {
     "UI": {
-      "7105": {},
-      "7102": {},
-      "7134": {},
-      "7133": {},
-      "7049": {},
-      "7082": {},
-      "7076": {},
-      "7085": {},
-      "7078": {},
-      "7047": {},
-      "7040": {},
-      "7025": {},
-      "7022": {},
-      "7041": {},
-      "7084": {},
-      "7048": {},
-      "7083": {},
-      "7023": {},
-      "7024": {},
-      "7012": {},
-      "7015": {},
-      "7037": {},
-      "7030": {},
-      "7039": {},
-      "7006": {},
-      "7001": {},
-      "7052": {},
-      "7099": {},
-      "7090": {},
-      "7064": {},
-      "7063": {},
-      "7097": {},
-      "7031": {},
-      "7009": {},
-      "7096": {},
-      "7062": {},
-      "7091": {},
-      "7054": {},
-      "7110": {},
-      "7129": {},
-      "7116": {},
-      "7120": {},
-      "7106": {},
-      "7137": {},
-      "7107": {},
-      "7010": {},
-      "7017": {},
-      "7028": {},
-      "7021": {},
-      "7026": {},
-      "7019": {},
-      "7072": {},
-      "7086": {},
-      "7075": {},
-      "7088": {},
-      "7043": {},
-      "7027": {},
-      "7020": {},
-      "7016": {},
-      "7029": {},
-      "7042": {},
-      "7080": {},
-      "7087": {},
-      "7073": {},
-      "7056": {},
-      "7069": {},
-      "7094": {},
-      "7067": {},
-      "7058": {},
-      "7033": {},
-      "7034": {},
-      "7002": {},
-      "7092": {},
-      "7059": {},
-      "7061": {},
-      "7057": {},
-      "7068": {},
-      "7050": {},
-      "7004": {},
-      "7003": {},
-      "7035": {},
-      "7032": {},
-      "7122": {},
-      "7125": {},
-      "7113": {},
-      "7114": {},
-      "7115": {},
-      "7124": {}
+      "7105": [
+        "plots/obs/UI/7105/daily_plot.png",
+        "plots/obs/UI/7105/summary_plot.png"
+      ],
+      "7102": [
+        "plots/obs/UI/7102/daily_plot.png",
+        "plots/obs/UI/7102/summary_plot.png"
+      ],
+      "7134": [
+        "plots/obs/UI/7134/daily_plot.png",
+        "plots/obs/UI/7134/summary_plot.png"
+      ],
+      "7133": [
+        "plots/obs/UI/7133/daily_plot.png",
+        "plots/obs/UI/7133/summary_plot.png"
+      ],
+      "7049": [
+        "plots/obs/UI/7049/daily_plot.png",
+        "plots/obs/UI/7049/summary_plot.png"
+      ],
+      "7082": [
+        "plots/obs/UI/7082/daily_plot.png",
+        "plots/obs/UI/7082/summary_plot.png"
+      ],
+      "7076": [
+        "plots/obs/UI/7076/daily_plot.png",
+        "plots/obs/UI/7076/summary_plot.png"
+      ],
+      "7085": [
+        "plots/obs/UI/7085/daily_plot.png",
+        "plots/obs/UI/7085/summary_plot.png"
+      ],
+      "7078": [
+        "plots/obs/UI/7078/daily_plot.png",
+        "plots/obs/UI/7078/summary_plot.png"
+      ],
+      "7047": [
+        "plots/obs/UI/7047/daily_plot.png",
+        "plots/obs/UI/7047/summary_plot.png"
+      ],
+      "7040": [
+        "plots/obs/UI/7040/daily_plot.png",
+        "plots/obs/UI/7040/summary_plot.png"
+      ],
+      "7025": [
+        "plots/obs/UI/7025/daily_plot.png",
+        "plots/obs/UI/7025/summary_plot.png"
+      ],
+      "7022": [
+        "plots/obs/UI/7022/daily_plot.png",
+        "plots/obs/UI/7022/summary_plot.png"
+      ],
+      "7041": [
+        "plots/obs/UI/7041/daily_plot.png",
+        "plots/obs/UI/7041/summary_plot.png"
+      ],
+      "7084": [
+        "plots/obs/UI/7084/daily_plot.png",
+        "plots/obs/UI/7084/summary_plot.png"
+      ],
+      "7048": [
+        "plots/obs/UI/7048/daily_plot.png",
+        "plots/obs/UI/7048/summary_plot.png"
+      ],
+      "7083": [
+        "plots/obs/UI/7083/daily_plot.png",
+        "plots/obs/UI/7083/summary_plot.png"
+      ],
+      "7023": [
+        "plots/obs/UI/7023/daily_plot.png",
+        "plots/obs/UI/7023/summary_plot.png"
+      ],
+      "7024": [
+        "plots/obs/UI/7024/daily_plot.png",
+        "plots/obs/UI/7024/summary_plot.png"
+      ],
+      "7012": [
+        "plots/obs/UI/7012/daily_plot.png",
+        "plots/obs/UI/7012/summary_plot.png"
+      ],
+      "7015": [
+        "plots/obs/UI/7015/daily_plot.png",
+        "plots/obs/UI/7015/summary_plot.png"
+      ],
+      "7037": [
+        "plots/obs/UI/7037/daily_plot.png",
+        "plots/obs/UI/7037/summary_plot.png"
+      ],
+      "7030": [
+        "plots/obs/UI/7030/daily_plot.png",
+        "plots/obs/UI/7030/summary_plot.png"
+      ],
+      "7039": [
+        "plots/obs/UI/7039/daily_plot.png",
+        "plots/obs/UI/7039/summary_plot.png"
+      ],
+      "7006": [
+        "plots/obs/UI/7006/daily_plot.png",
+        "plots/obs/UI/7006/summary_plot.png"
+      ],
+      "7001": [
+        "plots/obs/UI/7001/daily_plot.png",
+        "plots/obs/UI/7001/summary_plot.png"
+      ],
+      "7052": [
+        "plots/obs/UI/7052/daily_plot.png",
+        "plots/obs/UI/7052/summary_plot.png"
+      ],
+      "7099": [
+        "plots/obs/UI/7099/daily_plot.png",
+        "plots/obs/UI/7099/summary_plot.png"
+      ],
+      "7090": [
+        "plots/obs/UI/7090/daily_plot.png",
+        "plots/obs/UI/7090/summary_plot.png"
+      ],
+      "7064": [
+        "plots/obs/UI/7064/daily_plot.png",
+        "plots/obs/UI/7064/summary_plot.png"
+      ],
+      "7063": [
+        "plots/obs/UI/7063/daily_plot.png",
+        "plots/obs/UI/7063/summary_plot.png"
+      ],
+      "7097": [
+        "plots/obs/UI/7097/daily_plot.png",
+        "plots/obs/UI/7097/summary_plot.png"
+      ],
+      "7031": [
+        "plots/obs/UI/7031/daily_plot.png",
+        "plots/obs/UI/7031/summary_plot.png"
+      ],
+      "7009": [
+        "plots/obs/UI/7009/daily_plot.png",
+        "plots/obs/UI/7009/summary_plot.png"
+      ],
+      "7096": [
+        "plots/obs/UI/7096/daily_plot.png",
+        "plots/obs/UI/7096/summary_plot.png"
+      ],
+      "7062": [
+        "plots/obs/UI/7062/daily_plot.png",
+        "plots/obs/UI/7062/summary_plot.png"
+      ],
+      "7091": [
+        "plots/obs/UI/7091/daily_plot.png",
+        "plots/obs/UI/7091/summary_plot.png"
+      ],
+      "7054": [
+        "plots/obs/UI/7054/daily_plot.png",
+        "plots/obs/UI/7054/summary_plot.png"
+      ],
+      "7110": [
+        "plots/obs/UI/7110/daily_plot.png",
+        "plots/obs/UI/7110/summary_plot.png"
+      ],
+      "7129": [
+        "plots/obs/UI/7129/daily_plot.png",
+        "plots/obs/UI/7129/summary_plot.png"
+      ],
+      "7116": [
+        "plots/obs/UI/7116/daily_plot.png",
+        "plots/obs/UI/7116/summary_plot.png"
+      ],
+      "7120": [
+        "plots/obs/UI/7120/daily_plot.png",
+        "plots/obs/UI/7120/summary_plot.png"
+      ],
+      "7106": [
+        "plots/obs/UI/7106/daily_plot.png",
+        "plots/obs/UI/7106/summary_plot.png"
+      ],
+      "7137": [
+        "plots/obs/UI/7137/daily_plot.png",
+        "plots/obs/UI/7137/summary_plot.png"
+      ],
+      "7107": [
+        "plots/obs/UI/7107/daily_plot.png",
+        "plots/obs/UI/7107/summary_plot.png"
+      ],
+      "7010": [
+        "plots/obs/UI/7010/daily_plot.png",
+        "plots/obs/UI/7010/summary_plot.png"
+      ],
+      "7017": [
+        "plots/obs/UI/7017/daily_plot.png",
+        "plots/obs/UI/7017/summary_plot.png"
+      ],
+      "7028": [
+        "plots/obs/UI/7028/daily_plot.png",
+        "plots/obs/UI/7028/summary_plot.png"
+      ],
+      "7021": [
+        "plots/obs/UI/7021/daily_plot.png",
+        "plots/obs/UI/7021/summary_plot.png"
+      ],
+      "7026": [
+        "plots/obs/UI/7026/daily_plot.png",
+        "plots/obs/UI/7026/summary_plot.png"
+      ],
+      "7019": [
+        "plots/obs/UI/7019/daily_plot.png",
+        "plots/obs/UI/7019/summary_plot.png"
+      ],
+      "7072": [
+        "plots/obs/UI/7072/daily_plot.png",
+        "plots/obs/UI/7072/summary_plot.png"
+      ],
+      "7086": [
+        "plots/obs/UI/7086/daily_plot.png",
+        "plots/obs/UI/7086/summary_plot.png"
+      ],
+      "7075": [
+        "plots/obs/UI/7075/daily_plot.png",
+        "plots/obs/UI/7075/summary_plot.png"
+      ],
+      "7088": [
+        "plots/obs/UI/7088/daily_plot.png",
+        "plots/obs/UI/7088/summary_plot.png"
+      ],
+      "7043": [
+        "plots/obs/UI/7043/daily_plot.png",
+        "plots/obs/UI/7043/summary_plot.png"
+      ],
+      "7027": [
+        "plots/obs/UI/7027/daily_plot.png",
+        "plots/obs/UI/7027/summary_plot.png"
+      ],
+      "7020": [
+        "plots/obs/UI/7020/daily_plot.png",
+        "plots/obs/UI/7020/summary_plot.png"
+      ],
+      "7016": [
+        "plots/obs/UI/7016/daily_plot.png",
+        "plots/obs/UI/7016/summary_plot.png"
+      ],
+      "7029": [
+        "plots/obs/UI/7029/daily_plot.png",
+        "plots/obs/UI/7029/summary_plot.png"
+      ],
+      "7042": [
+        "plots/obs/UI/7042/daily_plot.png",
+        "plots/obs/UI/7042/summary_plot.png"
+      ],
+      "7080": [
+        "plots/obs/UI/7080/daily_plot.png",
+        "plots/obs/UI/7080/summary_plot.png"
+      ],
+      "7087": [
+        "plots/obs/UI/7087/daily_plot.png",
+        "plots/obs/UI/7087/summary_plot.png"
+      ],
+      "7073": [
+        "plots/obs/UI/7073/daily_plot.png",
+        "plots/obs/UI/7073/summary_plot.png"
+      ],
+      "7056": [
+        "plots/obs/UI/7056/daily_plot.png",
+        "plots/obs/UI/7056/summary_plot.png"
+      ],
+      "7069": [
+        "plots/obs/UI/7069/daily_plot.png",
+        "plots/obs/UI/7069/summary_plot.png"
+      ],
+      "7094": [
+        "plots/obs/UI/7094/daily_plot.png",
+        "plots/obs/UI/7094/summary_plot.png"
+      ],
+      "7067": [
+        "plots/obs/UI/7067/daily_plot.png",
+        "plots/obs/UI/7067/summary_plot.png"
+      ],
+      "7058": [
+        "plots/obs/UI/7058/daily_plot.png",
+        "plots/obs/UI/7058/summary_plot.png"
+      ],
+      "7033": [
+        "plots/obs/UI/7033/daily_plot.png",
+        "plots/obs/UI/7033/summary_plot.png"
+      ],
+      "7034": [
+        "plots/obs/UI/7034/daily_plot.png",
+        "plots/obs/UI/7034/summary_plot.png"
+      ],
+      "7002": [
+        "plots/obs/UI/7002/daily_plot.png",
+        "plots/obs/UI/7002/summary_plot.png"
+      ],
+      "7092": [
+        "plots/obs/UI/7092/daily_plot.png",
+        "plots/obs/UI/7092/summary_plot.png"
+      ],
+      "7059": [
+        "plots/obs/UI/7059/daily_plot.png",
+        "plots/obs/UI/7059/summary_plot.png"
+      ],
+      "7061": [
+        "plots/obs/UI/7061/daily_plot.png",
+        "plots/obs/UI/7061/summary_plot.png"
+      ],
+      "7057": [
+        "plots/obs/UI/7057/daily_plot.png",
+        "plots/obs/UI/7057/summary_plot.png"
+      ],
+      "7068": [
+        "plots/obs/UI/7068/daily_plot.png",
+        "plots/obs/UI/7068/summary_plot.png"
+      ],
+      "7050": [
+        "plots/obs/UI/7050/daily_plot.png",
+        "plots/obs/UI/7050/summary_plot.png"
+      ],
+      "7004": [
+        "plots/obs/UI/7004/daily_plot.png",
+        "plots/obs/UI/7004/summary_plot.png"
+      ],
+      "7003": [
+        "plots/obs/UI/7003/daily_plot.png",
+        "plots/obs/UI/7003/summary_plot.png"
+      ],
+      "7035": [
+        "plots/obs/UI/7035/daily_plot.png",
+        "plots/obs/UI/7035/summary_plot.png"
+      ],
+      "7032": [
+        "plots/obs/UI/7032/daily_plot.png",
+        "plots/obs/UI/7032/summary_plot.png"
+      ],
+      "7122": [
+        "plots/obs/UI/7122/daily_plot.png",
+        "plots/obs/UI/7122/summary_plot.png"
+      ],
+      "7125": [
+        "plots/obs/UI/7125/daily_plot.png",
+        "plots/obs/UI/7125/summary_plot.png"
+      ],
+      "7113": [
+        "plots/obs/UI/7113/daily_plot.png",
+        "plots/obs/UI/7113/summary_plot.png"
+      ],
+      "7114": [
+        "plots/obs/UI/7114/daily_plot.png",
+        "plots/obs/UI/7114/summary_plot.png"
+      ],
+      "7115": [
+        "plots/obs/UI/7115/daily_plot.png",
+        "plots/obs/UI/7115/summary_plot.png"
+      ],
+      "7124": [
+        "plots/obs/UI/7124/daily_plot.png",
+        "plots/obs/UI/7124/summary_plot.png"
+      ]
     }
   }
 }

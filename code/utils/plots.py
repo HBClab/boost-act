@@ -217,10 +217,12 @@ class ACT_PLOTS:
         plt.close()
         return None
 
+
 def create_json(data_folder, out_file='data.json'):
     """
-    Constructs a JSON of all PNG files organized by project, site, subject, and session,
-    but only scans 'int' and 'obs' folders at the top level.
+    Constructs a JSON of PNG files organized by project, site, and subject,
+    assuming each subject folder contains exactly two PNG files.
+    Only scans 'int' and 'obs' folders at the top level.
     """
     master_data = {}
     projects = ['int', 'obs']
@@ -244,23 +246,16 @@ def create_json(data_folder, out_file='data.json'):
                 if not os.path.isdir(subject_path):
                     continue
 
-                master_data[project][site].setdefault(subject, {})
+                png_files = [
+                    os.path.join(subject_path, fname)
+                    for fname in os.listdir(subject_path)
+                    if fname.endswith('.png')
+                ]
+                png_files.sort()
 
-                for session_folder in os.listdir(subject_path):
-                    session_path = os.path.join(subject_path, session_folder)
-                    if not os.path.isdir(session_path):
-                        continue
-                    if not session_folder.startswith('ses-'):
-                        continue
-
-                    session_num = session_folder.replace('ses-', '')
-                    png_files = [
-                        os.path.join(session_path, fname)
-                        for fname in os.listdir(session_path)
-                        if fname.endswith('.png')
-                    ]
-                    png_files.sort()
-                    master_data[project][site][subject][session_num] = png_files
+                # Only include if there are exactly 2 PNGs
+                if len(png_files) == 2:
+                    master_data[project][site][subject] = png_files
 
     with open(out_file, 'w') as f:
         json.dump(master_data, f, indent=2)
