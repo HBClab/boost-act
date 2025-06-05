@@ -78,6 +78,7 @@ class ACT_PLOTS:
         palette = sns.color_palette('pastel', n_colors=len(segments))
         y_max = max(0.6 + 0.3, 0.5)  # max text_y + padding
         ax.set_ylim(-1, y_max)
+        ax.set_xlim(0, 1440 + 200)  # Add padding to the right (or whatever consistent total you want)
 
         left = 0
         min_width_for_inside_label = 40  # in minutes
