@@ -1,0 +1,120 @@
+Subject,Session,Calibration_Error,Hours_Considered,Cleaning_Code,Valid_Days
+sub-7062,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-7015,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7068,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7086,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7027,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7050,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7120,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7006,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7133,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7049,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7034,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7043,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-6015,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-6012,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-6018,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7039,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7134,ses-1,Pass,Pass,Pass,Pass
+sub-7033,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-6020,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7106,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7092,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7001,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-7076,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7057,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7020,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7012,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7115,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7085,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7016,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7061,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7059,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7024,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-7129,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7072,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7096,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7102,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7078,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-6016,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7040,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7037,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7030,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7047,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7137,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-6011,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-7075,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7002,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7105,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7091,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7124,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7029,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7023,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7054,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7116,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7082,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7088,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7021,ses-1,Pass,Pass,Pass,ERROR: Fewer valid days than worn days
+sub-7056,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7114,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7080,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7019,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7064,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-6013,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7032,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7099,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7107,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7094,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7042,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7035,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7048,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7069,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7087,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7113,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7063,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7026,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7022,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7125,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7028,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7010,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-7067,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7083,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7031,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-6010,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-7009,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7090,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7003,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-6022,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7097,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7073,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7004,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-6017,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7041,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7017,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7084,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-7110,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7025,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7052,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7058,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-7122,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-8015,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8006,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8020,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8018,ses-1,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Invalid cleaning code found,Pass
+sub-8016,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass
+sub-8024,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-8005,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8037,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8002,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-8008,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-8023,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8011,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8021,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-8019,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8035,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8014,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8026,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8022,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass
+sub-8003,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,ERROR: Fewer valid days than worn days
+sub-8004,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer valid days than worn days
+sub-8036,ses-1,Pass,ERROR: Too few hours considered,ERROR: Invalid cleaning code found,Pass

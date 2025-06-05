@@ -91,7 +91,7 @@ class ID_COMPARISONS:
             print(f"error! status code is {r.status_code}")
             sys.exit(1)
         
-        df = pd.read_csv(stringio(r.text))
+        df = pd.read_csv(StringIO(r.text))
         
         # identify boost_ids associated with multiple lab_ids.
         boost_id_counts = df.groupby('boost_id')['lab_id'].nunique()
@@ -103,15 +103,15 @@ class ID_COMPARISONS:
             df = df[~df['boost_id'].isin(problematic_boost_ids)]
         
         # identify and separate duplicate rows based on any column.
-        duplicate_rows = df[df.duplicated(keep=false)]
-        df_cleaned = df.drop_duplicates(keep=false)
+        duplicate_rows = df[df.duplicated(keep=False)]
+        df_cleaned = df.drop_duplicates(keep=False)
         
         if not duplicate_rows.empty:
             logging.info(f"duplicate rows found:\n{duplicate_rows}")
         
         return df_cleaned, duplicate_rows
 
-    def _rdss_file_list(self, duplicates, daysago=none):
+    def _rdss_file_list(self, duplicates, daysago=None):
         """
         extracts the first string before the space and the date from filenames ending with .csv
         in the specified folder and stores them in a dataframe.

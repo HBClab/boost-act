@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from utils.plots import ACT_PLOTS, create_json
 
 
 class QC:
@@ -25,20 +26,22 @@ class QC:
 
         # Determine the expected days worn based on project type
         if project == 'obs':
+            self.base_dir = ( "/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/"
+                "3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6-test"
+            )
             self.n_days_worn = 7
         elif project == 'int':
             self.n_days_worn = 9
+            self.base_dir = (
+                "/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/"
+                "3-experiment/data/act-int-test/derivatives/GGIR-3.2.6-test"
+            )
         else:
             raise ValueError("Project must be 'obs' or 'int'")
 
-        # Hardcoded base directory for GGIR outputs (change if needed)
-        self.base_dir = (
-            "/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/"
-            "3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6-test"
-        )
 
         # Path to the master CSV that accumulates QC errors/warnings
-        self.csv_path = "../logs/GGIR_QC_errs.csv"
+        self.csv_path = "./logs/GGIR_QC_errs.csv"
 
 
     def qc(self) -> None:
@@ -76,6 +79,7 @@ class QC:
                 "output_accel",
                 "results"
             )
+            print(sub_path.split('/')[-1])
 
             # If results directory does not exist, skip this subject
             if not os.path.isdir(results_dir):
@@ -122,6 +126,12 @@ class QC:
             self.valid_days_check(valid_days, sub, ses)
             self.cleaning_code_check(clean_code_series, sub, ses)
 
+            # plots!
+            plotter = ACT_PLOTS(sub, ses, person=dfs[1], day=dfs[2])
+            plotter.summary_plot()
+            plotter.day_plots()
+
+
             # Clean up DataFrames/variables to free memory before next iteration
             try:
                 del metrics, cal_err, h_considered, valid_days, clean_code_series
@@ -130,7 +140,10 @@ class QC:
             except UnboundLocalError:
                 # If any variable wasn’t set, ignore
                 pass
-
+        
+        # create the json file used in the application
+        create_json('plots')
+        
         # End of qc loop
 
 

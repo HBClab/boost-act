@@ -22,11 +22,11 @@ class pipe:
             daysago=self.daysago
         ).save()
 
-        with open('code/res/data.json', 'w') as file:
+        with open('res/data.json', 'w') as file:
             file.write('{\n}')
             file.write(',\n'.join(f'   "{key}": "{value}"' for key, value in matched.items()))
 
-        # GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
+        GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
         return None
 
     def _create_syms(self):

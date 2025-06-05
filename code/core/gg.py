@@ -74,7 +74,3 @@ class GG:
                 # Optionally, continue to next project or break
 
 
-# Example usage:
-# matched_dict = {...}
-# gg = GG(matched_dict, "/path/to/internal", "/path/to/observational")
-# gg.run_gg()

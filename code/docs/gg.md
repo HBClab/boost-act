@@ -12,7 +12,7 @@ Character (default = c()). Directory where the output needs to be stored. Note t
 
 ---------------------------------------------------
 
-
-
+## accelerometer wear periods
+Observational has 1 wear period for 7 days. Intervention has 4 total wear periods for 10 days each.
 
 

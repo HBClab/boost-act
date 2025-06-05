@@ -2,16 +2,7 @@
 #!/usr/bin/env Rscript
 
 # Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6-test/"
-library(tidyr)
-library(plyr)
 library(optparse)
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-if (!requireNamespace("GGIR", quietly = TRUE) || packageVersion("GGIR") != "3.2.6") {
-  remotes::install_version("GGIR", version = "3.2.6", repos = "https://cloud.r-project.org")
-}
-
 library(GGIR)
 
 main <- function() {
