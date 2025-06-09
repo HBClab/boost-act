@@ -16,3 +16,5 @@ Character (default = c()). Directory where the output needs to be stored. Note t
 Observational has 1 wear period for 7 days. Intervention has 4 total wear periods for 10 days each.
 
 
+# wear period valid check
+- as long as unidentified is < 8 hours

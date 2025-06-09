@@ -146,6 +146,8 @@ class ACT_PLOTS:
         dur_day_total_MOD_min, dur_day_total_VIG_min, dur_spt_min
         and a 'Day' column for labeling.
         """
+        df_day = self.df_day
+
         # Define colors
         colors = {
             "Sleep": "#782D73",         # Soft blue
@@ -159,12 +161,44 @@ class ACT_PLOTS:
         total_minutes = 24 * 60
         bar_height = 0.4
 
-        fig, ax = plt.subplots(figsize=(10, 3 + 0.3 * len(self.df_day)))
-        y_spacing = 1.9
-        y_positions = [i * y_spacing for i in range(len(self.df_day))]
-        for i, row in self.df_day.iterrows():
+        fig, ax = plt.subplots(
+            figsize=(10, 3 + 0.3 * len(df_day))
+        )
+
+        # --- 1) Compute custom y-positions with extra space between sessions ---
+        # extract session numbers from filename
+        session_nums = (
+            df_day['filename']
+            .str.extract(r'ses-(\d+)')[0]
+            .astype(int)
+        )
+        default_space = 1.9
+        extra_space = 0.8
+        y_positions = []
+        boundary_ys = []
+        current_y = 0.0
+
+        for i, sess in enumerate(session_nums):
+            if i == 0:
+                # first row
+                y_positions.append(current_y)
+            else:
+                if sess != session_nums.iat[i - 1]:
+                    # session changed → add extra_space
+                    current_y += default_space + extra_space
+                    # record midpoint for dotted line
+                    boundary = current_y - (default_space + extra_space) / 2
+                    boundary_ys.append(boundary)
+                else:
+                    # same session → normal spacing
+                    current_y += default_space
+                y_positions.append(current_y)
+
+        # --- 2) Plot each day's stacked bar at its computed y-position ---
+        min_width_for_inside_label = 45  # minutes
+        for i, (idx, row) in enumerate(df_day.iterrows()):
             y_val = y_positions[i]
-            # Build durations
+            # build durations
             durations = {
                 'Sleep': row[sleep_col],
                 'Inactivity': row['dur_day_total_IN_min'],
@@ -176,11 +210,8 @@ class ACT_PLOTS:
             if unidentified > 0:
                 durations['Unidentified'] = unidentified
 
-            min_width_for_inside_label = 45  # minutes
-
-            left = 0
-            above_toggle = False  # NEW: start with below if needed
-
+            left = 0.0
+            above_toggle = False
             for cat, val in durations.items():
                 ax.barh(
                     y=y_val,
@@ -190,21 +221,19 @@ class ACT_PLOTS:
                     color=colors[cat],
                     edgecolor='none'
                 )
-
                 center_x = left + val / 2
-
+                # choose label position
                 if val >= min_width_for_inside_label:
                     text_y = y_val - bar_height / 2 - 0.1
                     va = 'top'
                 else:
-                    # Alternate above/below for short segments
                     if above_toggle:
                         text_y = y_val + bar_height / 2 + 0.05
                         va = 'bottom'
                     else:
                         text_y = y_val - bar_height / 2 - 0.25
                         va = 'top'
-                    above_toggle = not above_toggle  # Flip toggle
+                    above_toggle = not above_toggle
 
                 if val > 1:
                     ax.text(
@@ -215,18 +244,17 @@ class ACT_PLOTS:
                         va=va,
                         fontsize=8
                     )
-
                 left += val
-                # Set y-tick labels using Day column if available, else use Day 1, Day 2, ...
-            
-            y_labels = [f"Day {i+1}" for i in range(len(self.df_day))]
 
-
-        # Day labels
+        # Day labels on y-axis
         ax.set_yticks(y_positions)
-        ax.set_yticklabels(f"Day {i+1}" for i in range(len(self.df_day)))
+        ax.set_yticklabels([f"Day {i+1}" for i in range(len(df_day))])
 
-        # Clean up axes
+        # Add dotted lines between sessions
+        for b in boundary_ys:
+            ax.axhline(y=b, color='black', linestyle='--', linewidth=0.7)
+
+        # Clean up x-axis
         ax.set_xticks([0, total_minutes/2, total_minutes])
         ax.set_xticklabels(["0 h", "12 h", "24 h"], fontsize=9)
         ax.spines[['top', 'right', 'left', 'bottom']].set_visible(False)
@@ -234,9 +262,11 @@ class ACT_PLOTS:
         ax.set_xlim(0, total_minutes)
 
         # Legend
-        handles = [plt.Rectangle((0, 0), 1, 1, color=colors[key]) for key in colors]
-        labels = list(colors.keys())
-        ax.legend(handles, labels, bbox_to_anchor=(1.01, 1), loc='upper left', frameon=False)
+        handles = [plt.Rectangle((0, 0), 1, 1, color=colors[k]) for k in colors]
+        ax.legend(handles, list(colors.keys()),
+                bbox_to_anchor=(1.01, 1),
+                loc='upper left',
+                frameon=False)
 
         fig.suptitle("Daily Activity Composition", fontsize=14, y=0.95)
         plt.tight_layout()
