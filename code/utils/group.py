@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import plotly.graph_objects as go
 import logging
+from main import Pipe 
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -10,10 +11,11 @@ logger = logging.getLogger(__name__)
 
 class Group:
     def __init__(self):
-        self.obs_path = "/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6-test"
-        self.int_path = "/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/derivatives/GGIR-3.2.6-test"
+        self.obs_path = Pipe.OBS_DIR 
+        self.int_path = Pipe.INT_DIR
         self.paths = [self.obs_path, self.int_path]
         self.path = './plots/group'
+
 
     def _parse_person_file(self, file_path):
         try:

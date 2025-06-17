@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from main import Pipe
 from utils.plots import ACT_PLOTS, create_json
 
 
@@ -26,16 +27,11 @@ class QC:
 
         # Determine the expected days worn based on project type
         if project == 'obs':
-            self.base_dir = ( "/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/"
-                "3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6-test"
-            )
+            self.base_dir = (Pipe.OBS_DIR)
             self.n_days_worn = 7
         elif project == 'int':
             self.n_days_worn = 9
-            self.base_dir = (
-                "/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/"
-                "3-experiment/data/act-int-test/derivatives/GGIR-3.2.6-test"
-            )
+            self.base_dir = (Pipe.INT_DIR)
         else:
             raise ValueError("Project must be 'obs' or 'int'")
 
