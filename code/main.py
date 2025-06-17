@@ -4,7 +4,13 @@ from utils.group import Group
 from core.gg import GG
 from utils.pipe import Pipe
 import sys
+import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,  # <-- this is key
+    format='[%(levelname)s] %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 if __name__ == '__main__':
