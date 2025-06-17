@@ -10,7 +10,7 @@ logging.basicConfig(
     level=logging.DEBUG,  # <-- this is key
     format='[%(levelname)s] %(message)s'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()  # root logger
 
 
 if __name__ == '__main__':
