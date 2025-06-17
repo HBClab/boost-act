@@ -1,54 +1,80 @@
-import os
 import subprocess
-import sys
 
 class GG:
+    """
+    Class to execute GGIR processing for matched subject records.
+    """
+
     def __init__(self, matched, intdir, obsdir):
+        """
+        Initialize the GG instance.
+
+        Args:
+            matched (dict): Mapping of subject IDs to their records.
+            intdir (str): Path to the internal directory.
+            obsdir (str): Path to the observational directory.
+        """
         self.matched = matched
-        self.INTDIR = intdir
-        self.OBSDIR = obsdir
+        self.INTDIR = intdir.rstrip('/') + '/'
+        self.OBSDIR = obsdir.rstrip('/') + '/'
+        self.DERIVATIVES = "/derivatives/GGIR-3.2.6-test"  # Defined within the class
 
     def run_gg(self):
-        for subject_id, records in self.matched.items():
-            for record in records:
-                study = record.get('study')
-                file_path = record.get('file_path')
-                session = record.get('run')
+        """
+        Run GGIR for both the internal and observational project directories.
+        After each GGIR run, invoke the QC pipeline for that project.
+        """
+        # Assume QC is available at this import path
+        from utils.qc import QC 
 
-                if not file_path or not os.path.exists(file_path):
-                    print(f"Invalid or missing file path for subject {subject_id}")
-                    continue
+        for project_dir in [self.INTDIR, self.OBSDIR]:
+            command = f"Rscript core/acc_new.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
 
-                # Build the output directory based on study type.
-                if study.lower() == 'obs':
-                    outdir = os.path.join(self.OBSDIR, 'derivatives', 'GGIR-3.1.4',
-                                          f"sub-{subject_id}", "ses-{session}")
+            try:
+                # Execute the command in a new subprocess
+                print(f"Running GGIR for project directory {project_dir}")
+                process = subprocess.Popen(
+                    command,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    bufsize=1,
+                    universal_newlines=True
+                )
+
+                # Stream output line-by-line
+                for line in process.stdout:
+                    print(line, end='')  # already includes newline
+
+                process.stdout.close()
+                process.wait()
+
+                if process.returncode != 0:
+                    raise subprocess.CalledProcessError(process.returncode, command)
+
+                print(f"GGIR completed successfully for {project_dir}.")
+
+                # Determine project type for QC ('int' for internal, 'obs' for observational)
+                if project_dir.rstrip('/') == self.INTDIR.rstrip('/'):
+                    project_type = 'int'
                 else:
-                    outdir = os.path.join(self.INTDIR, 'derivatives', 'GGIR-3.1.4',
-                                          f"sub-{subject_id}", "ses-{session}")
+                    project_type = 'obs'
 
-                try:
-                    # Create the derivative subdirectory within outdir.
-                    deriv_dir = os.path.join(outdir, 'derivatives')
+                # Run QC for this project
+                print(f"Starting QC pipeline for {project_type} project.")
+                qc_runner = QC(project_type)
+                qc_runner.qc()
+                print(f"QC pipeline finished for {project_type} project.")
 
-                    # Construct the Rscript command.
-                    command = (
-                        f"""
-                        Rscript core/basic_accel.R  --input_file {file_path} --output_location {outdir} --verbose
-                        """
-                    )
+            except subprocess.CalledProcessError as e:
+                print(f"Error running GGIR for {project_dir}: {e}")
+                # Optionally, continue to next project or break, depending on desired behavior
+            except Exception as e:
+                print(f"Unexpected error when processing {project_dir}: {e}")
+                # Optionally, continue to next project or break
 
-                    # Run the command in a new subprocess.
-                    print(f"running GGIR for {file_path}")
-                    result = subprocess.run(
-                        command,
-                        check=True,
-                        stdout=sys.stdout,
-                        stderr=sys.stderr
-                    )
-                    # Decode and print the output.
-                    print(f"Command output: {result.stdout.decode().strip()}")
-                except subprocess.CalledProcessError as e:
-                    print(f"Command failed for subject {subject_id} with exit status: {e.returncode}")
-                    print(f"Error output: {e.stderr.decode().strip()}")
 
+# Example usage:
+# matched_dict = {...}
+# gg = GG(matched_dict, "/path/to/internal", "/path/to/observational")
+# gg.run_gg()

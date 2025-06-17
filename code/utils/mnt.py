@@ -6,9 +6,9 @@ THIS FILE SYMBOLICALLY LINKS RDSS and LSS to working directory
 """
 
 # Define paths
-INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/bids'
-OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/bids'
-RDSS_DIR = '/Volumes/VossLab/Repositories/Accelerometer_Data'
+INT_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+OBS_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+RDSS_DIR = '/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data'
 
 def create_symlinks(target_dir='../mnt'):
     # Ensure the target directory exists

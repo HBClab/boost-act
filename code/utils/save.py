@@ -5,8 +5,8 @@ from utils.comparison_utils import ID_COMPARISONS
 
 class Save:
 
-    def __init__(self, intdir, obsdir, rdssdir):
-        results = ID_COMPARISONS('../mnt').compare_ids()
+    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
+        results = ID_COMPARISONS('../mnt', token, daysago).compare_ids()
         self.matches = results['matches']
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
@@ -97,7 +97,7 @@ class Save:
                     print(f"File already exists at destination: {destination_path}. Skipping.")
                 else:
                     try:
-                        #shutil.copy(source_path, destination_path)
+                        shutil.copy(source_path, destination_path)
                         print(f"Moved {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
@@ -187,7 +187,7 @@ class Save:
                     filename = f"sub-{subject_id}_ses-{session}_accel.csv"
 
                     # Construct full path
-                    file_path = f"{study_dir}/{subject_folder}/accel/{filename}"
+                    file_path = f"{study_dir}/{subject_folder}/accel/ses-{session}/{filename}"
 
                     # Append file path to record
                     record['file_path'] = file_path

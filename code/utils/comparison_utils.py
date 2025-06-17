@@ -3,16 +3,18 @@ import sys
 import logging
 import pandas as pd
 import requests
+from datetime import datetime, timedelta
 from io import StringIO
 
 
 class ID_COMPARISONS:
     
-    def __init__(self, mnt_dir) -> None:
-       self.token = 'DE4E2DB72778DACA9B8848574107D2F5'
+    def __init__(self, mnt_dir, token, daysago=None) -> None:
+       self.token = token
        self.mnt_dir = mnt_dir
        self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
        self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+       self.daysago = daysago
        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def compare_ids(self):
@@ -26,7 +28,7 @@ class ID_COMPARISONS:
         # Retrieve the RedCap report and duplicates from report
         report, report_duplicates = self._return_report()
         # Retrieve the full RDSS file list and duplicate files merged with duplicates from report
-        rdss, file_duplicates = self._rdss_file_list(report_duplicates)
+        rdss, file_duplicates = self._rdss_file_list(report_duplicates, self.daysago)
 
         # Initialize the result dictionary for normal (non-duplicate) matches
         result = {}
@@ -67,15 +69,15 @@ class ID_COMPARISONS:
 
     def _return_report(self):
         """
-        Pulls the ID report from the RDSS via RedCap API.
-        Reads the report as a DataFrame.
-        Checks for boost_ids that are associated with multiple lab_ids, logs a critical error,
-        and removes these rows from the DataFrame.
-        Separates duplicate rows (based on any column) from the cleaned data.
+        pulls the id report from the rdss via redcap api.
+        reads the report as a dataframe.
+        checks for boost_ids that are associated with multiple lab_ids, logs a critical error,
+        and removes these rows from the dataframe.
+        separates duplicate rows (based on any column) from the cleaned data.
         
-        Returns:
-            df_cleaned: DataFrame with duplicates removed and problematic boost_ids excluded
-            duplicate_rows: DataFrame of duplicate rows
+        returns:
+            df_cleaned: dataframe with duplicates removed and problematic boost_ids excluded
+            duplicate_rows: dataframe of duplicate rows
         """
         url = 'https://redcap.icts.uiowa.edu/redcap/api/'
         data = {
@@ -86,34 +88,33 @@ class ID_COMPARISONS:
         }
         r = requests.post(url, data=data)
         if r.status_code != 200:
-            print(f"Error! Status code is {r.status_code}")
+            print(f"error! status code is {r.status_code}")
             sys.exit(1)
         
-        df = pd.read_csv(StringIO(r.text))
+        df = pd.read_csv(stringio(r.text))
         
-        # Identify boost_ids associated with multiple lab_ids.
+        # identify boost_ids associated with multiple lab_ids.
         boost_id_counts = df.groupby('boost_id')['lab_id'].nunique()
         problematic_boost_ids = boost_id_counts[boost_id_counts > 1].index.tolist()
         
         if problematic_boost_ids:
-            logging.critical(f"Found boost_id(s) with multiple lab_ids: {', '.join(problematic_boost_ids)}. "
-                            "These entries will be removed from processing.")
-            # Remove rows with these problematic boost_ids from the dataframe.
+            logging.critical(f"found boost_id(s) with multiple lab_ids: {', '.join(map(str, problematic_boost_ids))}. "
+                            "these entries will be removed from processing.")
             df = df[~df['boost_id'].isin(problematic_boost_ids)]
         
-        # Identify and separate duplicate rows based on any column.
-        duplicate_rows = df[df.duplicated(keep=False)]
-        df_cleaned = df.drop_duplicates(keep=False)
+        # identify and separate duplicate rows based on any column.
+        duplicate_rows = df[df.duplicated(keep=false)]
+        df_cleaned = df.drop_duplicates(keep=false)
         
         if not duplicate_rows.empty:
-            logging.info(f"Duplicate rows found:\n{duplicate_rows}")
+            logging.info(f"duplicate rows found:\n{duplicate_rows}")
         
         return df_cleaned, duplicate_rows
 
-    def _rdss_file_list(self, duplicates):
+    def _rdss_file_list(self, duplicates, daysago=none):
         """
-        Extracts the first string before the space and the date from filenames ending with .csv
-        in the specified folder and stores them in a DataFrame.
+        extracts the first string before the space and the date from filenames ending with .csv
+        in the specified folder and stores them in a dataframe.
         
         Also, merges the file list with duplicate report entries based on lab_id.
         
@@ -138,7 +139,12 @@ class ID_COMPARISONS:
 
         if not df.empty:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-            df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
+
+            if daysago:
+                cutoff_date = datetime.today() - timedelta(days=daysago)
+                df = df[df['Date'] >= cutoff_date]  # Filter files within the last `daysago` days
+            else:
+                df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
 
         # Filter the file list to only include rows where ID is in the duplicate report (if any)
         if not duplicates.empty:
