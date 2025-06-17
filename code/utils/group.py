@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import plotly.graph_objects as go
 import logging
-from main import Pipe 
+from pipe import Pipe 
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
