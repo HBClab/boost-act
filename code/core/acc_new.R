@@ -119,6 +119,9 @@ main <- function() {
           hrs.del.start = 4,
           hrs.del.end = 3,
           maxdur = 9,
+          threshold.lig = 44.8,
+          threshold.mod = 100.6,
+          threshold.vig = 428.8,
 
           # ==== Part 6: CR and other metrics ====
           part6CR = TRUE,

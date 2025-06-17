@@ -65,82 +65,96 @@ class QC:
         if not os.path.isdir(self.base_dir):
             raise FileNotFoundError(f"Base directory not found: {self.base_dir}")
 
-        # Iterate over all entries in base_dir; expect subject directories named 'sub-XXXX'
+        # Iterate over all subject directories in base_dir
         for entry in os.listdir(self.base_dir):
             sub_path = os.path.join(self.base_dir, entry)
             if not os.path.isdir(sub_path) or not entry.startswith("sub-"):
-                # Skip non-directories and non-subject folders
-                continue
+                continue  # Skip non-subject folders
 
-            # Construct path to the results folder for this subject
-            results_dir = os.path.join(
-                sub_path,
-                "accel",
-                "output_accel",
-                "results"
-            )
-            print(sub_path.split('/')[-1])
+            accel_dir = os.path.join(sub_path, "accel")
+            if not os.path.isdir(accel_dir):
+                continue  # No accel folder, skip
 
-            # If results directory does not exist, skip this subject
-            if not os.path.isdir(results_dir):
-                # Optionally, log that results are missing for this subject
-                continue
+            # Iterate over session folders inside the accel directory
+            for session_folder in os.listdir(accel_dir):
+                if not session_folder.startswith("ses"):
+                    continue  # Not a session folder
 
-            # 1. Locate the QC report file
-            qc_file = os.path.join(results_dir, "QC", "data_quality_report.csv")
-            if not os.path.isfile(qc_file):
-                # Skip if QC file missing
-                continue
+                ses_path = os.path.join(accel_dir, session_folder)
+                if not os.path.isdir(ses_path):
+                    continue
 
-            # 2. Locate the person summary CSV (filename starts with 'part5_personsummary')
-            person_file = None
-            for fname in os.listdir(results_dir):
-                if fname.startswith("part5_personsummary") and fname.endswith(".csv"):
-                    person_file = os.path.join(results_dir, fname)
-                    break
-            if person_file is None:
-                # Skip if person summary missing
-                continue
+                # Extract session number (e.g., "ses-1" → "1")
+                ses_num = session_folder.split('-')[-1]
 
-            # 3. Locate the day summary CSV (filename starts with 'part5_daysummary')
-            day_file = None
-            for fname in os.listdir(results_dir):
-                if fname.startswith("part5_daysummary") and fname.endswith(".csv"):
-                    day_file = os.path.join(results_dir, fname)
-                    break
-            if day_file is None:
-                # Skip if day summary missing
-                continue
+                # Now construct path to results
+                results_dir = os.path.join(ses_path, "output_accel", "results")
 
-            # Extract subject ID and session from the QC file’s 'filename' column
-            # and retrieve the relevant metrics
-            dfs = [qc_file, person_file, day_file]
-            metrics, sub, ses = self.extract_metrics(dfs)
+                if not os.path.isdir(results_dir):
+                    continue  # Results folder missing
 
-            # Unpack metrics
-            cal_err, h_considered, valid_days, clean_code_series = metrics
+                    # 1. Locate the QC report file
+                    qc_file = os.path.join(results_dir, "QC", "data_quality_report.csv")
+                    if not os.path.isfile(qc_file):
+                        # Skip if QC file missing
+                        continue
 
-            # Run each QC check, which will append/update self.csv_path
-            self.cal_error_check(cal_err, sub, ses)
-            self.h_considered_check(h_considered, sub, ses)
-            self.valid_days_check(valid_days, sub, ses)
-            self.cleaning_code_check(clean_code_series, sub, ses)
+                    # 2. Locate the person summary CSV (filename starts with 'part5_personsummary')
+                    person_file = None
+                    for fname in os.listdir(results_dir):
+                        if fname.startswith("part5_personsummary") and fname.endswith(".csv"):
+                            person_file = os.path.join(results_dir, fname)
+                            break
+                    if person_file is None:
+                        # Skip if person summary missing
+                        continue
 
-            # plots!
-            plotter = ACT_PLOTS(sub, ses, person=dfs[1], day=dfs[2])
+                    # 3. Locate the day summary CSV (filename starts with 'part5_daysummary')
+                    day_file = None
+                    for fname in os.listdir(results_dir):
+                        if fname.startswith("part5_daysummary") and fname.endswith(".csv"):
+                            day_file = os.path.join(results_dir, fname)
+                            break
+                    if day_file is None:
+                        # Skip if day summary missing
+                        continue
+
+
+                    # Extract subject ID and session from the QC file’s 'filename' column
+                    # and retrieve the relevant metrics
+                    dfs = [qc_file, person_file, day_file]
+                    metrics, sub, ses = self.extract_metrics(dfs)
+
+                    # Unpack metrics
+                    cal_err, h_considered, valid_days, clean_code_series, calendar_date= metrics
+
+                    # Run each QC check, which will append/update self.csv_path
+                    self.cal_error_check(cal_err, sub, ses)
+                    self.h_considered_check(h_considered, sub, ses)
+                    self.valid_days_check(sub, ses)
+                    self.cleaning_code_check(clean_code_series, calendar_date, sub, ses)
+
+
+
+                    # Clean up DataFrames/variables to free memory before next iteration
+                    try:
+                        del metrics, cal_err, h_considered, valid_days, clean_code_series
+                        del dfs, person_file, day_file, qc_file
+                        del sub, ses
+                    except UnboundLocalError:
+                        # If any variable wasn’t set, ignore
+                        pass
+        
+            # build the sub_path/accel/output_accel folder here to create plots
+            all_ses_dir = os.path.join(sub_path,
+                                       "accel",
+                                       "output_accel",
+                                       "results")
+            person = pd.read_csv(os.path.join(all_ses_dir, "part5_personsummary_MM_L40M100V400_T5A5.csv"))
+            day = pd.read_csv(os.path.join(all_ses_dir, "part5_daysummary_MM_L40M100V400_T5A5.csv"))
+            plotter = ACT_PLOTS(sub, ses, person=person, day=day)
             plotter.summary_plot()
             plotter.day_plots()
-
-
-            # Clean up DataFrames/variables to free memory before next iteration
-            try:
-                del metrics, cal_err, h_considered, valid_days, clean_code_series
-                del dfs, person_file, day_file, qc_file
-                del sub, ses
-            except UnboundLocalError:
-                # If any variable wasn’t set, ignore
-                pass
-        
         # create the json file used in the application
         create_json('plots')
         
@@ -199,8 +213,11 @@ class QC:
         valid_days = person_df["Nvaliddays"].iloc[0]
         # 4) Cleaning code series: from day summary column 'cleaningcode'
         clean_code = day_df["cleaningcode"]
+        # 5) calendar dates series from day summary column 'calendar_date'
+        calendar_date = day_df["calendar_date"]
 
-        metrics = [cal_err, h_considered, valid_days, clean_code]
+        metrics = [cal_err, h_considered, valid_days, clean_code, calendar_date]
+        self.df_day = day_df
         return metrics, sub, ses
 
 
@@ -208,7 +225,7 @@ class QC:
     # #2: Append/Update Master QC CSV with human-readable messages
     # ─────────────────────────────────────────────────────────────────────
 
-    def create_and_return_csv(self, check: str, code: int, sub: str, ses: str) -> None:
+    def create_and_return_csv(self, check: str, code: int, sub: str, ses: str, date=None, clean_code=None) -> None:
         """
         Appends or updates a row in self.csv_path for (sub, ses), setting
         the human-readable interpretation for the specified QC check.
@@ -245,13 +262,21 @@ class QC:
                 3: 'ERROR: Cleaning code missing'
             },
             'Valid_Days': {
-                0: 'Pass',
-                1: 'ERROR: Fewer valid days than worn days',
-                2: 'WARNING: More valid days than worn days',
-                3: 'ERROR: Valid days missing'
+                0: 'Pass: ≥2 weekend days and ≥3 weekdays',
+                1: 'ERROR: Fewer than 2 weekend days for at least one session',
+                2: 'ERROR: Fewer than 3 weekdays for at least one session',
+                3: 'ERROR: No valid-days data found for at least one session'
             }
         }
         interpretation = meanings[col].get(code, 'ERROR: Unknown code')
+
+        # Append the actual cleaning codes and dates if applicable
+        if check == 'clean_code' and code == 1 and clean_code is not None:
+            invalids = clean_code[~clean_code.isin([0, 1]) & clean_code.notna()].unique()
+            if len(invalids) > 0:
+                interpretation += f" — Invalid codes: {', '.join(map(str, invalids))}"
+                if date is not None and len(date) > 0:
+                    interpretation += f" on date(s): {', '.join(date)}"
 
         # Load existing master CSV if it exists; otherwise create a fresh DataFrame
         if os.path.exists(self.csv_path):
@@ -342,38 +367,53 @@ class QC:
             return 3
 
 
-    def valid_days_check(self, valid_days: int, sub: str, ses: str) -> int:
+    def valid_days_check(self, sub: str, ses: str) -> int:
         """
-        Verify that the number of valid days meets the expected days worn.
+        QC: ensure that for this session (ses) we have at least
+        2 weekend days (Sat/Sun) and 3 weekdays (Mon–Fri).
 
         Returns:
         --------
         0 → OK
-        1 → Too few valid days
-        2 → Too many valid days (likely error in counting)
-        3 → Valid days variable was not set
+        1 → ERROR: fewer than 2 weekend days
+        2 → ERROR: fewer than 3 weekdays
+        3 → ERROR: session data missing
         """
         try:
-            # If valid_days is None or NaN, treat as missing
-            if valid_days is None or (isinstance(valid_days, (int, float)) and pd.isna(valid_days)):
-                raise ValueError("valid_days is missing")
+            # select only the rows for this session
+            mask = self.df_day['filename'].str.contains(f"_ses-{ses}_")
+            session_df = self.df_day[mask]
 
-            if valid_days < self.n_days_worn:
+            if session_df.empty:
+                # no rows for this session at all
+                raise ValueError("No data for session")
+
+            # count weekends vs weekdays
+            is_weekend = session_df['weekday'].isin(['Saturday', 'Sunday'])
+            weekend_count = is_weekend.sum()
+            weekday_count = (~is_weekend).sum()
+
+            # QC rules
+            if weekend_count < 2:
                 self.create_and_return_csv('val_days', 1, sub, ses)
                 return 1
-            elif valid_days > self.n_days_worn:
+
+            if weekday_count < 3:
                 self.create_and_return_csv('val_days', 2, sub, ses)
                 return 2
-            else:
-                self.create_and_return_csv('val_days', 0, sub, ses)
-                return 0
 
-        except Exception:
+            # all good
+            self.create_and_return_csv('val_days', 0, sub, ses)
+            return 0
+
+        except Exception as e:
+            # anything else counts as “missing”
+            print(str(e))
             self.create_and_return_csv('val_days', 3, sub, ses)
             return 3
 
 
-    def cleaning_code_check(self, clean_code: pd.Series, sub: str, ses: str) -> int:
+    def cleaning_code_check(self, clean_code: pd.Series, calendar_dates: pd.Series, sub: str, ses: str) -> int:
         """
         Inspect the 'cleaningcode' column from the day summary.
 
@@ -385,17 +425,25 @@ class QC:
         3 → Cleaning code variable was not set
         """
         try:
-            # If clean_code is None or not a Series, treat as missing
             if clean_code is None or not isinstance(clean_code, pd.Series):
                 raise ValueError("clean_code is missing")
 
             # If any value outside {0,1} appears and is not NaN → error
-            if ((~clean_code.isin([0, 1])) & clean_code.notna()).any():
-                self.create_and_return_csv('clean_code', 1, sub, ses)
+            invalid_mask = ~clean_code.isin([0, 1]) & clean_code.notna()
+            invalid_codes = clean_code[invalid_mask].unique()
+
+            if len(invalid_codes) > 0:
+                invalid_dates = calendar_dates[invalid_mask].dt.strftime('%Y-%m-%d').unique()
+                print(f"Found invalid cleaning codes: {invalid_codes} on dates: {invalid_dates}")
+                self.create_and_return_csv(
+                    'clean_code', 1, sub, ses,
+                    clean_code=clean_code,
+                    date=invalid_dates  # Pass the list of dates to include in interpretation
+                )
                 return 1
             # If all values are NaN → warning (no cleaning codes present)
             elif clean_code.isna().all():
-                self.create_and_return_csv('clean_code', 2, sub, ses)
+                self.create_and_return_csv('clean_code', 2, sub, ses,)
                 return 2
             else:
                 self.create_and_return_csv('clean_code', 0, sub, ses)
