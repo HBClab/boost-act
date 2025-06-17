@@ -1,13 +1,14 @@
 from utils.mnt import create_symlinks
 from utils.save import Save
+from utils.group import Group
 from core.gg import GG
 import sys
 
-INT_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-OBS_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-RDSS_DIR = '/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data'
 
-class pipe:
+class Pipe:
+    INT_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+    OBS_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+    RDSS_DIR = '/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data'
     def __init__(self, token, daysago):
         self.token = token
         self.daysago = daysago
@@ -15,18 +16,21 @@ class pipe:
     def run_pipe(self):
         self._create_syms()
         matched = Save(
-            intdir=INT_DIR,
-            obsdir=OBS_DIR,
-            rdssdir=RDSS_DIR,
+            intdir=self.INT_DIR,
+            obsdir=self.OBS_DIR,
+            rdssdir=self.RDSS_DIR,
             token=self.token,
             daysago=self.daysago
         ).save()
 
-        with open('code/res/data.json', 'w') as file:
+        with open('res/data.json', 'w') as file:
             file.write('{\n}')
             file.write(',\n'.join(f'   "{key}": "{value}"' for key, value in matched.items()))
 
-        # GG(matched=matched, intdir=INT_DIR, obsdir=OBS_DIR).run_gg()
+        GG(matched=matched, intdir=self.INT_DIR, obsdir=self.OBS_DIR).run_gg()
+        Group().plot_person()
+        Group().plot_session()
+
         return None
 
     def _create_syms(self):
@@ -53,5 +57,5 @@ if __name__ == '__main__':
         print("Error: <token> cannot be empty.")
         sys.exit(1)
 
-    p = pipe(token, daysago)
+    p = Pipe(token, daysago)
     p.run_pipe()

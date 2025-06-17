@@ -1,0 +1,120 @@
+Subject,Session,Calibration_Error,Hours_Considered,Cleaning_Code,Valid_Days
+sub-7062,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7015,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7068,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7086,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7027,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7050,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7120,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7006,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7133,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7049,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7034,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7043,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6015,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-6012,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-6018,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7039,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7134,ses-1,Pass,Pass,Pass,ERROR: No valid-days data found for at least one session
+sub-7033,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6020,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7106,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7092,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7001,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7076,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7057,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7020,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7012,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7115,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7085,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7016,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7061,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7059,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7024,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7129,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7072,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7096,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7102,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7078,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-6016,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7040,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7037,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7030,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7047,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7137,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6011,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7075,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7002,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7105,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7091,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7124,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7029,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7023,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7054,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7116,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7082,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7088,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7021,ses-1,Pass,Pass,Pass,ERROR: No valid-days data found for at least one session
+sub-7056,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7114,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7080,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7019,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7064,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6013,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7032,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7099,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7107,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7094,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7042,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7035,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7048,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7069,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7087,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7113,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7063,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7026,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7022,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7125,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7028,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7010,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7067,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7083,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7031,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6010,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-7009,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7090,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7003,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6022,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7097,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7073,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7004,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-6017,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7041,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7017,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7084,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7110,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7025,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7052,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7058,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-7122,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-8015,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8006,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8020,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8018,ses-1,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8016,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-8024,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8005,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8037,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8002,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8008,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8023,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8011,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8021,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8019,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8035,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8014,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8026,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8022,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8003,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session
+sub-8004,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: No valid-days data found for at least one session
+sub-8036,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: No valid-days data found for at least one session

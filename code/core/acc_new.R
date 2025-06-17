@@ -2,16 +2,7 @@
 #!/usr/bin/env Rscript
 
 # Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6-test/"
-library(tidyr)
-library(plyr)
 library(optparse)
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-if (!requireNamespace("GGIR", quietly = TRUE) || packageVersion("GGIR") != "3.2.6") {
-  remotes::install_version("GGIR", version = "3.2.6", repos = "https://cloud.r-project.org")
-}
-
 library(GGIR)
 
 main <- function() {
@@ -93,32 +84,49 @@ main <- function() {
 
       try({
         GGIR(
+          # ==== Initialization ====
           mode = 1:6,
           datadir = datadir,
           outputdir = outputdir,
           studyname = "boost",
           overwrite = FALSE,
-          do.report = c(2, 4, 5, 6),
-          visualreport = TRUE,
-          old_visualreport = FALSE,
-          windowsizes = c(5, 900, 3600),
           desiredtz = "America/Chicago",
           print.filename = TRUE,
-          dayborder = 0,
           idloc = 2,
+          save_ms5rawlevels = "csv"
+
+          # ==== Part 1: Data loading and basic signal processing ====
+          do.report = c(2, 4, 5, 6),
           epochvalues2csv = TRUE,
-          ignorenonwear = TRUE,
           do.ENMO = TRUE,
           acc.metric = "ENMO",
+          windowsizes = c(5, 900, 3600),
+
+          # ==== Part 2: Non-wear detection ====
+          ignorenonwear = TRUE,
+
+          # ==== Part 3: Sleep detection (optional if using external file) ====
+          # Uncomment the below if using external sleep log:
+          # loglocation = "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
+          # colid = 1,
+          # coln1 = 2,
+          # sleepwindowType = "SPT",
+
+          # ==== Part 4: Physical activity summaries ====
+          timewindow = c("WW", "MM", "OO"),
+
+          # ==== Part 5: Day-level summaries ====
           hrs.del.start = 4,
           hrs.del.end = 3,
           maxdur = 9,
-          loglocation = "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
-          colid = 1,
-          coln1 = 2,
-          sleepwindowType = "SPT",
-          timewindow = c("WW", "MM", "OO"),
-          part6CR = TRUE
+          threshold.lig = 44.8,
+          threshold.mod = 100.6,
+          threshold.vig = 428.8,
+
+          # ==== Part 6: CR and other metrics ====
+          part6CR = TRUE,
+          visualreport = TRUE,
+          old_visualreport = FALSE
         )
       })
     }
