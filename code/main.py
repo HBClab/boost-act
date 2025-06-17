@@ -2,7 +2,7 @@ from utils.mnt import create_symlinks
 from utils.save import Save
 from utils.group import Group
 from core.gg import GG
-from pipe import Pipe
+from utils.pipe import Pipe
 import sys
 
 
