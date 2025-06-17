@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from main import Pipe
+from utils.pipe import Pipe
 from utils.plots import ACT_PLOTS, create_json
 
 
