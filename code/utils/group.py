@@ -64,7 +64,10 @@ class Group:
                 durations.append(values)
 
         df_all = pd.DataFrame(durations)
-        df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+        if not df_all.empty and "Subject" in df_all.columns:
+            df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+        else:
+            logger.warning("No valid data found — skipping Subject filtering.")
 
         self._plot_stacked_bar(df_all,
                                title="Normalized Average Activity Composition by Subject (All Sessions)",
