@@ -76,7 +76,7 @@ class Group:
 
         self._plot_stacked_bar(df_all,
                                title="Normalized Average Activity Composition by Subject (All Sessions)",
-                               filename="avg_plot_all")
+                               filename="avg_plot_all.html")
 
     def plot_session(self):
         durations = []
@@ -122,7 +122,7 @@ class Group:
                 group_df,
                 title=f"Average Activity Composition — Session {session.upper()}",
                 y_key="Subject",
-                filename=f"avg_plot_{session}"
+                filename=f"avg_plot_{session}.html"
             )
 
     def _plot_stacked_bar(self, df, title, filename, y_key="Subject"):
@@ -160,5 +160,5 @@ class Group:
             showlegend=True,
             autosize=True
         )
-
+        os.makedirs(self.path, exist_ok=True)
         fig.write_html(os.path.join(self.path, filename))
