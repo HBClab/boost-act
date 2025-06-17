@@ -1,7 +1,6 @@
 
 from utils.mnt import create_symlinks
 from utils.save import Save
-from utils.group import Group
 from core.gg import GG
 import sys
 
@@ -28,8 +27,6 @@ class Pipe:
             file.write(',\n'.join(f'   "{key}": "{value}"' for key, value in matched.items()))
 
         GG(matched=matched, intdir=self.INT_DIR, obsdir=self.OBS_DIR).run_gg()
-        Group().plot_person()
-        Group().plot_session()
 
         return None
 

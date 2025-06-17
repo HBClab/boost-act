@@ -29,3 +29,7 @@ if __name__ == '__main__':
 
     p = Pipe(token, daysago)
     p.run_pipe()
+
+    Group().plot_person()
+    Group().plot_session()
+
