@@ -84,7 +84,6 @@ main <- function() {
 
       try({
         GGIR(
-          # ==== Initialization ====
           mode = 1:6,
           datadir = datadir,
           outputdir = outputdir,
@@ -95,27 +94,22 @@ main <- function() {
           idloc = 2,
           save_ms5rawlevels = "csv"
 
-          # ==== Part 1: Data loading and basic signal processing ====
           do.report = c(2, 4, 5, 6),
           epochvalues2csv = TRUE,
           do.ENMO = TRUE,
           acc.metric = "ENMO",
           windowsizes = c(5, 900, 3600),
 
-          # ==== Part 2: Non-wear detection ====
           ignorenonwear = TRUE,
 
-          # ==== Part 3: Sleep detection (optional if using external file) ====
           # Uncomment the below if using external sleep log:
           # loglocation = "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
           # colid = 1,
           # coln1 = 2,
           # sleepwindowType = "SPT",
 
-          # ==== Part 4: Physical activity summaries ====
           timewindow = c("WW", "MM", "OO"),
 
-          # ==== Part 5: Day-level summaries ====
           hrs.del.start = 4,
           hrs.del.end = 3,
           maxdur = 9,
