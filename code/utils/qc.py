@@ -27,11 +27,11 @@ class QC:
 
         # Determine the expected days worn based on project type
         if project == 'obs':
-            self.base_dir = (Pipe.OBS_DIR)
+            self.base_dir = os.path.join(Pipe.OBS_DIR, 'derivatives', 'GGIR-3.2.6')
             self.n_days_worn = 7
         elif project == 'int':
             self.n_days_worn = 9
-            self.base_dir = (Pipe.INT_DIR)
+            self.base_dir = os.path.join(Pipe.INT_DIR, 'derivatives', 'GGIR-3.2.6')
         else:
             raise ValueError("Project must be 'obs' or 'int'")
 
