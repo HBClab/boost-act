@@ -93,7 +93,6 @@ main <- function() {
           desiredtz = "America/Chicago",
           print.filename = TRUE,
           idloc = 2,
-          save_ms5rawlevels = "csv",
 
           # ==== Part 1: Data loading and basic signal processing ====
           do.report = c(2, 4, 5, 6),
