@@ -27,8 +27,13 @@ class Group:
             vig = df["dur_day_total_VIG_min_pla"].iloc[0]
             mvpa = mod + vig
             total = sleep + inactivity + light + mvpa
+            logger.debug(f"Parsed {file_path}: sleep={sleep}, inactivity={inactivity}, light={light}, mvpa={mvpa}, total={total}")
             if total == 0:
-                return None  # skip zero-total rows
+                logger.warning(f"Total was 0 for {file_path}. Columns found: {df.columns.tolist()}")
+                return None
+            if df.empty:
+                logger.warning(f"{file_path} is empty.")
+                return None
             return {
                 "Sleep": sleep / total * 1440,
                 "Inactivity": inactivity / total * 1440,
