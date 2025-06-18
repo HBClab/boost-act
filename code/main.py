@@ -7,7 +7,7 @@ import sys
 import logging
 
 logging.basicConfig(
-    level=logging.DEBUG,  # <-- this is key
+    level=logging.INFO,  # <-- this is key
     format='[%(levelname)s] %(message)s'
 )
 logger = logging.getLogger()  # root logger
