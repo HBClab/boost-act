@@ -10,4 +10,4 @@ conda activate act
 cd "$(dirname "$0")"
 
 # run pipe
-cd code && python main.py 1
+cd code && python main.py 1 "DE4E2DB72778DACA9B8848574107D2F5"
