@@ -19001,3 +19001,5 @@ Directory specified by argument outputdir does not exist
 GGIR completed successfully for /mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/.
 Starting QC pipeline for obs project.
 Unexpected error when processing /mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/: cannot access local variable 'sub' where it is not associated with a value
+[main 1ca7492] automated commit by vosslab linux
+ 8 files changed, 6214 insertions(+), 6 deletions(-)
