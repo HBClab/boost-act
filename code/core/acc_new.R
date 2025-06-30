@@ -24,6 +24,13 @@ main <- function() {
   ProjectDir <- opt$project_dir
   ProjectDerivDir <- opt$deriv_dir
 
+  # Ensure leading slash for deriv_dir
+  if (!grepl("^/", ProjectDerivDir)) {
+    ProjectDerivDir <- paste0("/", ProjectDerivDir)
+  }
+  if (!grepl("/$", ProjectDerivDir)) {
+    ProjectDerivDir <- paste0(ProjectDerivDir, "/")
+  }
   # Print values to verify
   print(paste("Project Directory:", ProjectDir))
   print(paste("Derivatives Directory:", ProjectDerivDir))
