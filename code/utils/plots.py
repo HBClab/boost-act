@@ -41,7 +41,11 @@ class ACT_PLOTS:
 
 
 
-
+    '''
+    below plot needs to change to be multiple bar graphs (one for each session)
+    this should now be calculated by session iterating through the session folder 
+    logic for create_paths needs to change for this -> should be a list of person files by session
+    '''
 
     def summary_plot(self,
                      act_cycles=['IN', 'LIG', 'MOD', 'VIG'], 
@@ -132,6 +136,11 @@ class ACT_PLOTS:
         plt.close()
         return None
     
+    '''
+    new logic needs to create these day plots by combining all sessions
+    each new session gets the dashed line
+    indices for the y-axis on the graph needs to be dates, not days
+    '''
 
 
     def day_plots(self,

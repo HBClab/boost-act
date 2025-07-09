@@ -16,6 +16,11 @@ class Group:
         self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test')]
         self.path = './plots/group'
 
+    '''
+    New person logic:
+        GGIR with ncp and sleep no longer are outputting the output_accel files for all sessions (may be premature)
+        New goal is to iterate through the folders and grab the metrics, then average 
+    '''
 
     def _parse_person_file(self, file_path):
         try:
@@ -44,11 +49,12 @@ class Group:
             logger.warning(f"Error reading file {file_path}: {e}")
             return None
 
+    
     def plot_person(self):
         durations = []
 
         for base_dir in self.paths:
-            for entry in os.listdir(base_dir):
+            for entry in sorted(os.listdir(base_dir)):
                 if not entry.startswith("sub-"):
                     continue
 
@@ -71,18 +77,18 @@ class Group:
         df_all = pd.DataFrame(durations)
         if not df_all.empty and "Subject" in df_all.columns:
             df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+            df_all = df_all.sort_values("Subject").reset_index(drop=True)
         else:
             logger.warning("No valid data found — skipping Subject filtering.")
 
         self._plot_stacked_bar(df_all,
                                title="Normalized Average Activity Composition by Subject (All Sessions)",
                                filename="avg_plot_all.html")
-
     def plot_session(self):
         durations = []
 
         for base_dir in self.paths:
-            for entry in os.listdir(base_dir):
+            for entry in sorted(os.listdir(base_dir)):
                 if not entry.startswith("sub-"):
                     continue
 
@@ -90,7 +96,7 @@ class Group:
                 if not os.path.isdir(subject_path):
                     continue
 
-                for session_folder in os.listdir(subject_path):
+                for session_folder in sorted(os.listdir(subject_path)):
                     if not session_folder.startswith("ses"):
                         continue
 
@@ -115,7 +121,11 @@ class Group:
                     durations.append(values)
 
         df_all = pd.DataFrame(durations)
-        df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+        if not df_all.empty and "Subject" in df_all.columns and "Session" in df_all.columns:
+            df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+            df_all = df_all.sort_values(["Session", "Subject"]).reset_index(drop=True)
+        else:
+            logger.warning("No valid data found — skipping Subject/Session filtering.")
 
         for session, group_df in df_all.groupby("Session"):
             self._plot_stacked_bar(
@@ -124,7 +134,6 @@ class Group:
                 y_key="Subject",
                 filename=f"avg_plot_{session}.html"
             )
-
     def _plot_stacked_bar(self, df, title, filename, y_key="Subject"):
         if df.empty:
             logger.warning("No data to plot.")

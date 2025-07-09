@@ -1,0 +1,15 @@
+Sleep Report for: C:\Users\hbclab.IOWA\Documents\ActiGraph\ActiLife\Downloads\998 (2023-04-12)60sec.agd
+Subject Name: 998
+Serial Number: TAS1H05190290
+Sleep Algorithm: Cole-Kripke
+
+Sleep Algorithm,In Bed Date,In Bed Time,Out Bed Date,Out Bed Time,Onset Date,Onset Time,Latency,Total Counts,Efficiency,Total Minutes in Bed,Total Sleep Time (TST),Wake After Sleep Onset (WASO),Number of Awakenings,Average Awakening Length,Movement Index,Fragmentation Index,Sleep Fragmentation Index
+Cole-Kripke,4/12/2023,12:00 AM,4/12/2023,6:00 AM,4/12/2023,12:00 AM,0,34862,84.44,360,304,56,10,5.6,8.889,10,18.889
+Cole-Kripke,4/12/2023,11:09 PM,4/13/2023,7:00 AM,4/12/2023,11:19 PM,10,54263,87.05,471,410,51,13,3.92,12.951,7.692,20.643
+Cole-Kripke,4/13/2023,10:44 PM,4/14/2023,6:44 AM,4/13/2023,11:05 PM,21,84929,75.21,480,361,98,21,4.67,20.833,0,20.833
+Cole-Kripke,4/14/2023,10:35 PM,4/15/2023,6:10 AM,4/14/2023,10:45 PM,10,69046,83.74,455,381,64,13,4.92,17.363,7.692,25.055
+Cole-Kripke,4/15/2023,10:30 PM,4/16/2023,6:55 AM,4/15/2023,10:36 PM,6,93473,75.84,505,383,116,22,5.27,20.99,13.636,34.626
+Cole-Kripke,4/16/2023,10:53 PM,4/17/2023,6:24 AM,4/16/2023,10:59 PM,6,38964,83.59,451,377,68,19,3.58,12.86,31.579,44.439
+Cole-Kripke,4/17/2023,10:58 PM,4/18/2023,6:15 AM,4/17/2023,11:06 PM,8,59953,77.12,437,337,92,20,4.6,24.256,15,39.256
+Cole-Kripke,4/18/2023,11:01 PM,4/19/2023,7:04 AM,4/18/2023,11:07 PM,6,73641,83.44,483,403,74,15,4.93,14.907,6.667,21.574
+Cole-Kripke,4/19/2023,11:05 PM,4/20/2023,12:16 AM,4/19/2023,11:14 PM,9,16881,83.1,71,59,3,3,1,18.31,0,18.31

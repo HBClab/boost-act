@@ -1,4 +1,3 @@
-
 #!/usr/bin/env Rscript
 
 # Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6-test/"
@@ -104,9 +103,9 @@ main <- function() {
           # ==== Part 2: Non-wear detection ====
           ignorenonwear = TRUE,
 
-          # ==== Part 3: Sleep detection (optional if using external file) ====
+          # ==== Part 3: Sleep detection ====
           # Uncomment the below if using external sleep log:
-          # loglocation = "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
+          # loglocation = "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
           # colid = 1,
           # coln1 = 2,
           # sleepwindowType = "SPT",
