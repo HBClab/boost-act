@@ -3,6 +3,7 @@
 # The following code is used for testing sleep logs in GGIR. 
 # Sleep logs are in the root folder of the accel directory,
 # a better place is needed but for testing purposes it will do.
+library(GGIR)
 
 # first test on intervention - since there are less subjects
 ProjectDir <- "/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/"
