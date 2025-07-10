@@ -5,9 +5,9 @@ from core.gg import GG
 import sys
 
 class Pipe:
-    INT_DIR = '/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-    OBS_DIR = '/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-    RDSS_DIR = '/Shared/vosslab/Repositories/Accelerometer_Data'
+    INT_DIR = '/mnt/nfs/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+    OBS_DIR = '/mnt/nfs/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+    RDSS_DIR = '/mnt/nfs/vosslab/Repositories/Accelerometer_Data'
     def __init__(self, token, daysago):
         self.token = token
         self.daysago = daysago
