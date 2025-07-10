@@ -1,4 +1,5 @@
 import os
+import glob
 import pandas as pd
 import plotly.graph_objects as go
 import logging
@@ -13,7 +14,7 @@ class Group:
     def __init__(self):
         self.obs_path = Pipe.OBS_DIR 
         self.int_path = Pipe.INT_DIR
-        self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test')]
+        self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test-ncp-sleep'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep')]
         self.path = './plots/group'
 
     '''
@@ -47,11 +48,13 @@ class Group:
             if df.empty:
                 logger.warning(f"{file_path} is empty.")
                 return None
+            session = df.get("filename", [""])[0].split("_")[-2] if "filename" in df else "unknown"
             return {
                 "Sleep": sleep / total * 1440,
                 "Inactivity": inactivity / total * 1440,
                 "Light": light / total * 1440,
-                "MVPA": mvpa / total * 1440
+                "MVPA": mvpa / total * 1440,
+                "Session": session
             }
         except Exception as e:
             logger.warning(f"Error reading file {file_path}: {e}")
@@ -66,21 +69,23 @@ class Group:
                 if not entry.startswith("sub-"):
                     continue
 
-                person_file = os.path.join(
-                    base_dir, entry, "accel", "output_accel", "results",
-                    "part5_personsummary_MM_L40M100V400_T5A5.csv"
+                results_dir = os.path.join(
+                    base_dir, entry,
+                    "accel", "output_accel", "results"
                 )
-
-                if not os.path.isfile(person_file):
-                    logger.debug(f"File not found for {entry}, skipping.")
+                pattern = os.path.join(results_dir, "part5_personsummary_MM*.csv")
+                matches = glob.glob(pattern)
+                if not matches:
+                    logger.debug(f"No matching files in {results_dir}, skipping {entry}")
                     continue
 
-                values = self._parse_person_file(person_file)
-                if not values:
-                    continue
+                for person_file in matches:
+                    values = self._parse_person_file(person_file)
+                    if not values:
+                        continue
 
-                values["Subject"] = entry
-                durations.append(values)
+                    values["Subject"] = entry
+                    durations.append(values)
 
         df_all = pd.DataFrame(durations)
         if not df_all.empty and "Subject" in df_all.columns:
@@ -89,9 +94,13 @@ class Group:
         else:
             logger.warning("No valid data found — skipping Subject filtering.")
 
-        self._plot_stacked_bar(df_all,
-                               title="Normalized Average Activity Composition by Subject (All Sessions)",
-                               filename="avg_plot_all.html")
+        self._plot_stacked_bar(
+            df_all,
+            title="Normalized Average Activity Composition by Subject (All Sessions)",
+            filename="avg_plot_all.html"
+        )
+
+
     def plot_session(self):
         durations = []
 
@@ -108,28 +117,29 @@ class Group:
                     if not session_folder.startswith("ses"):
                         continue
 
-                    person_file = os.path.join(
+                    results_dir = os.path.join(
                         subject_path,
                         session_folder,
                         f"output_{session_folder}",
-                        "results",
-                        "part5_personsummary_MM_L40M100V400_T5A5.csv"
+                        "results"
                     )
-
-                    if not os.path.isfile(person_file):
-                        logger.debug(f"Missing file for {entry}/{session_folder}, skipping.")
+                    pattern = os.path.join(results_dir, "part5_personsummary_MM*.csv")
+                    matches = glob.glob(pattern)
+                    if not matches:
+                        logger.debug(f"No matching files in {results_dir}, skipping {entry}/{session_folder}")
                         continue
 
-                    values = self._parse_person_file(person_file)
-                    if not values:
-                        continue
+                    for person_file in matches:
+                        values = self._parse_person_file(person_file)
+                        if not values:
+                            continue
 
-                    values["Subject"] = entry
-                    values["Session"] = session_folder
-                    durations.append(values)
+                        values["Subject"] = entry
+                        values["Session"] = session_folder
+                        durations.append(values)
 
         df_all = pd.DataFrame(durations)
-        if not df_all.empty and "Subject" in df_all.columns and "Session" in df_all.columns:
+        if not df_all.empty and {"Subject", "Session"}.issubset(df_all.columns):
             df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
             df_all = df_all.sort_values(["Session", "Subject"]).reset_index(drop=True)
         else:
@@ -142,6 +152,7 @@ class Group:
                 y_key="Subject",
                 filename=f"avg_plot_{session}.html"
             )
+
     def _plot_stacked_bar(self, df, title, filename, y_key="Subject"):
         if df.empty:
             logger.warning("No data to plot.")
