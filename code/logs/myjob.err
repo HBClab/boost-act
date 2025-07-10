@@ -1,0 +1,432 @@
+From https://github.com/HBCLab/boost-act
+ * branch            main       -> FETCH_HEAD
+warning: push.default is unset; its implicit value is changing in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the current behavior after the default changes, use:
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+error: cannot run /usr/libexec/openssh/gnome-ssh-askpass: No such file or directory
+fatal: could not read Username for 'https://github.com': No such device or address
+Warning: Permanently added 'github.com,140.82.113.3' (ECDSA) to the list of known hosts.
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+Warning: Permanently added the ECDSA host key for IP address '140.82.114.4' to the list of known hosts.
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+touch: cannot touch ‘/Users/zjgilliam/logs/git_debug.log’: No such file or directory
+/opt/sge/default/spool/argon-itf-bx49-15/job_scripts/3329573: line 15: /Users/zjgilliam/logs/git_debug.log: No such file or directory
+Warning: Permanently added the ECDSA host key for IP address '140.82.112.3' to the list of known hosts.
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
+  could not find function "GGIR"
+remote: This repository moved. Please use the new location:[K
+remote:   git@github.com:HBClab/boost-act.git[K
+To git@github.com:hbclab/boost-act.git
+   291a1f7..e7832c6  main -> main
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+Error in g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]],  : 
+  object 'dur' not found
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Error in g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]],  : 
+  object 'dur' not found
+In addition: There were 27 warnings (use warnings() to see them)
+There were 50 or more warnings (use warnings() to see the first 50)

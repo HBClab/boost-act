@@ -3,15 +3,28 @@
 # The following code is used for testing sleep logs in GGIR. 
 # Sleep logs are in the root folder of the accel directory,
 # a better place is needed but for testing purposes it will do.
+library(GGIR)
 
 # first test on intervention - since there are less subjects
 ProjectDir <- "/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/"
 ProjectDerivDir <- "derivatives/GGIR-3.2.6-test-ncp-sleep/"
 
+# Extract final folder name
+last_folder <- basename(ProjectDir)
+
+# Determine correct filename
+if (last_folder == "act-obs-test") {
+  SleepLog <- file.path(ProjectDir, "sleep_log_observational.csv")
+} else if (last_folder == "act-int-test") {
+  SleepLog <- file.path(ProjectDir, "sleep_log_intervention.csv")
+} else {
+  stop("Unrecognized project directory. Exiting.")
+}
 
 # Print values to verify
 print(paste("Project Directory:", ProjectDir))
 print(paste("Derivatives Directory:", ProjectDerivDir))
+print(paste("SleepLog Location"))
 
 
 # Helper functions
