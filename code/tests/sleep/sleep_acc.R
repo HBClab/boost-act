@@ -8,10 +8,22 @@
 ProjectDir <- "/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/"
 ProjectDerivDir <- "derivatives/GGIR-3.2.6-test-ncp-sleep/"
 
+# Extract final folder name
+last_folder <- basename(ProjectDir)
+
+# Determine correct filename
+if (last_folder == "act-obs-test") {
+  SleepLog <- file.path(ProjectDir, "sleep_log_observational.csv")
+} else if (last_folder == "act-int-test") {
+  SleepLog <- file.path(ProjectDir, "sleep_log_intervention.csv")
+} else {
+  stop("Unrecognized project directory. Exiting.")
+}
 
 # Print values to verify
 print(paste("Project Directory:", ProjectDir))
 print(paste("Derivatives Directory:", ProjectDerivDir))
+print(paste("SleepLog Location"))
 
 
 # Helper functions

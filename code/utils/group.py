@@ -22,6 +22,14 @@ class Group:
         New goal is to iterate through the folders and grab the metrics, then average 
     '''
 
+    def _parse_person_files(self, subject, study):
+        person_path = "/output_accel/part5_personsummary_MM_L40M100V400_T5A5.csv"
+        if study == 'int':
+            base_path = os.path.join(self.path[1], subject)
+        elif study == 'obs':
+            base_path = os.path.join(self.path[0], subject)
+
+
     def _parse_person_file(self, file_path):
         try:
             df = pd.read_csv(file_path)

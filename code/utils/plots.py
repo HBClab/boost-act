@@ -4,6 +4,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# TODO
+# - look at the large comment sections and implement changes 
+
 
 class ACT_PLOTS:
 
