@@ -65,16 +65,16 @@ class QC:
         for entry in os.listdir(self.base_dir):
             sub_path = os.path.join(self.base_dir, entry)
             if not os.path.isdir(sub_path) or not entry.startswith("sub-"):
-                continue  # Skip non-subject folders
+                continue
 
             accel_dir = os.path.join(sub_path, "accel")
             if not os.path.isdir(accel_dir):
-                continue  # No accel folder, skip
+                continue
 
             # Iterate over session folders inside the accel directory
             for session_folder in os.listdir(accel_dir):
                 if not session_folder.startswith("ses"):
-                    continue  # Not a session folder
+                    continue
 
                 ses_path = os.path.join(accel_dir, session_folder)
                 if not os.path.isdir(ses_path):
@@ -85,76 +85,65 @@ class QC:
 
                 # Now construct path to results
                 results_dir = os.path.join(ses_path, "output_accel", "results")
-
                 if not os.path.isdir(results_dir):
-                    continue  # Results folder missing
+                    continue
 
-                    # 1. Locate the QC report file
-                    qc_file = os.path.join(results_dir, "QC", "data_quality_report.csv")
-                    if not os.path.isfile(qc_file):
-                        # Skip if QC file missing
-                        continue
+                # 1. QC report is still fixed
+                qc_file = os.path.join(results_dir, "QC", "data_quality_report.csv")
+                if not os.path.isfile(qc_file):
+                    continue
 
-                    # 2. Locate the person summary CSV (filename starts with 'part5_personsummary')
-                    person_file = None
-                    for fname in os.listdir(results_dir):
-                        if fname.startswith("part5_personsummary") and fname.endswith(".csv"):
-                            person_file = os.path.join(results_dir, fname)
-                            break
-                    if person_file is None:
-                        # Skip if person summary missing
-                        continue
+                # 2. Locate the person summary using glob for MM
+                person_matches = glob.glob(os.path.join(
+                    results_dir,
+                    "part5_personsummary_MM*.csv"
+                ))
+                if not person_matches:
+                    continue
+                person_file = person_matches[0]
 
-                    # 3. Locate the day summary CSV (filename starts with 'part5_daysummary')
-                    day_file = None
-                    for fname in os.listdir(results_dir):
-                        if fname.startswith("part5_daysummary") and fname.endswith(".csv"):
-                            day_file = os.path.join(results_dir, fname)
-                            break
-                    if day_file is None:
-                        # Skip if day summary missing
-                        continue
+                # 3. Locate the day summary using glob for MM
+                day_matches = glob.glob(os.path.join(
+                    results_dir,
+                    "part5_daysummary_MM*.csv"
+                ))
+                if not day_matches:
+                    continue
+                day_file = day_matches[0]
 
+                # Extract subject/session and metrics
+                dfs = [qc_file, person_file, day_file]
+                metrics, sub, ses = self.extract_metrics(dfs)
+                cal_err, h_considered, valid_days, clean_code_series, calendar_date = metrics
 
-                    # Extract subject ID and session from the QC file’s 'filename' column
-                    # and retrieve the relevant metrics
-                    dfs = [qc_file, person_file, day_file]
-                    metrics, sub, ses = self.extract_metrics(dfs)
+                # Run QC checks
+                self.cal_error_check(cal_err, sub, ses)
+                self.h_considered_check(h_considered, sub, ses)
+                self.valid_days_check(sub, ses)
+                self.cleaning_code_check(clean_code_series, calendar_date, sub, ses)
 
-                    # Unpack metrics
-                    cal_err, h_considered, valid_days, clean_code_series, calendar_date= metrics
+                # Clean up
+                try:
+                    del metrics, cal_err, h_considered, valid_days, clean_code_series
+                    del dfs, person_file, day_file, qc_file
+                    del sub, ses
+                except UnboundLocalError:
+                    pass
 
-                    # Run each QC check, which will append/update self.csv_path
-                    self.cal_error_check(cal_err, sub, ses)
-                    self.h_considered_check(h_considered, sub, ses)
-                    self.valid_days_check(sub, ses)
-                    self.cleaning_code_check(clean_code_series, calendar_date, sub, ses)
+            # After per‐session QC, make summary plots using the MM files
+            all_ses_dir = os.path.join(sub_path, "accel", "output_accel", "results")
+            person_glob = glob.glob(os.path.join(all_ses_dir, "part5_personsummary_MM*.csv"))
+            day_glob    = glob.glob(os.path.join(all_ses_dir, "part5_daysummary_MM*.csv"))
+            if person_glob and day_glob:
+                person = pd.read_csv(person_glob[0])
+                day    = pd.read_csv(day_glob[0])
+                plotter = ACT_PLOTS(sub, ses, person=person, day=day)
+                plotter.summary_plot()
+                plotter.day_plots()
 
-
-
-                    # Clean up DataFrames/variables to free memory before next iteration
-                    try:
-                        del metrics, cal_err, h_considered, valid_days, clean_code_series
-                        del dfs, person_file, day_file, qc_file
-                        del sub, ses
-                    except UnboundLocalError:
-                        # If any variable wasn’t set, ignore
-                        pass
-        
-            # build the sub_path/accel/output_accel folder here to create plots
-            all_ses_dir = os.path.join(sub_path,
-                                       "accel",
-                                       "output_accel",
-                                       "results")
-            person = pd.read_csv(os.path.join(all_ses_dir, "part5_personsummary_MM_L40M100V400_T5A5.csv"))
-            day = pd.read_csv(os.path.join(all_ses_dir, "part5_daysummary_MM_L40M100V400_T5A5.csv"))
-            plotter = ACT_PLOTS(sub, ses, person=person, day=day)
-            plotter.summary_plot()
-            plotter.day_plots()
         # create the json file used in the application
         create_json('plots')
-        
-        # End of qc loop
+            # End of qc loop
 
 
     def extract_metrics(self, dfs: list) -> tuple:
