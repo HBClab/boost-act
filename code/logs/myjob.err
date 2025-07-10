@@ -417,3 +417,16 @@ Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = 
   could not find function "GGIR"
 Error in GGIR(mode = 1:6, datadir = datadir, outputdir = outputdir, studyname = "boost",  : 
   could not find function "GGIR"
+remote: This repository moved. Please use the new location:[K
+remote:   git@github.com:HBClab/boost-act.git[K
+To git@github.com:hbclab/boost-act.git
+   291a1f7..e7832c6  main -> main
+From github.com:hbclab/boost-act
+ * branch            main       -> FETCH_HEAD
+Error in g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]],  : 
+  object 'dur' not found
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Error in g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]],  : 
+  object 'dur' not found
+In addition: There were 27 warnings (use warnings() to see them)
+There were 50 or more warnings (use warnings() to see the first 50)
