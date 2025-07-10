@@ -1,0 +1,27 @@
+#!/bin/bash
+#$ -pe smp 16
+#$ -cwd
+#$ -q VOSSHBC
+#$ -m bea
+#$ -M zjgilliam@uiowa.edu
+#$ -o $HOME/boost-act/code/logs/myjob.out  # Standard output log
+#$ -e $HOME/boost-act/code/logs/myjob.err  # Standard error log
+
+OMP_NUM_THREADS=10
+
+# Initialize Conda
+source $HOME/miniconda3/etc/profile.d/conda.sh
+
+# Pull changes ff only to push later yk?
+git pull --ff-only origin main
+
+# Activate that env 
+conda activate act-newer
+
+# Run dat script
+Rscript $HOME/boost-act/tests/sleep/sleep_act.R
+
+# Push dem changes
+git add .
+git commit -m "automated commit by that big argon thingy"
+git push
