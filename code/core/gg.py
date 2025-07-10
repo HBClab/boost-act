@@ -17,11 +17,7 @@ class GG:
         self.matched = matched
         self.INTDIR = intdir.rstrip('/') + '/'
         self.OBSDIR = obsdir.rstrip('/') + '/'
-<<<<<<< HEAD
-        self.DERIVATIVES = "derivatives/GGIR-3.2.6-test/"  # Defined within the class
-=======
         self.DERIVATIVES = "derivatives/GGIR-3.2.6-test-ncp/"  # Defined within the class
->>>>>>> 980cb432186a05579a47e1f97a030b68b7e1c741
 
     def run_gg(self):
         """

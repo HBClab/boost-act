@@ -22,10 +22,20 @@ main <- function() {
   # Assign variables
   ProjectDir <- opt$project_dir
   ProjectDerivDir <- opt$deriv_dir
+  last_folder <- basename(ProjectDir)
+  
+  # Determine correct filename
+  if (last_folder == "act-obs-test") {
+    SleepLog <- normalizePath(file.path(ProjectDir, "sleep_log_observational.csv"), mustWork = FALSE)
+  } else if (last_folder == "act-int-test") {
+    SleepLog <- normalizePath(file.path(ProjectDir, "sleep_log_intervention.csv"), mustWork = FALSE)
+  } else {
+    stop("Unrecognized project directory. Exiting.")
+  }
 
-  # Print values to verify
   print(paste("Project Directory:", ProjectDir))
   print(paste("Derivatives Directory:", ProjectDerivDir))
+  print(paste("Sleep Log Location:", SleepLog))
 
   # Helper functions
   SubjectGGIRDeriv <- function(x) {
@@ -91,7 +101,7 @@ main <- function() {
           overwrite = FALSE,
           desiredtz = "America/Chicago",
           print.filename = TRUE,
-          idloc = 2,
+          idloc = 6,
 
           # ==== Part 1: Data loading and basic signal processing ====
           do.report = c(2, 4, 5, 6),
@@ -104,11 +114,10 @@ main <- function() {
           ignorenonwear = FALSE,
 
           # ==== Part 3: Sleep detection ====
-          # Uncomment the below if using external sleep log:
-          # loglocation = "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
-          # colid = 1,
-          # coln1 = 2,
-          # sleepwindowType = "SPT",
+           loglocation = SleepLog,
+           colid = 1,
+           coln1 = 2,
+           sleepwindowType = "TimeInBed",
 
           # ==== Part 4: Physical activity summaries ====
           timewindow = c("WW", "MM", "OO"),
