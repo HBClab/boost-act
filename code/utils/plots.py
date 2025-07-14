@@ -140,8 +140,8 @@ class ACT_PLOTS:
 
 
     def day_plots(self,
-                    act_cycles=['IN', 'LIG', 'MOD', 'VIG'],
-                    sleep_col='dur_spt_sleep_min'):
+                    sleep_col='dur_spt_sleep_min',
+                    dates_col='date'):
         """
         Plots a horizontal stacked bar of daily activity composition:
         Sleep, Inactivity, Light, MVPA, and Unidentified time.
@@ -253,7 +253,8 @@ class ACT_PLOTS:
 
         # Day labels on y-axis
         ax.set_yticks(y_positions)
-        ax.set_yticklabels([f"Day {i+1}" for i in range(len(df_day))])
+        date_labels = df_day[dates_col].astype(str).str.replace(r'\s*00:00:00$', '', regex=True)
+        ax.set_yticklabels(date_labels)
 
         # Add dotted lines between sessions
         for b in boundary_ys:
