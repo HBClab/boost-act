@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
+#TODO
+# - change the summary plots to use summaries by session as they come in?
+# - change the indices for daily plots to have date as index - not day number
+
+
 class ACT_PLOTS:
 
     def __init__(self, sub, ses, person, day):
