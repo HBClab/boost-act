@@ -6,7 +6,6 @@ import requests
 from datetime import datetime, timedelta
 from io import StringIO
 
-
 class ID_COMPARISONS:
     
     def __init__(self, mnt_dir, token, daysago=None) -> None:
