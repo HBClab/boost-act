@@ -19,7 +19,7 @@ class GG:
         self.OBSDIR = obsdir.rstrip('/') + '/'
         self.DERIVATIVES = "derivatives/GGIR-3.2.6-test-ncp-sleep/"  # Defined within the class
 
-    def run_g(self):
+    def run_gg(self):
         """
         Run GGIR for both the internal and observational project directories.
         After each GGIR run, invoke the QC pipeline for that project.
