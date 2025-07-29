@@ -14,7 +14,7 @@ class Group:
     def __init__(self):
         self.obs_path = Pipe.OBS_DIR 
         self.int_path = Pipe.INT_DIR
-        self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test-ncp-sleep'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep')]
+        self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test-ncp-sleep2'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep2')]
         self.path = './plots/group'
 
     '''
