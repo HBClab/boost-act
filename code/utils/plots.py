@@ -153,7 +153,7 @@ class ACT_PLOTS:
 
     def day_plots(self,
                     sleep_col='dur_spt_sleep_min',
-                    dates_col='date'):
+                    dates_col='calendar_date'):
         """
         Plots a horizontal stacked bar of daily activity composition:
         Sleep, Inactivity, Light, MVPA, and Unidentified time.

@@ -1,4 +1,5 @@
 import subprocess
+import traceback
 
 class GG:
     """
@@ -67,10 +68,12 @@ class GG:
                 print(f"QC pipeline finished for {project_type} project.")
 
             except subprocess.CalledProcessError as e:
-                print(f"Error running GGIR for {project_dir}: {e}")
-                # Optionally, continue to next project or break, depending on desired behavior
+                print(f"Error running GGIR for {project_dir}:")
+                traceback.print_exc()        # prints full traceback to stderr
+                # optionally continue or break…
             except Exception as e:
-                print(f"Unexpected error when processing {project_dir}: {e}")
+                tb = traceback.format_exc()
+                print(f"Unexpected error when processing {project_dir}:\n{tb}")
                 # Optionally, continue to next project or break
 
 

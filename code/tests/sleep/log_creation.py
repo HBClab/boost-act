@@ -109,7 +109,7 @@ def _return_report(token):
     if not duplicate_rows.empty:
         print(f"duplicate rows found:\n{duplicate_rows}")
     
-    return df_cleaned, duplicate_rows
+    return df_cleaned, duplicate_row
 
 def _rdss_file_list(duplicates, daysago=None):
     """
