@@ -146,6 +146,7 @@ class Save:
         Returns:
             dict: Updated matches dictionary with the 'study' key added to each entry.
         """
+        matches.pop((6022, 7143), None)
         for boost_id, match_list in matches.items():
             # Ensure boost_id is an integer for comparison
             try:
