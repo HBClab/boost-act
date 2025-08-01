@@ -8,6 +8,7 @@ class Save:
     def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
         results = ID_COMPARISONS('../mnt', token, daysago).compare_ids()
         self.matches = results['matches']
+        self.matches.pop('6022, 7143', None)  # Remove the problematic entry
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
         self.INT_DIR = intdir

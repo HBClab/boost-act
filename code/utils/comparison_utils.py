@@ -11,9 +11,9 @@ class ID_COMPARISONS:
     def __init__(self, mnt_dir, token, daysago=None) -> None:
        self.token = token
        self.mnt_dir = mnt_dir
-       self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-       self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-       self.daysago = daysago
+       self.INT_DIR = '/nfs/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+       self.OBS_DIR = '/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+       self.daysago = None
        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def compare_ids(self):
@@ -124,7 +124,7 @@ class ID_COMPARISONS:
         extracted_data = []
 
         # Loop through all files in the rdss_dir folder.
-        rdss_dir = os.path.join(self.mnt_dir, 'rdss_dir')
+        rdss_dir = '/mnt/rdss/VossLab/Repositories/Accelerometer_Data/'
         for filename in os.listdir(rdss_dir):
             if filename.endswith('.csv'):
                 try:
