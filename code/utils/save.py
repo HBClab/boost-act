@@ -152,7 +152,7 @@ class Save:
             try:
                 boost_id_int = int(boost_id)
             except ValueError:
-                raise ValueError(f"Invalid boost_id format: {boost_id}")
+                continue
 
             # Determine the study type based on the boost_id
             if 6000 < boost_id_int < 8000:
