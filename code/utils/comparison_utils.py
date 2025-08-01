@@ -13,7 +13,7 @@ class ID_COMPARISONS:
        self.mnt_dir = mnt_dir
        self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
        self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-       self.daysago = daysago
+       self.daysago = None
        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def compare_ids(self):
@@ -137,7 +137,7 @@ class ID_COMPARISONS:
                     print(f"Skipping file with unexpected format: {filename}")
 
         df = pd.DataFrame(extracted_data)
-        print(f"EXTRACTED: {extracted_data})
+        print(f"EXTRACTED: {extracted_data}")
 
         if not df.empty:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
