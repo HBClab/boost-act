@@ -124,7 +124,7 @@ class ID_COMPARISONS:
         extracted_data = []
 
         # Loop through all files in the rdss_dir folder.
-        rdss_dir = os.path.join(self.mnt_dir, 'rdss_dir')
+        rdss_dir = os.path.join('mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data')
         for filename in os.listdir(rdss_dir):
             if filename.endswith('.csv'):
                 try:
