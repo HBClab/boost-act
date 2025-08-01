@@ -21,7 +21,6 @@ class ACT_PLOTS:
         self.sub = str(sub).split('-')[1]
         self.ses = str(ses).split('-')[1]
         self.create_paths()
-        print(self.sub, self.ses)
 
 
     def create_paths(self):
@@ -62,7 +61,6 @@ class ACT_PLOTS:
         Plots a horizontal stacked bar of daily activity composition:
         Sleep, Inactivity, Light activity, MVPA, and Unidentified time (if any).
         """
-        print("df_person type:", type(self.df_person))
         # Collect durations
         durations = {cycle: self.df_person[f'dur_day_total_{cycle}_min_pla'].iloc[0] for cycle in act_cycles}
         mvpa = durations.pop('MOD') + durations.pop('VIG')
@@ -153,7 +151,7 @@ class ACT_PLOTS:
 
     def day_plots(self,
                     sleep_col='dur_spt_sleep_min',
-                    dates_col='date'):
+                    dates_col='calendar_date'):
         """
         Plots a horizontal stacked bar of daily activity composition:
         Sleep, Inactivity, Light, MVPA, and Unidentified time.

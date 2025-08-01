@@ -81,11 +81,9 @@ class QC:
                 if not os.path.isdir(ses_path):
                     continue
 
-                # Extract session number (e.g., "ses-1" → "1")
-                ses_num = session_folder.split('-')[-1]
 
                 # Now construct path to results
-                results_dir = os.path.join(ses_path, "output_accel", "results")
+                results_dir = os.path.join(ses_path, f"output_{session_folder}", "results") # new design needs to use output_{session_folder} instead of output_accel
                 if not os.path.isdir(results_dir):
                     continue
 
@@ -127,17 +125,19 @@ class QC:
                 try:
                     del metrics, cal_err, h_considered, valid_days, clean_code_series
                     del dfs, person_file, day_file, qc_file
-                    del sub, ses
                 except UnboundLocalError:
                     pass
 
             # After per‐session QC, make summary plots using the MM files
             all_ses_dir = os.path.join(sub_path, "accel", "output_accel", "results")
             person_glob = glob.glob(os.path.join(all_ses_dir, "part5_personsummary_MM*.csv"))
+            if not person_glob:
+                print(f"No person summary found for {sub_path}")
+                continue
             day_glob    = glob.glob(os.path.join(all_ses_dir, "part5_daysummary_MM*.csv"))
             if person_glob and day_glob:
-                person = pd.read_csv(person_glob[0])
-                day    = pd.read_csv(day_glob[0])
+                person = person_glob[0]
+                day = day_glob[0]
                 plotter = ACT_PLOTS(sub, ses, person=person, day=day)
                 plotter.summary_plot()
                 plotter.day_plots()
@@ -177,6 +177,9 @@ class QC:
         FileNotFoundError if any of the three paths are invalid.
         """
         qc_path, person_path, day_path = dfs
+        for df in dfs:
+            if not os.path.isfile(df):
+                raise FileNotFoundError(f"File not found: {df}")
 
         # Read the CSVs into DataFrames
         qc_df = pd.read_csv(qc_path)
@@ -188,7 +191,9 @@ class QC:
         file_id = qc_df["filename"].iloc[0]
         parts = file_id.split("_")
         sub = parts[0]   # e.g., 'sub-7001'
+        print(f"Processing subject: {sub}")
         ses = parts[1]   # e.g., 'ses-1'
+        print(f"Processing session: {ses}")
 
         # Extract metrics from each DataFrame:
         # 1) Calibration error: from qc_df column 'cal.error.end'
@@ -366,8 +371,10 @@ class QC:
         3 → ERROR: session data missing
         """
         try:
+            print(f"Valid Days - Checking session {ses} for subject {sub}")
+
             # select only the rows for this session
-            mask = self.df_day['filename'].str.contains(f"_ses-{ses}_")
+            mask = self.df_day['filename'].str.contains(f"{ses}_")
             session_df = self.df_day[mask]
 
             if session_df.empty:
