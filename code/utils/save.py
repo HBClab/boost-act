@@ -8,7 +8,7 @@ class Save:
     def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
         results = ID_COMPARISONS('../mnt', token, daysago).compare_ids()
         self.matches = results['matches']
-        self.matches.pop((6022, 7143), None)
+        self.matches.pop('6022, 7143', None)
         print(self.matches)
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
@@ -146,13 +146,12 @@ class Save:
         Returns:
             dict: Updated matches dictionary with the 'study' key added to each entry.
         """
-        matches.pop((6022, 7143), None)
         for boost_id, match_list in matches.items():
             # Ensure boost_id is an integer for comparison
             try:
                 boost_id_int = int(boost_id)
             except ValueError:
-                continue
+                raise ValueError(f"Invalid boost_id format: {boost_id}")
 
             # Determine the study type based on the boost_id
             if 6000 < boost_id_int < 8000:
