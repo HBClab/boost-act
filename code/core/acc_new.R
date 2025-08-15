@@ -111,7 +111,7 @@ main <- function() {
           windowsizes = c(5, 900, 3600),
 
           # ==== Part 2: Non-wear detection ====
-          ignorenonwear = FALSE,
+          ignorenonwear = TRUE,
 
           # ==== Part 3: Sleep detection ====
            loglocation = SleepLog,
