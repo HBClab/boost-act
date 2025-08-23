@@ -11,8 +11,8 @@ class ID_COMPARISONS:
     def __init__(self, mnt_dir, token, daysago=None) -> None:
        self.token = token
        self.mnt_dir = mnt_dir
-       self.INT_DIR = '/Volumes/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-       self.OBS_DIR = '/Volumes/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+       self.INT_DIR = '/nfs/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+       self.OBS_DIR = '/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
        self.daysago = None
        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 

@@ -1,43 +1,23 @@
+
+/mnt/lss/Users/zak/ggir
+
+
 #!/usr/bin/env Rscript
 
 # Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6-test/"
-library(optparse)
 library(GGIR)
 
 main <- function() {
-  # Define the option list
-  option_list <- list(
-    make_option(c("-p", "--project_dir"), type = "character",
-                default = "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-Experiment/data/act-int-test/",
-                help = "Path to the project directory", metavar = "character"),
-    make_option(c("-d", "--deriv_dir"), type = "character",
-                default = "/derivatives/GGIR-3.2.6-test/",
-                help = "Path to the derivatives directory", metavar = "character")
-  )
-
-  # Parse the options
-  opt_parser <- OptionParser(option_list = option_list)
-  opt <- parse_args(opt_parser)
 
   # Assign variables
-  ProjectDir <- opt$project_dir
-  ProjectDerivDir <- opt$deriv_dir
-  last_folder <- basename(ProjectDir)
-  
-  # Determine correct filename
-  if (last_folder == "act-obs-test") {
-    SleepLog <- normalizePath(file.path(ProjectDir, "sleep_log_observational.csv"), mustWork = FALSE)
-  } else if (last_folder == "act-int-test") {
-    SleepLog <- normalizePath(file.path(ProjectDir, "sleep_log_intervention.csv"), mustWork = FALSE)
-  } else {
-    stop("Unrecognized project directory. Exiting.")
-  }
+  ProjectDir <- "/Shared/vosslabhpc/Users/zak/files"
+  ProjectDerivDir <- "/derivatives/ggir/"
 
+  # Print values to verify
   print(paste("Project Directory:", ProjectDir))
   print(paste("Derivatives Directory:", ProjectDerivDir))
-  print(paste("Sleep Log Location:", SleepLog))
 
-  # Helper functions
+  # Helper function
   SubjectGGIRDeriv <- function(x) {
     a <- dirname(x)
     paste0(ProjectDir, ProjectDerivDir, a)
@@ -59,7 +39,7 @@ main <- function() {
   }
 
   # List accel.csv files
-  filepattern <- "*accel.csv"
+  filepattern <- "*accel.gt3x"
   GGIRfiles <- list.files(subdirs, pattern = filepattern, recursive = TRUE,
                           include.dirs = TRUE, full.names = TRUE, no.. = TRUE)
   print(paste("GGIR Files before splitting: ", GGIRfiles))
@@ -101,7 +81,8 @@ main <- function() {
           overwrite = FALSE,
           desiredtz = "America/Chicago",
           print.filename = TRUE,
-          idloc = 6,
+          idloc = 2,
+          save_ms5rawlevels = "csv"
 
           # ==== Part 1: Data loading and basic signal processing ====
           do.report = c(2, 4, 5, 6),
@@ -113,12 +94,12 @@ main <- function() {
           # ==== Part 2: Non-wear detection ====
           ignorenonwear = TRUE,
 
-          # ==== Part 3: Sleep detection ====
-          loglocation = SleepLog,
-          colid = 1,
-          coln1 = 2,
-          sleepwindowType = "TimeInBed",
-          imputeTimegaps = TRUE, # since idle sleep mode is on for actigraph devices
+          # ==== Part 3: Sleep detection (optional if using external file) ====
+          # Uncomment the below if using external sleep log:
+          # loglocation = "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sleep.csv",
+          # colid = 1,
+          # coln1 = 2,
+          # sleepwindowType = "SPT",
 
           # ==== Part 4: Physical activity summaries ====
           timewindow = c("WW", "MM", "OO"),
@@ -145,3 +126,4 @@ main <- function() {
 if (!interactive()) {
   main()
 }
+
