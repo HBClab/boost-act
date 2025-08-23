@@ -448,6 +448,10 @@
       "7173": [
         "data/obs/UI/7173/daily_plot.png",
         "data/obs/UI/7173/summary_plot.png"
+      ],
+      "7055": [
+        "data/obs/UI/7055/daily_plot.png",
+        "data/obs/UI/7055/summary_plot.png"
       ]
     }
   }
