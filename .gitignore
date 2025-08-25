@@ -6,3 +6,6 @@ code/core/__pycache__/
 code/utils/__pycache__/
 code/utils/comparison_utils.py
 code/tests/
+
+venv
+direnv
