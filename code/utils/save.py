@@ -153,7 +153,7 @@ class Save:
                 raise ValueError(f"Invalid boost_id format: {boost_id}")
 
             # Determine the study type based on the boost_id
-            if boost_id_int < 8000:
+            if 6000 < boost_id_int < 8000:
                 study = 'obs'
             elif boost_id_int >= 8000:
                 study = 'int'

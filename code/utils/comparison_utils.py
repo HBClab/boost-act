@@ -100,6 +100,7 @@ class ID_COMPARISONS:
             logging.critical(f"found boost_id(s) with multiple lab_ids: {', '.join(map(str, problematic_boost_ids))}. "
                             "these entries will be removed from processing.")
             df = df[~df['boost_id'].isin(problematic_boost_ids)]
+            print(df)
         
         # identify and separate duplicate rows based on any column.
         duplicate_rows = df[df.duplicated(keep=False)]
@@ -124,8 +125,9 @@ class ID_COMPARISONS:
         extracted_data = []
 
         # Loop through all files in the rdss_dir folder.
-        rdss_dir = '/mnt/rdss/VossLab/Repositories/Accelerometer_Data/'
+        rdss_dir = os.path.join('/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data')
         for filename in os.listdir(rdss_dir):
+            print(filename)
             if filename.endswith('.csv'):
                 try:
                     base_name = filename.split(' ')[0]  # Extract lab_id
@@ -135,6 +137,7 @@ class ID_COMPARISONS:
                     print(f"Skipping file with unexpected format: {filename}")
 
         df = pd.DataFrame(extracted_data)
+        print(f"EXTRACTED: {extracted_data}")
 
         if not df.empty:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
@@ -152,6 +155,8 @@ class ID_COMPARISONS:
             merged_df = matched_df.merge(duplicates, left_on='ID', right_on='lab_id')
         else:
             merged_df = pd.DataFrame()
+        print(f"MERGED: {merged_df}")
+        
 
         return df, merged_df
 
