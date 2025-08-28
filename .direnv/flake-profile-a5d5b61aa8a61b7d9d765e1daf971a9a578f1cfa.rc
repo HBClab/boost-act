@@ -15,7 +15,7 @@ IN_NIX_SHELL='impure'
 export IN_NIX_SHELL
 LINENO='76'
 MACHTYPE='x86_64-pc-linux-gnu'
-NIX_BUILD_CORES='22'
+NIX_BUILD_CORES='16'
 export NIX_BUILD_CORES
 NIX_CFLAGS_COMPILE=' -frandom-seed=1d4hkxkils'
 export NIX_CFLAGS_COMPILE
@@ -91,7 +91,7 @@ declare -a envHostHostHooks=()
 declare -a envHostTargetHooks=()
 declare -a envTargetTargetHooks=()
 declare -a fixupOutputHooks=('if [ -z "${dontPatchELF-}" ]; then patchELF "$prefix"; fi' 'if [[ -z "${noAuditTmpdir-}" && -e "$prefix" ]]; then auditTmpdir "$prefix"; fi' 'if [ -z "${dontGzipMan-}" ]; then compressManPages "$prefix"; fi' '_moveLib64' '_moveSbin' '_moveSystemdUserUnits' 'patchShebangsAuto' '_pruneLibtoolFiles' '_doStrip' )
-guess='22'
+guess='16'
 initialPath='/nix/store/psy9v2asypgl9ylg8cnzkixc7fv0snj0-coreutils-9.7 /nix/store/c14zwgl8hf1wm0izij2i16xvk8ak70cy-findutils-4.10.0 /nix/store/ibx4jfwlhjg4g0s6rrxrpaxa3ka8ns4m-diffutils-3.12 /nix/store/pr318zsl44jdwpk9wk0sdrn19b6in7ah-gnused-4.9 /nix/store/bc6zxzjnkjp4r9nhz5imy3cypvdh6r4n-gnugrep-3.12 /nix/store/nv3y7zb1cwz1h9qy7nwz0s54j8dl1kqj-gawk-5.3.2 /nix/store/lp82dcnrzljyix6yigwzrlpr1smvpmb0-gnutar-1.35 /nix/store/6ag5dhk7sma61p6vl0kazfmpbrq08nqh-gzip-1.14 /nix/store/ykdv4id6893gmkqwdmbimq237c1xqvq7-bzip2-1.0.8-bin /nix/store/6bwp1y45zlyvpr4ja2sk1yi9v5mrs94x-gnumake-4.4.1 /nix/store/00zrahbb32nzawrmv9sjxn36h7qk9vrs-bash-5.2p37 /nix/store/c9xmgszbf6i4dfq9r953khk9d7fdqigw-patch-2.8 /nix/store/ikfwx7kbwz9zr7fziiac7f57jgbh3bnv-xz-5.8.1-bin /nix/store/3pdmbqy86wsbjdazxv1n3vrmj60vn0ri-file-5.45'
 mesonFlags=''
 export mesonFlags
