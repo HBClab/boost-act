@@ -9,6 +9,7 @@ class Save:
         results = ID_COMPARISONS('../mnt', token, daysago).compare_ids()
         self.matches = results['matches']
         self.matches.pop('6022, 7143', None)  # Remove the problematic entry
+        self.matches.pop('7178, 8066', None)  # Remove the problematic entry
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
         self.INT_DIR = intdir
