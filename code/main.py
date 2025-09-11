@@ -15,7 +15,7 @@ logger = logging.getLogger()  # root logger
 
 if __name__ == '__main__':
     # Expect exactly 2 arguments: daysago (integer) and token (string)
-    if len(sys.argv) != 4:
+    if len(sys.argv) < 3:
         print("Usage: python main.py <daysago> <token> <system>")
         print("  <daysago> must be an integer, <token> must be a non-empty string.")
         sys.exit(1)
