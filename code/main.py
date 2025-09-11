@@ -15,8 +15,8 @@ logger = logging.getLogger()  # root logger
 
 if __name__ == '__main__':
     # Expect exactly 2 arguments: daysago (integer) and token (string)
-    if len(sys.argv) != 3:
-        print("Usage: python main.py <daysago> <token>")
+    if len(sys.argv) != 4:
+        print("Usage: python main.py <daysago> <token> <system>")
         print("  <daysago> must be an integer, <token> must be a non-empty string.")
         sys.exit(1)
 
@@ -33,7 +33,14 @@ if __name__ == '__main__':
         print("Error: <token> cannot be empty.")
         sys.exit(1)
 
-    p = Pipe(token, daysago)
+    # Parse system
+    system = sys.argv[3]
+    if not system:
+        print("System not specified, defaulting to 'vosslnx'.")
+    elif system not in ['vosslnx', 'argon', 'local']:
+        print("Error: <system> must be one of 'vosslnx', 'argon', or 'local'.")
+
+    p = Pipe(token, daysago, system)
     p.run_pipe()
 
     Group().plot_person()

@@ -5,13 +5,22 @@ from core.gg import GG
 import sys
 
 class Pipe:
-    INT_DIR = '/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-    OBS_DIR = '/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-    RDSS_DIR = '/mnt/rdss/VossLab/Repositories/Accelerometer_Data'
-    def __init__(self, token, daysago):
+    def __init__(self, token, daysago, system='vosslnx'):
         self.token = token
         self.daysago = daysago
 
+        if system == 'vosslnx':
+            self.INT_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+            self.OBS_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+            self.RDSS_DIR = '/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data'
+        elif system =="local":
+            self.INT_DIR = '/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+            self.OBS_DIR = '/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+            self.RDSS_DIR = '/mnt/rdss/VossLab/Repositories/Accelerometer_Data'
+        elif system == "argon":
+            self.INT_DIR = '/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
+            self.OBS_DIR = '/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
+            self.RDSS_DIR = None
     def run_pipe(self):
         self._create_syms()
         matched = Save(
