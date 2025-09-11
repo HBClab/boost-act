@@ -36,6 +36,7 @@ if __name__ == '__main__':
     # Parse system
     if len(sys.argv)>3:
         system = sys.argv[3]
+    else: system = None
     if not system:
         print("System not specified, defaulting to 'vosslnx'.")
     elif system not in ['vosslnx', 'argon', 'local']:
