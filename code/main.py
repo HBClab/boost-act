@@ -34,7 +34,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Parse system
-    if sys.arvg[3]:
+    if sys.argv[3]:
         system = sys.argv[3]
     if not system:
         print("System not specified, defaulting to 'vosslnx'.")
