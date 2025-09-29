@@ -30,7 +30,7 @@ class GG:
         from code.utils.qc import QC
 
         for project_dir in [self.INTDIR, self.OBSDIR]:
-            command = f"Rscript core/acc_new.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
+            command = f"Rscript code/core/acc_new.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
 
             try:
                 # Execute the command in a new subprocess
