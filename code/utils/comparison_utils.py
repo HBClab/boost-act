@@ -6,15 +6,16 @@ import requests
 from datetime import datetime, timedelta
 from io import StringIO
 
+
 class ID_COMPARISONS:
-    
-    def __init__(self, mnt_dir, token, daysago=None) -> None:
-       self.token = token
-       self.mnt_dir = mnt_dir
-       self.INT_DIR = '/nfs/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-       self.OBS_DIR = '/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-       self.daysago = None
-       logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+    def __init__(self, rdss_dir, token, daysago=None) -> None:
+        self.token = token
+        self.rdss_dir = os.fspath(rdss_dir) if rdss_dir is not None else None
+        if not self.rdss_dir:
+            raise ValueError("RDSS directory is required to compare IDs.")
+        self.daysago = daysago
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def compare_ids(self):
         """
@@ -125,7 +126,9 @@ class ID_COMPARISONS:
         extracted_data = []
 
         # Loop through all files in the rdss_dir folder.
-        rdss_dir = os.path.join('/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data')
+        rdss_dir = self.rdss_dir
+        if not os.path.isdir(rdss_dir):
+            raise FileNotFoundError(f"RDSS directory not found: {rdss_dir}")
         for filename in os.listdir(rdss_dir):
             print(filename)
             if filename.endswith('.csv'):
@@ -186,6 +189,3 @@ class ID_COMPARISONS:
 1153   584  2018-10-16   584 (2018-10-16)RAW.csv"""
 
 # TOKEN FOR REFERENCE
-
-
-

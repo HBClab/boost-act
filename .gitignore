@@ -1,7 +1,151 @@
-# Ignore Python cache directories
+# Python bytecode and caches
 __pycache__/
 */__pycache__/
-code/__pycache__/
-code/core/__pycache__/
-code/utils/__pycache__/
-/cron.sh
+*.py[cod]
+*$py.class
+__pypackages__/
+
+# Python build artifacts
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+pip-wheel-metadata/
+*.egg
+*.egg-info/
+MANIFEST
+
+# Compiled extensions
+*.so
+*.pyd
+*.dll
+
+# Virtual environments & interpreters
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+pythonenv*
+.conda/
+.condarc
+conda-meta/
+.pyenv/
+.python-version
+.pipenv*
+.pdm-python/
+
+# Tool caches
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+.tox/
+.nox/
+.dmypy.json
+.dmypy/
+.pyre/
+.pytype/
+.ruff_cache/
+.ninja_log
+.cache/
+.benchmarks/
+.ipython/
+
+# Testing & coverage reports
+.coverage
+.coverage.*
+*.cover
+*.py,cover
+*.gcov
+*.lcov
+htmlcov/
+nosetests.xml
+coverage.xml
+pytestdebug.log
+
+# Direnv & local env configuration
+.direnv/
+.envrc
+.env
+.env.*
+*.env
+dotenv*
+
+# Logs and runtime outputs
+*.log
+*.log.*
+*.err
+*.out
+logs/
+code/logs/
+log/
+log.txt
+*.tmp
+*.bak
+*.swp
+*.swo
+*.pid
+
+# Generated data & mounts
+mnt/
+plots/
+outputs/
+**/derivatives/
+*.sqlite
+*.sqlite3
+*.db
+*.pkl
+
+# Notebook artifacts
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+*.nbconvert/
+
+# R artifacts
+*.Rhistory
+*.RData
+*.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+Icon?
+
+# Editor folders and settings
+.idea/
+.vscode/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+.spyproject/
+
+# Shell cruft
+*.sh~
+*.bash_history
+*.zsh_history
+
+# Misc binaries & archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.gz
+*.bz2
+*.xz

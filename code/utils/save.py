@@ -1,12 +1,15 @@
 import os
 import shutil
-from utils.comparison_utils import ID_COMPARISONS
+from code.utils.comparison_utils import ID_COMPARISONS
 
 
 class Save:
 
     def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
-        results = ID_COMPARISONS('../mnt', token, daysago).compare_ids()
+        if not rdssdir:
+            raise ValueError("RDSS directory is not configured for this system; cannot ingest files.")
+
+        results = ID_COMPARISONS(rdss_dir=rdssdir, token=token, daysago=daysago).compare_ids()
         self.matches = results['matches']
         self.matches.pop('6022, 7143', None)  # Remove the problematic entry
         self.dupes = results['duplicates']
@@ -330,5 +333,3 @@ class Save:
                     self.matches[subject_key] = [entry]
         
         return self.matches
-
-

@@ -1,23 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Source the Conda activate script
-source /opt/anaconda3-2024.10-1/etc/profile.d/conda.sh
+set -euo pipefail
 
-# Activate Conda env
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONDA_PREFIX_ROOT="${CONDA_PREFIX_ROOT:-/opt/anaconda3-2024.10-1}"
+
+# shellcheck source=/dev/null
+source "${CONDA_PREFIX_ROOT}/etc/profile.d/conda.sh"
 conda activate act
 
-# Move to project home dir
-cd "$(dirname "$0")"
-# grab any new code changes, otherwise skip
+cd "${REPO_ROOT}"
+
 git pull --ff-only origin main
 
-# run pipe
-cd code && python main.py 1 "DE4E2DB72778DACA9B8848574107D2F5"
+if [[ -z "${BOOST_TOKEN:-}" ]]; then
+  echo "BOOST_TOKEN is required. Aborting." >&2
+  exit 1
+fi
 
-#move back to home dir
-cd ..
+# TODO: replace this placeholder logic with host-based system detection.
+SYSTEM="${BOOST_SYSTEM:-vosslnx}"
 
-# commit and push made changes
-git add .
-git commit -m "automated commit by vosslab linux"
-git push
+DAYS_AGO="${DAYS_AGO:-1}"
+
+python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}"
+
+if ! git diff --quiet; then
+  git add .
+  git commit -m "automated commit by vosslab linux"
+  git push
+fi

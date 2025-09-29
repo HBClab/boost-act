@@ -3,7 +3,7 @@ import glob
 import pandas as pd
 import plotly.graph_objects as go
 import logging
-from utils.pipe import Pipe 
+from code.utils.pipe import Pipe
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class Group:
-    def __init__(self):
+    def __init__(self, system: str = 'vosslnx'):
+        Pipe.configure(system)
+        self.system = system
         self.obs_path = Pipe.OBS_DIR 
         self.int_path = Pipe.INT_DIR
         self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test-ncp-sleep2'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep2')]

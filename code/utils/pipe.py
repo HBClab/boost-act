@@ -1,45 +1,71 @@
+from pathlib import Path
 
-from utils.mnt import create_symlinks
-from utils.save import Save
-from core.gg import GG
-import sys
+from code.utils.mnt import create_symlinks
+from code.utils.save import Save
+from code.core.gg import GG
+
+
 
 class Pipe:
+    # class-level "exported" attributes
+    INT_DIR: str = ""
+    OBS_DIR: str = ""
+    RDSS_DIR: str = ""
+
+    _SYSTEM_PATHS = {
+        "vosslnx": dict(
+            INT_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test",
+            OBS_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
+            RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
+        ),
+        "local": dict(
+            INT_DIR="/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test",
+            OBS_DIR="/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
+            RDSS_DIR="/mnt/rdss/VossLab/Repositories/Accelerometer_Data",
+        ),
+        "argon": dict(
+            INT_DIR="/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test",
+            OBS_DIR="/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
+            RDSS_DIR=None,
+        ),
+    }
+
+    @classmethod
+    def configure(cls, system: str = "vosslnx") -> None:
+        try:
+            paths = cls._SYSTEM_PATHS[system]
+        except KeyError as e:
+            raise ValueError(f"Unknown system: {system}") from e
+        cls.INT_DIR = paths["INT_DIR"]
+        cls.OBS_DIR = paths["OBS_DIR"]
+        cls.RDSS_DIR = paths["RDSS_DIR"]
+
     def __init__(self, token, daysago, system='vosslnx'):
+        # ensure class attrs are set for everyone (Pipe.INT_DIR etc.)
+        type(self).configure(system)
         self.token = token
         self.daysago = daysago
+        self.system = system
 
-        if system == 'vosslnx':
-            self.INT_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-            self.OBS_DIR = '/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-            self.RDSS_DIR = '/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data'
-        elif system =="local":
-            self.INT_DIR = '/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-            self.OBS_DIR = '/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-            self.RDSS_DIR = '/mnt/rdss/VossLab/Repositories/Accelerometer_Data'
-        elif system == "argon":
-            self.INT_DIR = '/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test'
-            self.OBS_DIR = '/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test'
-            self.RDSS_DIR = None
     def run_pipe(self):
-        self._create_syms()
         matched = Save(
-            intdir=self.INT_DIR,
-            obsdir=self.OBS_DIR,
-            rdssdir=self.RDSS_DIR,
+            intdir=type(self).INT_DIR,
+            obsdir=type(self).OBS_DIR,
+            rdssdir=type(self).RDSS_DIR,
             token=self.token,
             daysago=self.daysago
         ).save()
 
-        with open('res/data.json', 'w') as file:
-            file.write('{\n}')
-            file.write(',\n'.join(f'   "{key}": "{value}"' for key, value in matched.items()))
+        # (side note: your JSON writing was invalid; use json.dump)
+        import json, pathlib
+        pathlib.Path("res").mkdir(exist_ok=True)
+        with open('res/data.json', 'w') as f:
+            json.dump(matched, f, indent=2)
 
-        GG(matched=matched, intdir=self.INT_DIR, obsdir=self.OBS_DIR).run_gg()
-
+        GG(
+            matched=matched,
+            intdir=type(self).INT_DIR,
+            obsdir=type(self).OBS_DIR,
+            system=self.system,
+        ).run_gg()
         return None
-
-    def _create_syms(self):
-        return create_symlinks('../mnt')
-
-

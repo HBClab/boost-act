@@ -6,7 +6,7 @@ class GG:
     Class to execute GGIR processing for matched subject records.
     """
 
-    def __init__(self, matched, intdir, obsdir):
+    def __init__(self, matched, intdir, obsdir, system):
         """
         Initialize the GG instance.
 
@@ -19,6 +19,7 @@ class GG:
         self.INTDIR = intdir.rstrip('/') + '/'
         self.OBSDIR = obsdir.rstrip('/') + '/'
         self.DERIVATIVES = "derivatives/GGIR-3.2.6-test-ncp-sleep2/"  # Defined within the class
+        self.system = system
 
     def run_gg(self):
         """
@@ -26,7 +27,7 @@ class GG:
         After each GGIR run, invoke the QC pipeline for that project.
         """
         # Assume QC is available at this import path
-        from utils.qc import QC 
+        from code.utils.qc import QC
 
         for project_dir in [self.INTDIR, self.OBSDIR]:
             command = f"Rscript core/acc_new.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
@@ -63,7 +64,7 @@ class GG:
 
                 # Run QC for this project
                 print(f"Starting QC pipeline for {project_type} project.")
-                qc_runner = QC(project_type)
+                qc_runner = QC(project_type, system=self.system)
                 qc_runner.qc()
                 print(f"QC pipeline finished for {project_type} project.")
 
@@ -75,5 +76,3 @@ class GG:
                 tb = traceback.format_exc()
                 print(f"Unexpected error when processing {project_dir}:\n{tb}")
                 # Optionally, continue to next project or break
-
-

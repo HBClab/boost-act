@@ -1,12 +1,12 @@
 import os
 import glob
 import pandas as pd
-from utils.pipe import Pipe
-from utils.plots import ACT_PLOTS, create_json
+from code.utils.pipe import Pipe
+from code.utils.plots import ACT_PLOTS, create_json
 
 
 class QC:
-    def __init__(self, project: str):
+    def __init__(self, project: str, system: str = 'vosslnx'):
         """
         Initialize a QC instance.
 
@@ -25,6 +25,10 @@ class QC:
         csv_path : str
             Path to the master CSV where QC outcomes are logged.
         """
+
+        # Ensure directories are configured for the active system
+        Pipe.configure(system)
+        self.system = system
 
         # Determine the expected days worn based on project type
         if project == 'obs':

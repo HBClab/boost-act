@@ -1,8 +1,6 @@
-from utils.mnt import create_symlinks
-from utils.save import Save
-from utils.group import Group
-from core.gg import GG
-from utils.pipe import Pipe
+from code.utils.group import Group
+from code.core.gg import GG
+from code.utils.pipe import Pipe
 import sys
 import logging
 
@@ -14,10 +12,11 @@ logger = logging.getLogger()  # root logger
 
 
 if __name__ == '__main__':
-    # Expect exactly 2 arguments: daysago (integer) and token (string)
-    if len(sys.argv) != 4:
-        print("Usage: python main.py <daysago> <token> <system>")
+    # Expect at least 2 arguments: daysago (integer) and token (string)
+    if len(sys.argv) < 3:
+        print("Usage: python main.py <daysago> <token> [system]")
         print("  <daysago> must be an integer, <token> must be a non-empty string.")
+        print("  [system] optional values: 'vosslnx', 'argon', 'local' (default 'vosslnx').")
         sys.exit(1)
 
     # Parse daysago
@@ -34,15 +33,17 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Parse system
-    system = sys.argv[3]
-    if not system:
-        print("System not specified, defaulting to 'vosslnx'.")
-    elif system not in ['vosslnx', 'argon', 'local']:
+    if len(sys.argv) >= 4:
+        system = sys.argv[3]
+    else:
+        system = 'vosslnx'
+
+    if system not in ['vosslnx', 'argon', 'local']:
         print("Error: <system> must be one of 'vosslnx', 'argon', or 'local'.")
+        sys.exit(1)
 
     p = Pipe(token, daysago, system)
     p.run_pipe()
 
-    Group().plot_person()
-    Group().plot_session()
-
+    Group(system).plot_person()
+    Group(system).plot_session()
