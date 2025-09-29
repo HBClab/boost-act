@@ -209,3 +209,35 @@ sub-7098,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days
 sub-7168,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7065,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7150,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8053,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8023,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8003,ses-4,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7189,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7182,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7186,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7187,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8064,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7197,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7192,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7173,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7188,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7196,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8020,ses-3,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8005,ses-5,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8040,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8046,ses-2,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8032,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7183,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8050,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8038,ses-2,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7055,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8061,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8036,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8052,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7214,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7190,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7200,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7204,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7209,ses-1,Pass,ERROR: Too few hours considered,Pass,ERROR: Fewer than 2 weekend days for at least one session
+sub-7203,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7208,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays

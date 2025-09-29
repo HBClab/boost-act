@@ -33,12 +33,12 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Parse system
-    if len(sys.argv) >= 4:
+    if len(sys.argv)>3:
         system = sys.argv[3]
-    else:
-        system = 'vosslnx'
-
-    if system not in ['vosslnx', 'argon', 'local']:
+    else: system = None
+    if not system:
+        print("System not specified, defaulting to 'vosslnx'.")
+    elif system not in ['vosslnx', 'argon', 'local']:
         print("Error: <system> must be one of 'vosslnx', 'argon', or 'local'.")
         sys.exit(1)
 
