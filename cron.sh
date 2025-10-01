@@ -3,10 +3,8 @@
 # set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONDA_PREFIX_ROOT="${CONDA_PREFIX_ROOT:-/opt/anaconda3-2024.10-1}"
 
-# shellcheck source=/dev/null
-source "${CONDA_PREFIX_ROOT}/etc/profile.d/conda.sh"
+source /opt/anaconda3-2024.10-1/etc/profile.d/conda.sh
 conda activate act
 
 cd "${REPO_ROOT}"
@@ -21,7 +19,7 @@ fi
 # TODO: replace this placeholder logic with host-based system detection.
 SYSTEM="${BOOST_SYSTEM:-vosslnx}"
 
-DAYS_AGO="${DAYS_AGO:-1}"
+DAYS_AGO="${DAYS_AGO:-30}"
 
 python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}"
 
