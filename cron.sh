@@ -19,7 +19,7 @@ fi
 # TODO: replace this placeholder logic with host-based system detection.
 SYSTEM="${BOOST_SYSTEM:-vosslnx}"
 
-DAYS_AGO="${DAYS_AGO:-10}"
+DAYS_AGO="${DAYS_AGO:-30}"
 
 python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}"
 
