@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+# set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONDA_PREFIX_ROOT="${CONDA_PREFIX_ROOT:-/opt/anaconda3-2024.10-1}"
