@@ -42,7 +42,7 @@ class QC:
 
 
         # Path to the master CSV that accumulates QC errors/warnings
-        self.csv_path = ".code/logs/GGIR_QC_errs.csv"
+        self.csv_path = "./code/logs/GGIR_QC_errs.csv"
 
 
     def qc(self) -> None:

@@ -29,10 +29,10 @@ class Save:
         # If duplicates exist, process and merge them.
         if not len(self.dupes) == 0:
             matches = self._handle_and_merge_duplicates(self.dupes)
-        
+
         # Move the files based on the final matches.
         self._move_files(matches=matches)
-        return matches
+        return self._prepare_for_json(matches)
 
     def _move_files_test(self, matches):
         """
@@ -202,6 +202,20 @@ class Save:
                 print(f"Skipping subject {subject_id} due to error: {e}")
                 continue  # Skip this subject and move to the next one
 
+        return matches
+
+
+    def _prepare_for_json(self, matches):
+        """Convert non-serializable values (e.g., pandas Timestamps) to strings."""
+        for records in matches.values():
+            for record in records:
+                date_value = record.get('date')
+                if date_value is None or isinstance(date_value, str):
+                    continue
+                if hasattr(date_value, "isoformat"):
+                    record['date'] = date_value.isoformat()
+                else:
+                    record['date'] = str(date_value)
         return matches
 
 
