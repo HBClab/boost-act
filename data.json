@@ -72,6 +72,10 @@
       "8014": [
         "data/int/UI/8014/daily_plot.png",
         "data/int/UI/8014/summary_plot.png"
+      ],
+      "8020": [
+        "data/int/UI/8020/daily_plot.png",
+        "data/int/UI/8020/summary_plot.png"
       ]
     }
   },
