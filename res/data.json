@@ -59,16 +59,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7195/accel/ses-1/sub-7195_ses-1_accel.csv"
     }
   ],
-  "7202": [
-    {
-      "filename": "1399 (2025-09-06)RAW.csv",
-      "labID": "1399",
-      "date": "2025-09-06T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7202/accel/ses-1/sub-7202_ses-1_accel.csv"
-    }
-  ],
   "7213": [
     {
       "filename": "1409 (2025-09-19)RAW.csv",
