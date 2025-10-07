@@ -1,6 +1,9 @@
 import subprocess
 import traceback
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 class GG:
     """
     Class to execute GGIR processing for matched subject records.
@@ -47,6 +50,8 @@ class GG:
                 # Stream output line-by-line
                 for line in process.stdout:
                     print(line, end='')  # already includes newline
+                    logger.info(line.strip(), end='')
+                    logger.debug(line.strip(), end='')
 
                 process.stdout.close()
                 process.wait()
