@@ -76,6 +76,9 @@ class QC:
             if not os.path.isdir(accel_dir):
                 continue
 
+            # Track per-session MM summary files in case aggregated outputs are missing
+            session_records = []
+
             # Iterate over session folders inside the accel directory
             for session_folder in os.listdir(accel_dir):
                 if not session_folder.startswith("ses"):
@@ -125,6 +128,14 @@ class QC:
                 self.valid_days_check(sub, ses)
                 self.cleaning_code_check(clean_code_series, calendar_date, sub, ses)
 
+                # Store session-level MM files for fallback plotting
+                session_records.append({
+                    "sub": sub,
+                    "ses": ses,
+                    "person": person_file,
+                    "day": day_file,
+                })
+
                 # Clean up
                 try:
                     del metrics, cal_err, h_considered, valid_days, clean_code_series
@@ -134,17 +145,27 @@ class QC:
 
             # After per‐session QC, make summary plots using the MM files
             all_ses_dir = os.path.join(sub_path, "accel", "output_accel", "results")
-            person_glob = glob.glob(os.path.join(all_ses_dir, "part5_personsummary_MM*.csv"))
-            if not person_glob:
-                print(f"No person summary found for {sub_path}")
+            agg_person = glob.glob(os.path.join(all_ses_dir, "part5_personsummary_MM*.csv"))
+            agg_day = glob.glob(os.path.join(all_ses_dir, "part5_daysummary_MM*.csv"))
+
+            if agg_person and agg_day:
+                person = sorted(agg_person)[0]
+                day = sorted(agg_day)[0]
+                plot_sub = entry
+                plot_ses = "ses-agg"
+            elif session_records:
+                record = session_records[0]
+                person = record["person"]
+                day = record["day"]
+                plot_sub = record["sub"]
+                plot_ses = record["ses"]
+            else:
+                print(f"No person/day summary found for {sub_path}")
                 continue
-            day_glob    = glob.glob(os.path.join(all_ses_dir, "part5_daysummary_MM*.csv"))
-            if person_glob and day_glob:
-                person = person_glob[0]
-                day = day_glob[0]
-                plotter = ACT_PLOTS(sub, ses, person=person, day=day)
-                plotter.summary_plot()
-                plotter.day_plots()
+
+            plotter = ACT_PLOTS(plot_sub, plot_ses, person=person, day=day)
+            plotter.summary_plot()
+            plotter.day_plots()
 
         # create the json file used in the application
         create_json('plots')
