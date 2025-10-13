@@ -134,6 +134,7 @@ class QC:
 
             # After per‐session QC, make summary plots using the MM files
             all_ses_dir = os.path.join(sub_path, "accel", "output_accel", "results")
+            print(all_ses_dir)
             person_glob = glob.glob(os.path.join(all_ses_dir, "part5_personsummary_MM*.csv"))
             if not person_glob:
                 print(f"No person summary found for {sub_path}")
