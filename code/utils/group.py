@@ -75,6 +75,9 @@ class Group:
                     base_dir, entry,
                     "accel", "output_accel", "results"
                 )
+                if not os.path.isdir(results_dir):
+                    logger.debug("Results directory missing for %s: %s", entry, results_dir)
+                    continue
                 pattern = os.path.join(results_dir, "part5_personsummary_MM*.csv")
                 matches = glob.glob(pattern)
                 if not matches:
@@ -125,6 +128,9 @@ class Group:
                         f"output_{session_folder}",
                         "results"
                     )
+                    if not os.path.isdir(results_dir):
+                        logger.debug("Results directory missing for %s/%s: %s", entry, session_folder, results_dir)
+                        continue
                     pattern = os.path.join(results_dir, "part5_personsummary_MM*.csv")
                     matches = glob.glob(pattern)
                     if not matches:
