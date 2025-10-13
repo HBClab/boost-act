@@ -1,6 +1,62 @@
 {
-  "7010": [
+  "8031": [
     {
-      "filename": "1118 (2025-09-05)RAW.csv",
-      "labID": "1118",
-      "date": 
+      "filename": "1201 (2025-09-19)RAW.csv",
+      "labID": "1201",
+      "date": "2025-09-19T00:00:00",
+      "run": 1,
+      "study": "int",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8031/accel/ses-1/sub-8031_ses-1_accel.csv"
+    }
+  ],
+  "8060": [
+    {
+      "filename": "1377 (2025-09-25)RAW.csv",
+      "labID": "1377",
+      "date": "2025-09-25T00:00:00",
+      "run": 1,
+      "study": "int",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8060/accel/ses-1/sub-8060_ses-1_accel.csv"
+    }
+  ],
+  "7195": [
+    {
+      "filename": "1391 (2025-09-16)RAW.csv",
+      "labID": "1391",
+      "date": "2025-09-16T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7195/accel/ses-1/sub-7195_ses-1_accel.csv"
+    }
+  ],
+  "7213": [
+    {
+      "filename": "1409 (2025-09-19)RAW.csv",
+      "labID": "1409",
+      "date": "2025-09-19T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7213/accel/ses-1/sub-7213_ses-1_accel.csv"
+    }
+  ],
+  "7220": [
+    {
+      "filename": "1415 (2025-10-01)RAW.csv",
+      "labID": "1415",
+      "date": "2025-10-01T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7220/accel/ses-1/sub-7220_ses-1_accel.csv"
+    }
+  ],
+  "7700": [
+    {
+      "filename": "1422 (2025-09-23)RAW.csv",
+      "labID": "1422",
+      "date": "2025-09-23T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7700/accel/ses-1/sub-7700_ses-1_accel.csv"
+    }
+  ]
+}

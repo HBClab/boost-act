@@ -20,7 +20,7 @@ SYSTEM="${BOOST_SYSTEM:-vosslnx}"
 
 DAYS_AGO="${DAYS_AGO:-30}"
 
-python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}"
+python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" | tee "logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
 
 if ! git diff --quiet; then
   git add .
