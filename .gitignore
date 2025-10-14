@@ -83,8 +83,6 @@ pytestdebug.log
 dotenv*
 
 # Logs and runtime outputs
-*.log
-*.log.*
 *.err
 *.out
 *.tmp
