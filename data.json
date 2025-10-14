@@ -164,6 +164,18 @@
       "8051": [
         "data/int/UI/8051/daily_plot.png",
         "data/int/UI/8051/summary_plot.png"
+      ],
+      "8030": [
+        "data/int/UI/8030/daily_plot.png",
+        "data/int/UI/8030/summary_plot.png"
+      ],
+      "8012": [
+        "data/int/UI/8012/daily_plot.png",
+        "data/int/UI/8012/summary_plot.png"
+      ],
+      "8009": [
+        "data/int/UI/8009/daily_plot.png",
+        "data/int/UI/8009/summary_plot.png"
       ]
     }
   },
