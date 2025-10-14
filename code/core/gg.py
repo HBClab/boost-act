@@ -1,7 +1,6 @@
 import subprocess
-import traceback
+import logging
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class GG:
@@ -37,7 +36,7 @@ class GG:
 
             try:
                 # Execute the command in a new subprocess
-                print(f"Running GGIR for project directory {project_dir}")
+                logger.info("Running GGIR for project directory %s", project_dir)
                 process = subprocess.Popen(
                     command,
                     shell=True,
@@ -49,9 +48,7 @@ class GG:
 
                 # Stream output line-by-line
                 for line in process.stdout:
-                    print(line, end='')  # already includes newline
-                    logger.info(line.strip(), end='')
-                    logger.debug(line.strip(), end='')
+                    logger.info(line.rstrip())
 
                 process.stdout.close()
                 process.wait()
@@ -59,7 +56,7 @@ class GG:
                 if process.returncode != 0:
                     raise subprocess.CalledProcessError(process.returncode, command)
 
-                print(f"GGIR completed successfully for {project_dir}.")
+                logger.info("GGIR completed successfully for %s.", project_dir)
 
                 # Determine project type for QC ('int' for internal, 'obs' for observational)
                 if project_dir.rstrip('/') == self.INTDIR.rstrip('/'):
@@ -68,16 +65,14 @@ class GG:
                     project_type = 'obs'
 
                 # Run QC for this project
-                print(f"Starting QC pipeline for {project_type} project.")
+                logger.info("Starting QC pipeline for %s project.", project_type)
                 qc_runner = QC(project_type, system=self.system)
                 qc_runner.qc()
-                print(f"QC pipeline finished for {project_type} project.")
+                logger.info("QC pipeline finished for %s project.", project_type)
 
-            except subprocess.CalledProcessError as e:
-                print(f"Error running GGIR for {project_dir}:")
-                traceback.print_exc()        # prints full traceback to stderr
+            except subprocess.CalledProcessError:
+                logger.exception("Error running GGIR for %s", project_dir)
                 # optionally continue or break…
-            except Exception as e:
-                tb = traceback.format_exc()
-                print(f"Unexpected error when processing {project_dir}:\n{tb}")
+            except Exception:
+                logger.exception("Unexpected error when processing %s", project_dir)
                 # Optionally, continue to next project or break

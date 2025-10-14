@@ -114,11 +114,11 @@ main <- function() {
           ignorenonwear = TRUE,
 
           # ==== Part 3: Sleep detection ====
-          loglocation = SleepLog,
-          colid = 1,
-          coln1 = 2,
-          sleepwindowType = "TimeInBed",
-          imputeTimegaps = TRUE, # since idle sleep mode is on for actigraph devices
+         #loglocation = SleepLog,
+         #colid = 1,
+         #coln1 = 2,
+         #sleepwindowType = "TimeInBed",
+         #imputeTimegaps = TRUE, # since idle sleep mode is on for actigraph devices
 
           # ==== Part 4: Physical activity summaries ====
           timewindow = c("WW", "MM", "OO"),

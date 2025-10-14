@@ -16,7 +16,6 @@ if [[ -z "${BOOST_TOKEN:-}" ]]; then
   exit 1
 fi
 
-# TODO: replace this placeholder logic with host-based system detection.
 SYSTEM="${BOOST_SYSTEM:-vosslnx}"
 
 DAYS_AGO="${DAYS_AGO:-30}"
