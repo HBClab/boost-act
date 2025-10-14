@@ -13,6 +13,7 @@ class Save:
         self.matches = results['matches']
         self.matches.pop('6022, 7143', None)
         self.matches.pop('7178, 8066', None)
+        self.matches.pop('8057, 7219', None)
         print(self.matches)
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
