@@ -6,7 +6,7 @@
       "date": "2025-09-19T00:00:00",
       "run": 1,
       "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8031/accel/ses-1/sub-8031_ses-1_accel.csv"
+      "file_path": "/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8031/accel/ses-1/sub-8031_ses-1_accel.csv"
     }
   ],
   "8060": [
@@ -16,7 +16,7 @@
       "date": "2025-09-25T00:00:00",
       "run": 1,
       "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8060/accel/ses-1/sub-8060_ses-1_accel.csv"
+      "file_path": "/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8060/accel/ses-1/sub-8060_ses-1_accel.csv"
     }
   ],
   "7195": [
@@ -26,7 +26,7 @@
       "date": "2025-09-16T00:00:00",
       "run": 1,
       "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7195/accel/ses-1/sub-7195_ses-1_accel.csv"
+      "file_path": "/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7195/accel/ses-1/sub-7195_ses-1_accel.csv"
     }
   ],
   "7213": [
@@ -36,7 +36,7 @@
       "date": "2025-09-19T00:00:00",
       "run": 1,
       "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7213/accel/ses-1/sub-7213_ses-1_accel.csv"
+      "file_path": "/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7213/accel/ses-1/sub-7213_ses-1_accel.csv"
     }
   ],
   "7220": [
@@ -46,7 +46,7 @@
       "date": "2025-10-01T00:00:00",
       "run": 1,
       "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7220/accel/ses-1/sub-7220_ses-1_accel.csv"
+      "file_path": "/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7220/accel/ses-1/sub-7220_ses-1_accel.csv"
     }
   ],
   "7700": [
@@ -56,7 +56,7 @@
       "date": "2025-09-23T00:00:00",
       "run": 1,
       "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7700/accel/ses-1/sub-7700_ses-1_accel.csv"
+      "file_path": "/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/sub-7700/accel/ses-1/sub-7700_ses-1_accel.csv"
     }
   ]
 }
