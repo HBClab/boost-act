@@ -1,4 +1,10 @@
+.direnv/
 .envrc.local
+code/tests/dsmc/
+code/tests/gt3x/
+code/tests/sleep/
+code/tests/non-wear/
+
 # Python bytecode and caches
 __pycache__/
 */__pycache__/
