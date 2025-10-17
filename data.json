@@ -840,6 +840,14 @@
       "7176": [
         "data/obs/UI/7176/daily_plot.png",
         "data/obs/UI/7176/summary_plot.png"
+      ],
+      "7213": [
+        "data/obs/UI/7213/daily_plot.png",
+        "data/obs/UI/7213/summary_plot.png"
+      ],
+      "7218": [
+        "data/obs/UI/7218/daily_plot.png",
+        "data/obs/UI/7218/summary_plot.png"
       ]
     }
   }
