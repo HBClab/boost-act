@@ -848,6 +848,14 @@
       "7218": [
         "data/obs/UI/7218/daily_plot.png",
         "data/obs/UI/7218/summary_plot.png"
+      ],
+      "7701": [
+        "data/obs/UI/7701/daily_plot.png",
+        "data/obs/UI/7701/summary_plot.png"
+      ],
+      "7199": [
+        "data/obs/UI/7199/daily_plot.png",
+        "data/obs/UI/7199/summary_plot.png"
       ]
     }
   }
