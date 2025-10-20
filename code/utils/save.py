@@ -149,7 +149,7 @@ class Save:
                     print(f"File already exists at destination: {destination_path}. Skipping.")
                 else:
                     try:
-                        shutil.copy(source_path, destination_path)
+                        shutil.copyfile(source_path, destination_path)
                         print(f"Copied {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
@@ -183,7 +183,7 @@ class Save:
                     print(f"File already exists at destination: {destination_path}. Skipping.")
                 else:
                     try:
-                        shutil.copy(source_path, destination_path)
+                        shutil.copyfile(source_path, destination_path)
                         print(f"Moved {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
