@@ -7,15 +7,15 @@ library(GGIR)
 
 # first test on intervention - since there are less subjects
 ProjectDir <- "/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/"
-ProjectDerivDir <- "derivatives/GGIR-3.2.6-test-ncp-sleep/"
+ProjectDerivDir <- "derivatives/GGIR-3.2.6/"
 
 # Extract final folder name
 last_folder <- basename(ProjectDir)
 
 # Determine correct filename
-if (last_folder == "act-obs-test") {
+if (grepl("act-obs", last_folder, fixed = TRUE)) {
   SleepLog <- file.path(ProjectDir, "sleep_log_observational.csv")
-} else if (last_folder == "act-int-test") {
+} else if (grepl("act-int", last_folder, fixed = TRUE)) {
   SleepLog <- file.path(ProjectDir, "sleep_log_intervention.csv")
 } else {
   stop("Unrecognized project directory. Exiting.")
@@ -129,6 +129,4 @@ for (r in GGIRfiles) {
     })
   }
 }
-
-
 

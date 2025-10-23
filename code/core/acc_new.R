@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6-test/"
+# Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6/"
 library(optparse)
 library(GGIR)
 
@@ -11,7 +11,7 @@ main <- function() {
                 default = "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-Experiment/data/act-int-test/",
                 help = "Path to the project directory", metavar = "character"),
     make_option(c("-d", "--deriv_dir"), type = "character",
-                default = "/derivatives/GGIR-3.2.6-test/",
+                default = "/derivatives/GGIR-3.2.6/",
                 help = "Path to the derivatives directory", metavar = "character")
   )
 
@@ -25,9 +25,9 @@ main <- function() {
   last_folder <- basename(ProjectDir)
   
   # Determine correct filename
-  if (last_folder == "act-obs-test") {
+  if (grepl("act-obs", last_folder, fixed = TRUE)) {
     SleepLog <- normalizePath(file.path(ProjectDir, "sleep_log_observational.csv"), mustWork = FALSE)
-  } else if (last_folder == "act-int-test") {
+  } else if (grepl("act-int", last_folder, fixed = TRUE)) {
     SleepLog <- normalizePath(file.path(ProjectDir, "sleep_log_intervention.csv"), mustWork = FALSE)
   } else {
     stop("Unrecognized project directory. Exiting.")

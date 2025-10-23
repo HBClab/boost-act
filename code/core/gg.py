@@ -20,7 +20,7 @@ class GG:
         self.matched = matched
         self.INTDIR = intdir.rstrip('/') + '/'
         self.OBSDIR = obsdir.rstrip('/') + '/'
-        self.DERIVATIVES = "derivatives/GGIR-3.2.6-test-ncp-sleep2/"  # Defined within the class
+        self.DERIVATIVES = "derivatives/GGIR-3.2.6/"  # Defined within the class
         self.system = system
 
     def run_gg(self):

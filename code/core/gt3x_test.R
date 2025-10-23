@@ -4,7 +4,7 @@
 
 #!/usr/bin/env Rscript
 
-# Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6-test/"
+# Usage: Rscript new_gg.R --project_dir "/Shared/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/" --deriv_dir "derivatives/GGIR-3.2.6/"
 library(GGIR)
 
 main <- function() {
@@ -126,4 +126,3 @@ main <- function() {
 if (!interactive()) {
   main()
 }
-

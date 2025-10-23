@@ -17,6 +17,11 @@ class Pipe:
             OBS_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
             RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
         ),
+        "vosslnxft": dict(
+            INT_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-1",
+            OBS_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
+            RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
+        ),
         "local": dict(
             INT_DIR="/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test",
             OBS_DIR="/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
@@ -30,11 +35,19 @@ class Pipe:
     }
 
     @classmethod
-    def configure(cls, system: str = "vosslnx") -> None:
+    def available_systems(cls) -> tuple[str, ...]:
+        return tuple(cls._SYSTEM_PATHS.keys())
+
+    @classmethod
+    def system_paths(cls, system: str = "vosslnx") -> dict:
         try:
-            paths = cls._SYSTEM_PATHS[system]
+            return cls._SYSTEM_PATHS[system]
         except KeyError as e:
             raise ValueError(f"Unknown system: {system}") from e
+
+    @classmethod
+    def configure(cls, system: str = "vosslnx") -> None:
+        paths = cls.system_paths(system)
         cls.INT_DIR = paths["INT_DIR"]
         cls.OBS_DIR = paths["OBS_DIR"]
         cls.RDSS_DIR = paths["RDSS_DIR"]
