@@ -16,7 +16,7 @@ if [[ -z "${BOOST_TOKEN:-}" ]]; then
   exit 1
 fi
 
-SYSTEM="${BOOST_SYSTEM:-vosslnx}"
+SYSTEM="${BOOST_SYSTEM:-vosslnxft}"
 
 DAYS_AGO="${DAYS_AGO:-30}"
 
