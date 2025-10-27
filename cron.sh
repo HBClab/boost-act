@@ -9,7 +9,7 @@ conda activate act
 
 cd "${REPO_ROOT}"
 
-git pull --ff-only origin main
+git pull --ff-only origin final-test
 
 if [[ -z "${BOOST_TOKEN:-}" ]]; then
   echo "BOOST_TOKEN is required. Aborting." >&2
@@ -20,6 +20,7 @@ SYSTEM="${BOOST_SYSTEM:-vosslnxft}"
 
 DAYS_AGO="${DAYS_AGO:-30}"
 
+mkdir -p "logs/${SYSTEM}"
 python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" | tee "logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
 
 if ! git diff --quiet; then
