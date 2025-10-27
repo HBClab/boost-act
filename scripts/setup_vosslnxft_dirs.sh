@@ -13,8 +13,8 @@ OBS_FINAL_DIR="${OBS_BASE_ROOT}/act-obs-final-test-1"
 OBS_FINAL_DERIV="${OBS_FINAL_DIR}/derivatives/GGIR-3.2.6"
 
 # Some tooling still references the legacy ordering; keep it present for compatibility.
-INT_TEST_FINAL_DIR="${INT_BASE_ROOT}/act-int-test-final-1"
-OBS_TEST_FINAL_DIR="${OBS_BASE_ROOT}/act-int-test-final-1"
+INT_TEST_FINAL_DIR="${INT_BASE_ROOT}/act-int-final-test-2"
+OBS_TEST_FINAL_DIR="${OBS_BASE_ROOT}/act-int-final-test-2"
 
 echo "Preparing InterventionStudy final-test directory structure under ${INT_BASE_ROOT}"
 

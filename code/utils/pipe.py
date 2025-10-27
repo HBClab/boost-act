@@ -18,8 +18,8 @@ class Pipe:
             RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
         ),
         "vosslnxft": dict(
-            INT_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-1",
-            OBS_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
+            INT_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2",
+            OBS_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2",
             RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
         ),
         "local": dict(
