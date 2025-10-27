@@ -60,24 +60,30 @@ class Pipe:
         self.system = system
 
     def run_pipe(self):
-        matched = Save(
+        save_instance = Save(
             intdir=type(self).INT_DIR,
             obsdir=type(self).OBS_DIR,
             rdssdir=type(self).RDSS_DIR,
             token=self.token,
             daysago=self.daysago
-        ).save()
+        )
 
-        # (side note: your JSON writing was invalid; use json.dump)
-        import json, pathlib
-        pathlib.Path("res").mkdir(exist_ok=True)
-        with open('res/data.json', 'w') as f:
-            json.dump(matched, f, indent=2)
+        try:
+            matched = save_instance.save()
 
-        GG(
-            matched=matched,
-            intdir=type(self).INT_DIR,
-            obsdir=type(self).OBS_DIR,
-            system=self.system,
-        ).run_gg()
+            # (side note: your JSON writing was invalid; use json.dump)
+            import json, pathlib
+            pathlib.Path("res").mkdir(exist_ok=True)
+            with open('res/data.json', 'w') as f:
+                json.dump(matched, f, indent=2)
+
+            GG(
+                matched=matched,
+                intdir=type(self).INT_DIR,
+                obsdir=type(self).OBS_DIR,
+                system=self.system,
+            ).run_gg()
+        finally:
+            Save.remove_symlink_directories([type(self).INT_DIR, type(self).OBS_DIR])
+
         return None
