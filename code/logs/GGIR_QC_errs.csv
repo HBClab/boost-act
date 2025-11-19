@@ -296,3 +296,4 @@ sub-7703,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days
 sub-7218,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7176,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7181,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-8026,ses-3,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
