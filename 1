@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+src_root="/mnt/nfs/rdss/VossLab/Repositories/Accelerometer_Data"
+dst_root="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2"
+
+read -rp "Enter source subject number to search (e.g. 1194): " src_subject
+if [[ -z "${src_subject// }" ]]; then
+	  echo "No source subject provided; exiting."
+	    exit 1
+fi
+
+mapfile -t matches < <(find "$src_root" -maxdepth 1 -type f -iname "*${src_subject}*" | sort)
+if [[ ${#matches[@]} -eq 0 ]]; then
+	  echo "No files found in $src_root containing \"$src_subject\"."
+	    exit 1
+fi
+
+echo "Found the following files:"
+for i in "${!matches[@]}"; do
+	  printf " [%d] %s\n" "$((i + 1))" "${matches[$i]}"
+  done
+
+  read -rp "Select source file number [1-${#matches[@]}]: " selection
+  if ! [[ "$selection" =~ ^[0-9]+$ ]] || ((selection < 1 || selection > ${#matches[@]})); then
+	    echo "Invalid selection; exiting."
+	      exit 1
+  fi
+  src_file="${matches[$((selection - 1))]}"
+
+  read -rp "Enter destination subject number (e.g. 8026): " dst_subject_raw
+  if [[ -z "${dst_subject_raw// }" ]]; then
+	    echo "No destination subject provided; exiting."
+	      exit 1
+  fi
+  if [[ "$dst_subject_raw" == sub-* ]]; then
+	    dst_subject="$dst_subject_raw"
+    else
+	      dst_subject="sub-$dst_subject_raw"
+  fi
+
+  read -rp "Enter session number (e.g. 3): " session_raw
+  if [[ -z "${session_raw// }" ]]; then
+	    echo "No session provided; exiting."
+	      exit 1
+  fi
+  if [[ "$session_raw" == ses-* ]]; then
+	    dst_session="$session_raw"
+    else
+	      dst_session="ses-$session_raw"
+  fi
+
+  dst_dir="$dst_root/$dst_subject/accel/$dst_session"
+  dst_file="$dst_dir/${dst_subject}_${dst_session}_accel.csv"
+
+  echo
+  echo "About to run:"
+  echo "cp \"$src_file\" \"$dst_file\""
+  read -rp "Proceed? [y/N]: " confirmation
+  if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
+	    echo "Operation cancelled."
+	      exit 0
+  fi
+
+  mkdir -p "$dst_dir"
+  cp "$src_file" "$dst_file"
+  echo "Copied to $dst_file"
+
