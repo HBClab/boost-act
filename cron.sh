@@ -17,7 +17,6 @@ if [[ -z "${BOOST_TOKEN:-}" ]]; then
 fi
 
 SYSTEM="${BOOST_SYSTEM:-vosslnxft}"
-
 DAYS_AGO="${DAYS_AGO:-30}"
 
 mkdir -p "logs/${SYSTEM}"
