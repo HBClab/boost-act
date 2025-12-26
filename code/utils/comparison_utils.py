@@ -111,6 +111,8 @@ class ID_COMPARISONS:
             logging.info(f"duplicate rows found:\n{duplicate_rows}")
         if df_cleaned.empty:
             logging.warning("no unique rows remain after removing duplicates.")
+        else:
+            print(df_cleaned.head(), len(df_cleaned())
         
         return df_cleaned, duplicate_rows
 
