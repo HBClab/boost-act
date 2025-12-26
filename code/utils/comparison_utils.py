@@ -148,9 +148,12 @@ class ID_COMPARISONS:
 
         if not df.empty:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+            print(f"DATE CONVERTED: {df['Date']}")
 
             if daysago:
+                print(f"DAYS AGO: {daysago}")
                 cutoff_date = datetime.today() - timedelta(days=daysago)
+                print(f"CUTOFF DATE: {cutoff_date}")
                 df = df[df['Date'] >= cutoff_date]  # Filter files within the last `daysago` days
             else:
                 df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
