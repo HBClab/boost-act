@@ -162,6 +162,8 @@ class ID_COMPARISONS:
             merged_df = matched_df.merge(duplicates, left_on='ID', right_on='lab_id')
         else:
             merged_df = pd.DataFrame()
+            if df.empty:
+                logging.info("No RDSS files found after filtering.")
         print(f"MERGED: {merged_df}")
         
 
