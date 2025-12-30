@@ -25,6 +25,7 @@
         "data/int/UI/8042/daily_plot.png",
         "data/int/UI/8042/summary_plot.png"
       ],
+<<<<<<< HEAD
       "8035": [
         "data/int/UI/8035/daily_plot.png",
         "data/int/UI/8035/summary_plot.png"
@@ -140,11 +141,17 @@
       "8011": [
         "data/int/UI/8011/daily_plot.png",
         "data/int/UI/8011/summary_plot.png"
+=======
+      "8051": [
+        "data/int/UI/8051/daily_plot.png",
+        "data/int/UI/8051/summary_plot.png"
+>>>>>>> 77463126661d2d8dd46654410d811d2b3d50bf5f
       ],
       "8030": [
         "data/int/UI/8030/daily_plot.png",
         "data/int/UI/8030/summary_plot.png"
       ],
+<<<<<<< HEAD
       "8047": [
         "data/int/UI/8047/daily_plot.png",
         "data/int/UI/8047/summary_plot.png"
@@ -184,6 +191,15 @@
       "8024": [
         "data/int/UI/8024/daily_plot.png",
         "data/int/UI/8024/summary_plot.png"
+=======
+      "8012": [
+        "data/int/UI/8012/daily_plot.png",
+        "data/int/UI/8012/summary_plot.png"
+      ],
+      "8009": [
+        "data/int/UI/8009/daily_plot.png",
+        "data/int/UI/8009/summary_plot.png"
+>>>>>>> 77463126661d2d8dd46654410d811d2b3d50bf5f
       ]
     }
   },
@@ -853,6 +869,7 @@
         "data/obs/UI/7068/daily_plot.png",
         "data/obs/UI/7068/summary_plot.png"
       ],
+<<<<<<< HEAD
       "7086": [
         "data/obs/UI/7086/daily_plot.png",
         "data/obs/UI/7086/summary_plot.png"
@@ -868,14 +885,53 @@
       "7015": [
         "data/obs/UI/7015/daily_plot.png",
         "data/obs/UI/7015/summary_plot.png"
+=======
+      "7150": [
+        "data/obs/UI/7150/daily_plot.png",
+        "data/obs/UI/7150/summary_plot.png"
+      ],
+      "7194": [
+        "data/obs/UI/7194/daily_plot.png",
+        "data/obs/UI/7194/summary_plot.png"
+      ],
+      "7206": [
+        "data/obs/UI/7206/daily_plot.png",
+        "data/obs/UI/7206/summary_plot.png"
+      ],
+      "7215": [
+        "data/obs/UI/7215/daily_plot.png",
+        "data/obs/UI/7215/summary_plot.png"
+>>>>>>> 77463126661d2d8dd46654410d811d2b3d50bf5f
       ],
       "7181": [
         "data/obs/UI/7181/daily_plot.png",
         "data/obs/UI/7181/summary_plot.png"
       ],
+<<<<<<< HEAD
       "7118": [
         "data/obs/UI/7118/daily_plot.png",
         "data/obs/UI/7118/summary_plot.png"
+=======
+      "7176": [
+        "data/obs/UI/7176/daily_plot.png",
+        "data/obs/UI/7176/summary_plot.png"
+      ],
+      "7213": [
+        "data/obs/UI/7213/daily_plot.png",
+        "data/obs/UI/7213/summary_plot.png"
+      ],
+      "7218": [
+        "data/obs/UI/7218/daily_plot.png",
+        "data/obs/UI/7218/summary_plot.png"
+      ],
+      "7701": [
+        "data/obs/UI/7701/daily_plot.png",
+        "data/obs/UI/7701/summary_plot.png"
+      ],
+      "7199": [
+        "data/obs/UI/7199/daily_plot.png",
+        "data/obs/UI/7199/summary_plot.png"
+>>>>>>> 77463126661d2d8dd46654410d811d2b3d50bf5f
       ]
     }
   }
