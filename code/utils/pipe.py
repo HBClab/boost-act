@@ -1,5 +1,4 @@
 from pathlib import Path
-from code.utils.mnt import create_symlinks
 from code.utils.save import Save
 from code.core.gg import GG
 
