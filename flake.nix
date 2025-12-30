@@ -57,6 +57,7 @@
               ps.scipy
               ps.pyyaml
               ps.pyarrow
+              ps.pytest
             ] ++ [ catppuccin-jupyterlab ]
           );
         in {

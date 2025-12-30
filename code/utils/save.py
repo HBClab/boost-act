@@ -75,6 +75,9 @@ class Save:
                         print(f"Copied {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
+                        continue
+
+                self._refresh_subject_symlinks(destination_path)
 
     def _move_files(self, matches):
         """
@@ -103,12 +106,59 @@ class Save:
 
                 if os.path.exists(destination_path):
                     print(f"File already exists at destination: {destination_path}. Skipping.")
-                else:
-                    try:
-                        shutil.copy(source_path, destination_path)
-                        print(f"Moved {source_path} -> {destination_path}")
-                    except Exception as e:
-                        print(f"Error moving {source_path} to {destination_path}: {e}")
+                    self._refresh_subject_symlinks(destination_path)
+                    continue
+
+                try:
+                    shutil.copy(source_path, destination_path)
+                    print(f"Moved {source_path} -> {destination_path}")
+                except Exception as e:
+                    print(f"Error moving {source_path} to {destination_path}: {e}")
+                    continue
+
+                self._refresh_subject_symlinks(destination_path)
+
+    def _refresh_subject_symlinks(self, csv_path):
+        """
+        Ensure sub-*/accel/all contains symlinks for every CSV under the accel tree.
+
+        Args:
+            csv_path (str): Absolute path to the CSV that was just copied or confirmed.
+        """
+        session_dir = os.path.dirname(csv_path)
+        subject_accel_dir = os.path.dirname(session_dir)
+
+        if not os.path.isdir(subject_accel_dir):
+            return
+
+        csv_records = []
+        for root, dirs, files in os.walk(subject_accel_dir):
+            dirs[:] = [d for d in dirs if d != "all"]
+
+            for name in files:
+                if not name.lower().endswith(".csv"):
+                    continue
+                full_path = os.path.join(root, name)
+                rel_path = os.path.relpath(full_path, subject_accel_dir)
+                csv_records.append((full_path, rel_path))
+
+        all_dir = os.path.join(subject_accel_dir, "all")
+        if os.path.exists(all_dir):
+            shutil.rmtree(all_dir)
+
+        os.makedirs(all_dir, exist_ok=True)
+
+        for src, rel_path in csv_records:
+            rel_dir = os.path.dirname(rel_path)
+            target_dir = all_dir if rel_dir in ("", ".") else os.path.join(all_dir, rel_dir)
+            os.makedirs(target_dir, exist_ok=True)
+            link_path = os.path.join(target_dir, os.path.basename(rel_path))
+
+            try:
+                os.symlink(src, link_path)
+            except FileExistsError:
+                os.unlink(link_path)
+                os.symlink(src, link_path)
 
     def _determine_run(self, matches):
         """
@@ -220,6 +270,39 @@ class Save:
                 else:
                     record['date'] = str(date_value)
         return matches
+
+    @staticmethod
+    def remove_symlink_directories(study_dirs):
+        """
+        Remove per-subject accel/all directories that only contain symlinks created during ingest.
+
+        Args:
+            study_dirs (Iterable[str]): Iterable of study root paths to inspect.
+        """
+        for base_dir in study_dirs:
+            if not base_dir or not os.path.isdir(base_dir):
+                continue
+
+            try:
+                subjects = os.listdir(base_dir)
+            except OSError:
+                continue
+
+            for subject in subjects:
+                accel_all_dir = os.path.join(base_dir, subject, "accel", "all")
+
+                if os.path.islink(accel_all_dir):
+                    try:
+                        os.unlink(accel_all_dir)
+                    except OSError as exc:
+                        print(f"Unable to unlink {accel_all_dir}: {exc}")
+                    continue
+
+                if os.path.isdir(accel_all_dir):
+                    try:
+                        shutil.rmtree(accel_all_dir)
+                    except OSError as exc:
+                        print(f"Unable to remove directory {accel_all_dir}: {exc}")
 
 
     def _handle_and_merge_duplicates(self, duplicates):
