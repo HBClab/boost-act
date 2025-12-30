@@ -1,11 +1,14 @@
+import errno
+import logging
 import os
 import shutil
 from code.utils.comparison_utils import ID_COMPARISONS
 
 
 class Save:
+    logger = logging.getLogger(__name__)
 
-    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
+    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None, symlink=True):
         if not rdssdir:
             raise ValueError("RDSS directory is not configured for this system; cannot ingest files.")
 
@@ -21,6 +24,7 @@ class Save:
         self.INT_DIR = intdir
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
+        self.symlink = symlink
 
     def save(self):
         # First, process the base matches.
@@ -76,8 +80,8 @@ class Save:
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
                         continue
-
-                self._refresh_subject_symlinks(destination_path)
+                if self.symlink: 
+                    self._refresh_subject_symlinks(destination_path)
 
     def _move_files(self, matches):
         """
@@ -106,7 +110,8 @@ class Save:
 
                 if os.path.exists(destination_path):
                     print(f"File already exists at destination: {destination_path}. Skipping.")
-                    self._refresh_subject_symlinks(destination_path)
+                    if self.symlink:
+                        self._refresh_subject_symlinks(destination_path)
                     continue
 
                 try:
@@ -116,7 +121,8 @@ class Save:
                     print(f"Error moving {source_path} to {destination_path}: {e}")
                     continue
 
-                self._refresh_subject_symlinks(destination_path)
+                if self.symlink:
+                    self._refresh_subject_symlinks(destination_path)
 
     def _refresh_subject_symlinks(self, csv_path):
         """
@@ -148,17 +154,33 @@ class Save:
 
         os.makedirs(all_dir, exist_ok=True)
 
+        use_symlinks = True
         for src, rel_path in csv_records:
             rel_dir = os.path.dirname(rel_path)
             target_dir = all_dir if rel_dir in ("", ".") else os.path.join(all_dir, rel_dir)
             os.makedirs(target_dir, exist_ok=True)
             link_path = os.path.join(target_dir, os.path.basename(rel_path))
 
-            try:
-                os.symlink(src, link_path)
-            except FileExistsError:
+            if use_symlinks:
+                try:
+                    os.symlink(src, link_path)
+                    continue
+                except FileExistsError:
+                    os.unlink(link_path)
+                    os.symlink(src, link_path)
+                    continue
+                except OSError as exc:
+                    if exc.errno not in (errno.EOPNOTSUPP, errno.EPERM, errno.EACCES):
+                        raise
+                    use_symlinks = False
+                    self.logger.warning(
+                        "Symlinks are not supported in %s; copying CSVs into accel/all instead.",
+                        subject_accel_dir,
+                    )
+
+            if os.path.exists(link_path):
                 os.unlink(link_path)
-                os.symlink(src, link_path)
+            shutil.copy2(src, link_path)
 
     def _determine_run(self, matches):
         """

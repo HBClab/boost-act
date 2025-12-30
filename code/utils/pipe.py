@@ -64,7 +64,8 @@ class Pipe:
             obsdir=type(self).OBS_DIR,
             rdssdir=type(self).RDSS_DIR,
             token=self.token,
-            daysago=self.daysago
+            daysago=self.daysago,
+            symlink=False
         )
 
         try:
