@@ -47,6 +47,14 @@
       "run": 1,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8064/accel/ses-1/sub-8064_ses-1_accel.csv"
+    },
+    {
+      "filename": "781 (2025-12-09)RAW.csv",
+      "labID": "781",
+      "date": "2025-12-09T00:00:00",
+      "run": 2,
+      "study": "int",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8064/accel/ses-2/sub-8064_ses-2_accel.csv"
     }
   ],
   "7724": [
@@ -133,6 +141,14 @@
       "run": 1,
       "study": "obs",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7010/accel/ses-1/sub-7010_ses-1_accel.csv"
+    },
+    {
+      "filename": "1118 (2025-12-16)RAW.csv",
+      "labID": "1118",
+      "date": "2025-12-16T00:00:00",
+      "run": 2,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7010/accel/ses-2/sub-7010_ses-2_accel.csv"
     }
   ],
   "8003": [
