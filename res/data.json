@@ -169,16 +169,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8003/accel/ses-2/sub-8003_ses-2_accel.csv"
     }
   ],
-  "8006": [
-    {
-      "filename": "1129 (2025-05-14)RAW.csv",
-      "labID": "1129",
-      "date": "2025-05-14T00:00:00",
-      "run": 1,
-      "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8006/accel/ses-1/sub-8006_ses-1_accel.csv"
-    }
-  ],
   "8005": [
     {
       "filename": "1134 (2025-05-22)RAW.csv",
@@ -721,36 +711,28 @@
   ],
   "8047": [
     {
-      "filename": "1335 (2025-05-14)RAW.csv",
+      "filename": "1335 (2025-07-18)RAW.csv",
       "labID": "1335",
-      "date": "2025-05-14T00:00:00",
+      "date": "2025-07-18T00:00:00",
       "run": 1,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8047/accel/ses-1/sub-8047_ses-1_accel.csv"
     },
     {
-      "filename": "1335 (2025-07-18)RAW.csv",
+      "filename": "1335 (2025-10-29)RAW.csv",
       "labID": "1335",
-      "date": "2025-07-18T00:00:00",
+      "date": "2025-10-29T00:00:00",
       "run": 2,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8047/accel/ses-2/sub-8047_ses-2_accel.csv"
     },
     {
-      "filename": "1335 (2025-10-29)RAW.csv",
-      "labID": "1335",
-      "date": "2025-10-29T00:00:00",
-      "run": 3,
-      "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8047/accel/ses-3/sub-8047_ses-3_accel.csv"
-    },
-    {
       "filename": "1335 (2025-12-20)RAW.csv",
       "labID": "1335",
       "date": "2025-12-20T00:00:00",
-      "run": 4,
+      "run": 3,
       "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8047/accel/ses-4/sub-8047_ses-4_accel.csv"
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8047/accel/ses-3/sub-8047_ses-3_accel.csv"
     }
   ],
   "8048": [
