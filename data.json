@@ -208,6 +208,10 @@
       "8074": [
         "data/int/UI/8074/daily_plot.png",
         "data/int/UI/8074/summary_plot.png"
+      ],
+      "8072": [
+        "data/int/UI/8072/daily_plot.png",
+        "data/int/UI/8072/summary_plot.png"
       ]
     }
   },
