@@ -216,6 +216,10 @@
       "8088": [
         "data/int/UI/8088/daily_plot.png",
         "data/int/UI/8088/summary_plot.png"
+      ],
+      "8080": [
+        "data/int/UI/8080/daily_plot.png",
+        "data/int/UI/8080/summary_plot.png"
       ]
     }
   },
