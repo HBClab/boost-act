@@ -333,16 +333,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8020/accel/ses-2/sub-8020_ses-2_accel.csv"
     }
   ],
-  "8021": [
-    {
-      "filename": "1170 (2025-05-24)RAW.csv",
-      "labID": "1170",
-      "date": "2025-05-24T00:00:00",
-      "run": 1,
-      "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8021/accel/ses-1/sub-8021_ses-1_accel.csv"
-    }
-  ],
   "7041": [
     {
       "filename": "1172 (2025-05-29)RAW.csv",
@@ -601,26 +591,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8046/accel/ses-2/sub-8046_ses-2_accel.csv"
     }
   ],
-  "7150": [
-    {
-      "filename": "1332 (2025-05-24)RAW.csv",
-      "labID": "1332",
-      "date": "2025-05-24T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7150/accel/ses-1/sub-7150_ses-1_accel.csv"
-    }
-  ],
-  "7152": [
-    {
-      "filename": "1334 (2025-05-24)RAW.csv",
-      "labID": "1334",
-      "date": "2025-05-24T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7152/accel/ses-1/sub-7152_ses-1_accel.csv"
-    }
-  ],
   "8047": [
     {
       "filename": "1335 (2025-07-18)RAW.csv",
@@ -675,16 +645,6 @@
       "run": 1,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8050/accel/ses-1/sub-8050_ses-1_accel.csv"
-    }
-  ],
-  "7156": [
-    {
-      "filename": "1342 (2025-05-24)RAW.csv",
-      "labID": "1342",
-      "date": "2025-05-24T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7156/accel/ses-1/sub-7156_ses-1_accel.csv"
     }
   ],
   "8051": [
