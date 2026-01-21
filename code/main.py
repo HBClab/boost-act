@@ -1,17 +1,33 @@
+import logging
+import os
+import sys
+
 from code.utils.group import Group
 from code.core.gg import GG
 from code.utils.pipe import Pipe
-import sys
 import logging
 
-logging.basicConfig(
-    level=logging.INFO,  # <-- this is key
-    format='[%(levelname)s] %(message)s'
-)
-logger = logging.getLogger()  # root logger
+def _configure_logging() -> None:
+    log_file = os.getenv("LOG_FILE")
+    handlers = []
+    if log_file:
+        log_dir = os.path.dirname(log_file)
+        if log_dir:
+            os.makedirs(log_dir, exist_ok=True)
+        handlers.append(logging.FileHandler(log_file))
+    else:
+        handlers.append(logging.StreamHandler())
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(levelname)s] %(message)s',
+        handlers=handlers,
+    )
+
 
 
 if __name__ == '__main__':
+    _configure_logging()
     # Expect at least 2 arguments: daysago (integer) and token (string)
     if len(sys.argv) < 3:
         print("Usage: python main.py <daysago> <token> [system]")

@@ -5,8 +5,6 @@ import plotly.graph_objects as go
 import logging
 from code.utils.pipe import Pipe
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
