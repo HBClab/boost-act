@@ -6,6 +6,7 @@ import requests
 from datetime import datetime, timedelta
 from io import StringIO
 
+logger = logging.getLogger(__name__)
 
 class ID_COMPARISONS:
 
@@ -15,8 +16,6 @@ class ID_COMPARISONS:
         if not self.rdss_dir:
             raise ValueError("RDSS directory is required to compare IDs.")
         self.daysago = daysago
-        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
     def compare_ids(self):
         """
         Pulls all files from RDSS
@@ -63,7 +62,7 @@ class ID_COMPARISONS:
                     'dates': group['Date'].tolist()
                 })
         else:
-            logging.info("Found no duplicates.")
+            logger.info("Found no duplicates.")
 
         return {'matches': result, 'duplicates': duplicates_dict}
 
@@ -98,8 +97,10 @@ class ID_COMPARISONS:
         problematic_boost_ids = boost_id_counts[boost_id_counts > 1].index.tolist()
         
         if problematic_boost_ids:
-            logging.critical(f"found boost_id(s) with multiple lab_ids: {', '.join(map(str, problematic_boost_ids))}. "
-                            "these entries will be removed from processing.")
+            logger.critical(
+                "found boost_id(s) with multiple lab_ids: %s. these entries will be removed from processing.",
+                ", ".join(map(str, problematic_boost_ids)),
+            )
             df = df[~df['boost_id'].isin(problematic_boost_ids)]
             print(df)
         
@@ -108,9 +109,9 @@ class ID_COMPARISONS:
         df_cleaned = df.drop_duplicates(keep=False)
         
         if not duplicate_rows.empty:
-            logging.info(f"duplicate rows found:\n{duplicate_rows}")
+            logger.info("duplicate rows found:\n%s", duplicate_rows)
         if df_cleaned.empty:
-            logging.warning("no unique rows remain after removing duplicates.")
+            logger.warning("no unique rows remain after removing duplicates.")
         else:
             print(df_cleaned.head(), len(df_cleaned))
         
@@ -166,7 +167,7 @@ class ID_COMPARISONS:
         else:
             merged_df = pd.DataFrame()
             if df.empty:
-                logging.info("No RDSS files found after filtering.")
+                logger.info("No RDSS files found after filtering.")
         print(f"MERGED: {merged_df}")
         
 

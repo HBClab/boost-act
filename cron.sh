@@ -20,7 +20,9 @@ SYSTEM="${BOOST_SYSTEM:-vosslnxft}"
 DAYS_AGO="${DAYS_AGO:-30}"
 
 mkdir -p "logs/${SYSTEM}"
-python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" | tee "logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
+LOG_FILE="logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
+export LOG_FILE
+python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" >> "${LOG_FILE}" 2>&1
 
 if ! git diff --quiet; then
   git add .
