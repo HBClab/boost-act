@@ -561,6 +561,14 @@
       "run": 2,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8040/accel/ses-2/sub-8040_ses-2_accel.csv"
+    },
+    {
+      "filename": "1317 (2026-01-09)RAW.csv",
+      "labID": "1317",
+      "date": "2026-01-09T00:00:00",
+      "run": 3,
+      "study": "int",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8040/accel/ses-3/sub-8040_ses-3_accel.csv"
     }
   ],
   "7147": [
@@ -1403,6 +1411,14 @@
       "run": 1,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8074/accel/ses-1/sub-8074_ses-1_accel.csv"
+    },
+    {
+      "filename": "1435 (2026-01-10)RAW.csv",
+      "labID": "1435",
+      "date": "2026-01-10T00:00:00",
+      "run": 2,
+      "study": "int",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8074/accel/ses-2/sub-8074_ses-2_accel.csv"
     }
   ],
   "8075": [
@@ -1733,6 +1749,26 @@
       "run": 1,
       "study": "obs",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7721/accel/ses-1/sub-7721_ses-1_accel.csv"
+    }
+  ],
+  "7726": [
+    {
+      "filename": "1485 (2026-01-13)RAW.csv",
+      "labID": "1485",
+      "date": "2026-01-13T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7726/accel/ses-1/sub-7726_ses-1_accel.csv"
+    }
+  ],
+  "7729": [
+    {
+      "filename": "1488 (2026-01-07)RAW.csv",
+      "labID": "1488",
+      "date": "2026-01-07T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7729/accel/ses-1/sub-7729_ses-1_accel.csv"
     }
   ],
   "7732": [
