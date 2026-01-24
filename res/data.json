@@ -343,16 +343,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8020/accel/ses-2/sub-8020_ses-2_accel.csv"
     }
   ],
-  "7041": [
-    {
-      "filename": "1172 (2025-05-29)RAW.csv",
-      "labID": "1172",
-      "date": "2025-05-29T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7041/accel/ses-1/sub-7041_ses-1_accel.csv"
-    }
-  ],
   "8023": [
     {
       "filename": "1185 (2025-06-23)RAW.csv",
