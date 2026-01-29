@@ -1088,6 +1088,10 @@
       "7745": [
         "data/obs/UI/7745/daily_plot.png",
         "data/obs/UI/7745/summary_plot.png"
+      ],
+      "7744": [
+        "data/obs/UI/7744/daily_plot.png",
+        "data/obs/UI/7744/summary_plot.png"
       ]
     }
   }

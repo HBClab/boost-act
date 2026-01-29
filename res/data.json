@@ -297,6 +297,14 @@
       "run": 1,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8018/accel/ses-1/sub-8018_ses-1_accel.csv"
+    },
+    {
+      "filename": "1167 (2026-01-16)RAW.csv",
+      "labID": "1167",
+      "date": "2026-01-16T00:00:00",
+      "run": 2,
+      "study": "int",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8018/accel/ses-2/sub-8018_ses-2_accel.csv"
     }
   ],
   "8019": [
@@ -483,16 +491,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8038/accel/ses-1/sub-8038_ses-1_accel.csv"
     }
   ],
-  "7136": [
-    {
-      "filename": "1313 (2025-06-03)RAW.csv",
-      "labID": "1313",
-      "date": "2025-06-03T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7136/accel/ses-1/sub-7136_ses-1_accel.csv"
-    }
-  ],
   "8039": [
     {
       "filename": "1314 (2025-07-15)RAW.csv",
@@ -599,16 +597,6 @@
       "run": 1,
       "study": "int",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8048/accel/ses-1/sub-8048_ses-1_accel.csv"
-    }
-  ],
-  "7155": [
-    {
-      "filename": "1340 (2025-06-03)RAW.csv",
-      "labID": "1340",
-      "date": "2025-06-03T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7155/accel/ses-1/sub-7155_ses-1_accel.csv"
     }
   ],
   "8050": [
@@ -1793,6 +1781,16 @@
       "run": 1,
       "study": "obs",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7743/accel/ses-1/sub-7743_ses-1_accel.csv"
+    }
+  ],
+  "7744": [
+    {
+      "filename": "1504 (2026-01-16)RAW.csv",
+      "labID": "1504",
+      "date": "2026-01-16T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7744/accel/ses-1/sub-7744_ses-1_accel.csv"
     }
   ],
   "7745": [
