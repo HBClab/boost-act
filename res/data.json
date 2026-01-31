@@ -681,26 +681,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8054/accel/ses-1/sub-8054_ses-1_accel.csv"
     }
   ],
-  "7158": [
-    {
-      "filename": "1348 (2025-06-05)RAW.csv",
-      "labID": "1348",
-      "date": "2025-06-05T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7158/accel/ses-1/sub-7158_ses-1_accel.csv"
-    }
-  ],
-  "7159": [
-    {
-      "filename": "1349 (2025-06-05)RAW.csv",
-      "labID": "1349",
-      "date": "2025-06-05T00:00:00",
-      "run": 1,
-      "study": "obs",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7159/accel/ses-1/sub-7159_ses-1_accel.csv"
-    }
-  ],
   "7164": [
     {
       "filename": "1354 (2025-06-12)RAW.csv",
@@ -1703,6 +1683,16 @@
       "run": 1,
       "study": "obs",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7726/accel/ses-1/sub-7726_ses-1_accel.csv"
+    }
+  ],
+  "7728": [
+    {
+      "filename": "1487 (2026-01-23)RAW.csv",
+      "labID": "1487",
+      "date": "2026-01-23T00:00:00",
+      "run": 1,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7728/accel/ses-1/sub-7728_ses-1_accel.csv"
     }
   ],
   "7729": [
