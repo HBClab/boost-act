@@ -589,16 +589,6 @@
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8047/accel/ses-3/sub-8047_ses-3_accel.csv"
     }
   ],
-  "8048": [
-    {
-      "filename": "1336 (2025-06-06)RAW.csv",
-      "labID": "1336",
-      "date": "2025-06-06T00:00:00",
-      "run": 1,
-      "study": "int",
-      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2/sub-8048/accel/ses-1/sub-8048_ses-1_accel.csv"
-    }
-  ],
   "8050": [
     {
       "filename": "1341 (2025-08-08)RAW.csv",
