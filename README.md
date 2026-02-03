@@ -2,6 +2,12 @@
 
 An automation stack for synchronizing raw actigraphy exports, routing them through GGIR, and publishing QC plots for the BOOST observational and intervention studies. The service pulls IDs from REDCap, reconciles them with RDSS file drops, mirrors curated files to the LSS project hierarchy, and runs the GGIR + QC suite end to end.
 
+
+## TODOS
+---
+- `def _determine_run(self, matches)` function in `code/utils/save.py` needs reworking to check for wrong session entries
+
+
 ## Table of Contents
 - [Features](#features)
 - [Repository Layout](#repository-layout)
