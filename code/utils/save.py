@@ -5,8 +5,8 @@ import shutil
 from code.utils.comparison_utils import ID_COMPARISONS
 
 
+logger = logging.getLogger(__name__)
 class Save:
-    logger = logging.getLogger(__name__)
 
     def __init__(self, intdir, obsdir, rdssdir, token, daysago=None, symlink=True):
         if not rdssdir:
@@ -18,9 +18,9 @@ class Save:
         self.matches.pop('7178, 8066', None)
         self.matches.pop('8057, 7219', None)
 
-        print(self.matches)
+        logger.debug("matches from save.py: \n", self.matches)
         self.dupes = results['duplicates']
-        print(f"Type of Dupes: {type(self.dupes)}")
+        logger.info(f"Type of Dupes: {type(self.dupes)}")
         self.INT_DIR = intdir
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
@@ -65,20 +65,20 @@ class Save:
                 destination_path = record['file_path']
 
                 if not os.path.exists(source_path):
-                    print(f"Source file not found: {source_path}. Skipping.")
+                    logger.info(f"Source file not found: {source_path}. Skipping.")
                     continue
 
                 destination_dir = os.path.dirname(destination_path)
                 os.makedirs(destination_dir, exist_ok=True)
 
                 if os.path.exists(destination_path):
-                    print(f"File already exists at destination: {destination_path}. Skipping.")
+                    logger.info(f"File already exists at destination: {destination_path}. Skipping.")
                 else:
                     try:
                         shutil.copy(source_path, destination_path)
-                        print(f"Copied {source_path} -> {destination_path}")
+                        logger.info(f"Copied {source_path} -> {destination_path}")
                     except Exception as e:
-                        print(f"Error moving {source_path} to {destination_path}: {e}")
+                        logger.info(f"Error moving {source_path} to {destination_path}: {e}")
                         continue
                 if self.symlink: 
                     self._refresh_subject_symlinks(destination_path)
@@ -101,7 +101,7 @@ class Save:
                 destination_path = record['file_path']
 
                 if not os.path.exists(source_path):
-                    print(f"Source file not found: {source_path}. Skipping.")
+                    logger.info(f"Source file not found: {source_path}. Skipping.")
                     continue
 
                 # Ensure the destination directory exists
@@ -109,16 +109,16 @@ class Save:
                 os.makedirs(destination_dir, exist_ok=True)
 
                 if os.path.exists(destination_path):
-                    print(f"File already exists at destination: {destination_path}. Skipping.")
+                    logger.info(f"File already exists at destination: {destination_path}. Skipping.")
                     if self.symlink:
                         self._refresh_subject_symlinks(destination_path)
                     continue
 
                 try:
                     shutil.copy(source_path, destination_path)
-                    print(f"Moved {source_path} -> {destination_path}")
+                    logger.info(f"Moved {source_path} -> {destination_path}")
                 except Exception as e:
-                    print(f"Error moving {source_path} to {destination_path}: {e}")
+                    logger.info(f"Error moving {source_path} to {destination_path}: {e}")
                     continue
 
                 if self.symlink:
@@ -197,8 +197,6 @@ class Save:
         Returns:
             dict: Updated matches dictionary with the 'run' key added to each entry.
         """
-        print(f"Type of matches: {type(matches)}")  # Debugging line
-        print(f"Value of matches: {matches}")  # Debugging line
         for boost_id, match_list in matches.items():
             # Sort the match_list by date in ascending order
             match_list.sort(key=lambda x: x['date'])

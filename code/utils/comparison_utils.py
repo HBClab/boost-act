@@ -102,7 +102,7 @@ class ID_COMPARISONS:
                 ", ".join(map(str, problematic_boost_ids)),
             )
             df = df[~df['boost_id'].isin(problematic_boost_ids)]
-            print(df)
+            logger.debug(f"Current DF:\n", df)
         
         # identify and separate duplicate rows based on any column.
         duplicate_rows = df[df.duplicated(keep=False)]
@@ -113,7 +113,7 @@ class ID_COMPARISONS:
         if df_cleaned.empty:
             logger.warning("no unique rows remain after removing duplicates.")
         else:
-            print(df_cleaned.head(), len(df_cleaned))
+            logger.debug(df_cleaned.head(), len(df_cleaned))
         
         return df_cleaned, duplicate_rows
 
@@ -135,7 +135,6 @@ class ID_COMPARISONS:
         if not os.path.isdir(rdss_dir):
             raise FileNotFoundError(f"RDSS directory not found: {rdss_dir}")
         for filename in os.listdir(rdss_dir):
-            print(filename)
             if filename.endswith('.csv'):
                 try:
                     base_name = filename.split(' ')[0]  # Extract lab_id
@@ -145,16 +144,16 @@ class ID_COMPARISONS:
                     print(f"Skipping file with unexpected format: {filename}")
 
         df = pd.DataFrame(extracted_data)
-        print(f"EXTRACTED: {extracted_data}")
+        logger.debug(f"EXTRACTED: {extracted_data}")
 
         if not df.empty:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-            print(f"DATE CONVERTED: {df['Date']}")
+            logger.debug(f"DATE CONVERTED: {df['Date']}")
 
             if daysago:
-                print(f"DAYS AGO: {daysago}")
+                logger.debug(f"DAYS AGO: {daysago}")
                 cutoff_date = datetime.today() - timedelta(days=daysago)
-                print(f"CUTOFF DATE: {cutoff_date}")
+                logger.debug(f"CUTOFF DATE: {cutoff_date}")
                 df = df[df['Date'] >= cutoff_date]  # Filter files within the last `daysago` days
             else:
                 df = df[df['Date'] >= '2024-08-05']  # Filter out rows before the threshold date
@@ -168,7 +167,7 @@ class ID_COMPARISONS:
             merged_df = pd.DataFrame()
             if df.empty:
                 logger.info("No RDSS files found after filtering.")
-        print(f"MERGED: {merged_df}")
+        logger.debug(f"MERGED: {merged_df}")
         
 
         return df, merged_df

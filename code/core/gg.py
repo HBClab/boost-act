@@ -48,7 +48,7 @@ class GG:
 
                 # Stream output line-by-line
                 for line in process.stdout:
-                    logger.info(line.rstrip())
+                    logger.debug(line.rstrip())
 
                 process.stdout.close()
                 process.wait()
