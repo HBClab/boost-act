@@ -42,7 +42,7 @@ Implementation outline:
 Fix Roadmap (with gated tests per step)
 
   - Update helpers
-      - Add _peek_signature(path, n_lines=10) + _signature_key(meta) to code/utils/save.py.
+      - Add _peek_signature(path, n_lines=8) + _signature_key(meta) to code/utils/save.py.
       - Unit: new test ensuring hash changes when first 10 lines differ; handles short files; ignores encoding errors.
   - Build signature ledger
       - Implement _build_signature_maps() to scan INT_DIR/OBS_DIR for existing session files → subject→session→sig and subject→sig→session.

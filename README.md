@@ -2,12 +2,6 @@
 
 An automation stack for synchronizing raw actigraphy exports, routing them through GGIR, and publishing QC plots for the BOOST observational and intervention studies. The service pulls IDs from REDCap, reconciles them with RDSS file drops, mirrors curated files to the LSS project hierarchy, and runs the GGIR + QC suite end to end.
 
-
-## TODOS
----
-- `def _determine_run(self, matches)` function in `code/utils/save.py` needs reworking to check for wrong session entries
-
-
 ## Table of Contents
 - [Features](#features)
 - [Repository Layout](#repository-layout)
@@ -70,7 +64,7 @@ export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 python -m code.main <daysago> $BOOST_TOKEN <system>
 ```
 - `daysago` filters RDSS files by acquisition date; use `1` for “yesterday’s drops”.
-- `system` controls filesystem roots: `vosslnx` (default), `vosslnxft`, `local`, or `argon`.
+- `system` controls filesystem roots: `vosslnx` (default), `local`, or `argon`.
 - The run will:
   1. Create fresh symlinks under `../mnt` (see `utils.mnt`).
   2. Match REDCap IDs to RDSS filenames (`utils.comparison_utils`).
@@ -98,7 +92,7 @@ For ad-hoc diagnostics, re-run plot generation with `python code/tests/gt3x/plot
 - Review git staging before enabling cron on a new host to avoid committing large raw exports.
 
 ## Troubleshooting Tips
-- **Missing symlinks:** run `python -c "from code.utils.mnt import create_symlinks; create_symlinks('../mnt', system='argon')"` (swap `system` as needed) and confirm mount availability.
+- **Missing symlinks:** run `python -c "from code.utils.mnt import create_symlinks; create_symlinks('../mnt')"` and confirm mount availability.
 - **GGIR failures:** check the console output and logs under `code/core/` or R’s stderr; ensure the conda env includes GGIR dependencies.
 - **REDCap mismatches:** `utils.comparison_utils.ID_COMPARISONS` logs duplicate IDs; review its stdout and `AGENTS.md` for remediation steps.
 - **Permission errors:** verify the executing user can read RDSS and write to the LSS target directories.
@@ -114,10 +108,6 @@ Contributions are welcome! Start by reviewing `AGENTS.md` for code style, testin
 ## License
 No license has been specified yet. Until a license is published, usage is limited to collaborators with explicit permission from the maintainers.
 
-<<<<<<< HEAD
-/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/derivatives/GGIR-3.2.6/sub-8020/accel/ses-3/output_ses-3/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
-/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6/sub-7168/accel/ses-1/output_ses-1/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
-=======
 /mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/derivatives/GGIR-3.2.6-test-ncp-sleep2/sub-8020/accel/ses-3/output_ses-3/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
 /mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6-test-ncp-sleep2/sub-7168/accel/ses-1/output_ses-1/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
 
@@ -125,5 +115,3 @@ No license has been specified yet. Until a license is published, usage is limite
 cp /mnt/rdss/VossLab/Repositories/Accelerometer_Data/1168\ \(2025-08-14\)RAW.csv \
    /mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8019/accel/ses-3
 ```
-
->>>>>>> 77463126661d2d8dd46654410d811d2b3d50bf5f

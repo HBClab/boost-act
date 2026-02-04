@@ -1,4 +1,5 @@
 import errno
+import hashlib
 import logging
 import os
 import shutil
@@ -123,6 +124,80 @@ class Save:
 
                 if self.symlink:
                     self._refresh_subject_symlinks(destination_path)
+
+    @staticmethod
+    def _peek_signature(path, n_lines=8):
+        """
+        Return a hash of the first n_lines of a text file, ignoring decode errors.
+        """
+        hasher = hashlib.sha256()
+        with open(path, "r", errors="ignore") as handle:
+            for _ in range(n_lines):
+                line = handle.readline()
+                if not line:
+                    break
+                hasher.update(line.encode("utf-8"))
+        return hasher.hexdigest()
+
+    @staticmethod
+    def _signature_key(meta):
+        """
+        Build a stable signature tuple from a metadata dict.
+        """
+        return (meta.get("size_bytes"), meta.get("mtime"), meta.get("head_hash"))
+
+    def _build_signature_maps(self):
+        """
+        Scan INT_DIR/OBS_DIR for existing session CSVs and return signature maps.
+
+        Returns:
+            tuple: (subject_session_sig, subject_sig_session)
+                subject_session_sig[subject_id][session] = signature
+                subject_sig_session[subject_id][signature] = session
+        """
+        subject_session_sig = {}
+        subject_sig_session = {}
+
+        for base_dir in (self.INT_DIR, self.OBS_DIR):
+            if not base_dir or not os.path.isdir(base_dir):
+                continue
+
+            for root, _, files in os.walk(base_dir):
+                for name in files:
+                    if not name.lower().endswith(".csv"):
+                        continue
+
+                    full_path = os.path.join(root, name)
+                    try:
+                        stats = os.stat(full_path)
+                    except OSError:
+                        continue
+
+                    subject_id = None
+                    session = None
+                    for part in root.split(os.sep):
+                        if part.startswith("sub-"):
+                            subject_id = part.replace("sub-", "", 1)
+                        if part.startswith("ses-"):
+                            try:
+                                session = int(part.replace("ses-", "", 1))
+                            except ValueError:
+                                session = None
+
+                    if not subject_id or session is None:
+                        continue
+
+                    meta = {
+                        "size_bytes": stats.st_size,
+                        "mtime": stats.st_mtime,
+                        "head_hash": self._peek_signature(full_path),
+                    }
+                    signature = self._signature_key(meta)
+
+                    subject_session_sig.setdefault(subject_id, {})[session] = signature
+                    subject_sig_session.setdefault(subject_id, {})[signature] = session
+
+        return subject_session_sig, subject_sig_session
 
     def _refresh_subject_symlinks(self, csv_path):
         """
