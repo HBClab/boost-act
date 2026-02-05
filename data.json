@@ -220,6 +220,10 @@
       "8080": [
         "data/int/UI/8080/daily_plot.png",
         "data/int/UI/8080/summary_plot.png"
+      ],
+      "8083": [
+        "data/int/UI/8083/daily_plot.png",
+        "data/int/UI/8083/summary_plot.png"
       ]
     }
   },
@@ -1100,6 +1104,10 @@
       "7738": [
         "data/obs/UI/7738/daily_plot.png",
         "data/obs/UI/7738/summary_plot.png"
+      ],
+      "7741": [
+        "data/obs/UI/7741/daily_plot.png",
+        "data/obs/UI/7741/summary_plot.png"
       ]
     }
   }
