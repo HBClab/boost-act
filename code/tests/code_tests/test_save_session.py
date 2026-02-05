@@ -40,6 +40,8 @@ def _make_save(tmp_path: Path) -> Save:
     save.RDSS_DIR = str(rdss_dir)
     save.matches = {}
     save.dupes = []
+    save.symlink = False
+    save.session_renames = []
     return save
 
 
@@ -73,8 +75,8 @@ def test_determine_location_appends_after_existing_sessions(tmp_path: Path):
 
     updated = save._determine_location(matches)
     sessions = {record["run"] for record in updated["8001"]}
-    # Expect the new sessions to start after the existing one.
-    assert sessions == {2, 3}
+    # determine_location should respect the provided run values.
+    assert sessions == {1, 2}
     for record in updated["8001"]:
         assert record["file_path"].endswith(f"ses-{record['run']}/sub-8001_ses-{record['run']}_accel.csv")
 
@@ -165,3 +167,38 @@ def test_duplicate_merge_when_observational_session_exists(tmp_path: Path):
     assert runs == [2, 3]
     for record in int_records:
         assert record["file_path"].endswith(f"ses-{record['run']}/sub-8200_ses-{record['run']}_accel.csv")
+
+
+def test_move_files_applies_session_renames_before_copy(tmp_path: Path):
+    save = _make_save(tmp_path)
+    subject_id = "8009"
+
+    existing = _touch_session_file(Path(save.INT_DIR), subject_id, 1)
+    rdss_file = Path(save.RDSS_DIR) / "new.csv"
+    rdss_file.write_text("new\nrow\n")
+
+    save.session_renames = [
+        {
+            "subject_id": subject_id,
+            "study": "int",
+            "from_session": 1,
+            "to_session": 2,
+        }
+    ]
+
+    matches = {
+        subject_id: [
+            {
+                "study": "int",
+                "run": 1,
+                "date": dt.datetime(2024, 5, 1),
+                "filename": "new.csv",
+                "file_path": save._session_file_path("int", subject_id, 1),
+            }
+        ]
+    }
+
+    save._move_files(matches)
+
+    assert Path(save._session_file_path("int", subject_id, 2)).exists()
+    assert Path(save._session_file_path("int", subject_id, 1)).exists()

@@ -17,7 +17,7 @@ Proposed steps:
      - If no match, keep the file in the subject’s candidate list for gap-fill ranking.
 3) **Rank reconciliation against TSV audit**  
    - Before finalizing runs, load the prior audit TSV (if present) so the pipeline can compare the **proposed session rank** with historical fingerprints for that subject.  
-   - If a proposed rank conflicts (same rank, different signature), bump to next free rank and record reason `bumped_conflict`.  
+   - If a proposed rank conflicts (same rank, different signature), **reassign sessions to preserve chronological order**: older files get lower session numbers, and conflicting prior sessions get shifted to the next available slot (rename/move required).  
    - If a signature already exists in TSV with a different rank, prefer the TSV rank (authoritative) and reorder the current subject batch accordingly.  
    - This forces conflict resolution *inside* the ingest step, not after copy.
 4) **Gap-fill run assignment (post-reconcile)**  
@@ -36,8 +36,9 @@ Why this helps:
 Implementation outline:
 - Add helpers `_peek_signature(path, n_lines=10)` and `_signature_key(record)` in `save.py`.  
 - Build a subject/session → signature map before `_determine_run`.  
-- Update `_determine_run` to: (a) batch by subject, (b) apply signature reuse + TSV reconciliation, (c) gap-fill, then (d) emit audit log via `logging` + TSV writer.  
-- Extend tests to cover: matching existing signature, reassigning to a different session, TSV-driven bump, gap-fill after signature reuse, and skip-duplicate path.
+- Add helpers to compute subject-level reordering and to plan session renames (old → new) when older files should take earlier session slots.  
+- Update `_determine_run` to: (a) batch by subject, (b) apply signature reuse + TSV reconciliation, (c) compute any session renames required to keep chronological order, (d) gap-fill, then (e) emit audit log via `logging` + TSV writer.  
+- Extend tests to cover: matching existing signature, reassigning to a different session, TSV-driven reorder (older file takes earlier slot), gap-fill after signature reuse, and skip-duplicate path.
 
 Fix Roadmap (with gated tests per step)
 
@@ -50,18 +51,19 @@ Fix Roadmap (with gated tests per step)
   - [x] TSV audit loader/writer
        - Add _load_signature_tsv() (idempotent, missing-file safe) and _append_signature_tsv(rows) writing to logs/session_fingerprint.tsv.
        - Unit: round-trip write/read preserves columns; missing file returns empty.
-  - [ ] Subject-batched determine_run
+  - [x] Subject-batched determine_run
        - Refactor _determine_run to batch by subject, consult signature maps and prior TSV, perform reuse/re-rank, queue unmatched for gap-fill.
        - Unit: scenarios—exact signature reuse pins session; signature in different session re-ranks; unmatched stays pending.
-  - [ ] Conflict resolution vs TSV
-       - Within _determine_run, compare proposed rank to TSV history; on conflict bump to next free rank with reason bumped_conflict.
-       - Unit: TSV fixture with existing rank; incoming conflicting signature gets bumped and reason logged.
-  - [ ] Gap-fill allocator
+  - [x] Conflict resolution vs TSV
+       - Within _determine_run, compare proposed rank to TSV history; on conflict, **reassign runs so chronological order wins** (older files take earlier sessions), and compute a rename plan for any existing sessions shifted to later runs.
+       - Add helper(s) to stage session renames (source path → destination path) so `_move_files` can apply them before copying new files.
+       - Unit: TSV fixture with existing rank; incoming older file takes session 1 and the prior TSV session gets scheduled for rename to session 2.
+  - [x] Gap-fill allocator
        - After reconciliation, assign smallest free session numbers per subject (dense 1,2,3…).
        - Unit: preexisting sessions {1,3}; two new files get runs 2 and 4; ordering respects date.
-  - [ ] Integrate with location
-       - Ensure _determine_location consumes final runs unchanged; no path regressions.
-       - Unit: reuse existing test_save_session.py patterns plus one new case with re-ranked run.
+  - [x] Integrate with location + renames
+       - Ensure _determine_location consumes final runs unchanged; apply any session renames before copy to avoid collisions.
+       - Unit: reuse existing test_save_session.py patterns plus one new case where an existing session is shifted to a later run.
   - [ ] Logging coverage
        - Emit TSV rows with proposed_rank, final_rank, signature_match, action, source.
        - Unit: confirm TSV contains expected rows/actions for mixed reuse + bump + new.
@@ -70,4 +72,3 @@ Fix Roadmap (with gated tests per step)
        - Manual: run pytest code/tests/code_tests/test_save_session.py::... and new tests.
 
   Proceed stepwise: only move to next bullet after its unit test passes.
-

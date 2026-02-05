@@ -37,6 +37,7 @@ class Save:
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
         self.symlink = symlink
+        self.session_renames = []
 
     def save(self):
         # First, process the base matches.
@@ -107,6 +108,10 @@ class Save:
         Returns:
             None
         """
+        if getattr(self, "session_renames", None):
+            self._apply_session_renames(self.session_renames)
+            self.session_renames = []
+
         for subject_id, records in matches.items():
             for record in records:
                 source_path = os.path.join(self.RDSS_DIR, record['filename'])
@@ -135,6 +140,60 @@ class Save:
 
                 if self.symlink:
                     self._refresh_subject_symlinks(destination_path)
+
+    def _session_file_path(self, study, subject_id, session):
+        """
+        Build the canonical session CSV path for a subject.
+        """
+        study_dir = self.INT_DIR if study == "int" else self.OBS_DIR
+        filename = f"sub-{subject_id}_ses-{session}_accel.csv"
+        return os.path.join(study_dir, f"sub-{subject_id}", "accel", f"ses-{session}", filename)
+
+    def _apply_session_renames(self, renames):
+        """
+        Apply planned session renames before copying new files.
+        """
+        for item in sorted(renames, key=lambda x: x["to_session"], reverse=True):
+            study = item["study"]
+            subject_id = item["subject_id"]
+            from_session = item["from_session"]
+            to_session = item["to_session"]
+
+            source_path = self._session_file_path(study, subject_id, from_session)
+            dest_path = self._session_file_path(study, subject_id, to_session)
+
+            if not os.path.exists(source_path):
+                logger.warning("Expected session file missing for rename: %s", source_path)
+                continue
+
+            if os.path.exists(dest_path):
+                logger.warning("Destination already exists for rename: %s", dest_path)
+                continue
+
+            os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+            shutil.move(source_path, dest_path)
+
+            source_dir = os.path.dirname(source_path)
+            try:
+                if not os.listdir(source_dir):
+                    os.rmdir(source_dir)
+            except OSError:
+                pass
+
+            if self.symlink:
+                self._refresh_subject_symlinks(dest_path)
+
+    @staticmethod
+    def _infer_study(subject_id):
+        try:
+            boost_id_int = int(subject_id)
+        except (TypeError, ValueError):
+            return None
+        if 6000 < boost_id_int < 8000:
+            return "obs"
+        if boost_id_int >= 8000:
+            return "int"
+        return None
 
     @staticmethod
     def _peek_signature(path, n_lines=8):
@@ -304,11 +363,12 @@ class Save:
 
     def _determine_run(self, matches):
         """
-        Adds a 'run' key to the matches dictionary based on the chronological order of entries for each boost_id.
+        Adds run metadata to matches by batching per subject and reconciling signatures.
 
         Logic:
-        - If a boost_id occurs multiple times in the matches list, assign a 'run' value in order of oldest to newest.
-        The oldest entry is assigned 1, the next is 2, and so on.
+        - Sort each subject's records by date to assign proposed_rank.
+        - If a record's signature matches an existing session (filesystem or TSV), pin run to that session.
+        - Unmatched records are marked pending_gap_fill for later gap allocation.
 
         Args:
             matches (dict): Dictionary with keys as boost_ids and values as lists of dictionaries
@@ -317,14 +377,144 @@ class Save:
         Returns:
             dict: Updated matches dictionary with the 'run' key added to each entry.
         """
+        subject_session_sig, subject_sig_session = self._build_signature_maps()
+        tsv_rows = self._load_signature_tsv()
+        tsv_by_subject_filename = {}
+        tsv_by_subject_rank = {}
+        for row in tsv_rows:
+            subject_id = row.get("subject_id")
+            filename = row.get("rdss_filename")
+            final_rank = row.get("final_rank")
+            if not subject_id or not filename or not final_rank:
+                continue
+            try:
+                final_rank = int(final_rank)
+            except (TypeError, ValueError):
+                continue
+            tsv_by_subject_filename.setdefault(subject_id, {})[filename] = final_rank
+            tsv_by_subject_rank.setdefault(subject_id, {})[final_rank] = {
+                "filename": filename,
+                "study": row.get("study") or self._infer_study(subject_id),
+            }
+
+        audit_rows = []
+
         for boost_id, match_list in matches.items():
             # Sort the match_list by date in ascending order
             match_list.sort(key=lambda x: x['date'])
+            pinned_sessions = set()
+            tsv_reserved = set(tsv_by_subject_rank.get(boost_id, {}).keys())
+            existing_sessions = set(subject_session_sig.get(boost_id, {}).keys())
+            if not hasattr(self, "session_renames"):
+                self.session_renames = []
 
-            # Assign a 'run' value to each entry based on its position in the sorted list
+            # Assign a proposed rank and attempt to reuse existing sessions based on signatures.
             for idx, match in enumerate(match_list, start=1):
-                match['run'] = idx
+                match["proposed_rank"] = idx
+                signature = None
+                rdss_path = os.path.join(self.RDSS_DIR, match.get("filename", ""))
+                try:
+                    stats = os.stat(rdss_path)
+                    signature = self._signature_key(
+                        {
+                            "size_bytes": stats.st_size,
+                            "mtime": stats.st_mtime,
+                            "head_hash": self._peek_signature(rdss_path),
+                        }
+                    )
+                except (FileNotFoundError, OSError):
+                    signature = None
 
+                reused_session = None
+                if signature is not None:
+                    reused_session = subject_sig_session.get(boost_id, {}).get(signature)
+
+                if reused_session is None:
+                    reused_session = tsv_by_subject_filename.get(boost_id, {}).get(match.get("filename"))
+
+                if reused_session is not None:
+                    match["run"] = int(reused_session)
+                    match["pending_gap_fill"] = False
+                    match["signature_match"] = "exact"
+                    pinned_sessions.add(int(reused_session))
+                    match["action"] = "reuse"
+                    match["source"] = "fs" if signature is not None else "tsv"
+                else:
+                    match["run"] = None
+                    match["pending_gap_fill"] = True
+                    match["signature_match"] = "none"
+                    match["action"] = "assign_new"
+                    match["source"] = None
+
+            # Assign provisional runs to unmatched records when the proposed slot is free.
+            for match in match_list:
+                if not match.get("pending_gap_fill"):
+                    continue
+                proposed = match.get("proposed_rank")
+                if proposed in tsv_reserved:
+                    existing_entry = tsv_by_subject_rank.get(boost_id, {}).get(proposed)
+                    existing_name = None
+                    existing_study = None
+                    if existing_entry:
+                        existing_name = existing_entry.get("filename")
+                        existing_study = existing_entry.get("study")
+
+                    if existing_name and existing_name != match.get("filename"):
+                        candidate = 1
+                        while candidate in pinned_sessions or candidate in tsv_reserved:
+                            candidate += 1
+
+                        if existing_study:
+                            self.session_renames.append(
+                                {
+                                    "subject_id": boost_id,
+                                    "study": existing_study,
+                                    "from_session": proposed,
+                                    "to_session": candidate,
+                                }
+                            )
+
+                        tsv_reserved.remove(proposed)
+                        tsv_reserved.add(candidate)
+
+                        match["run"] = proposed
+                        match["pending_gap_fill"] = False
+                        match["action"] = "reassign_conflict"
+                        match["source"] = "tsv"
+                        pinned_sessions.add(proposed)
+                        continue
+
+            # Gap-fill any remaining pending records with the smallest free sessions.
+            pending = [m for m in match_list if m.get("pending_gap_fill")]
+            if pending:
+                pending.sort(key=lambda x: x.get("proposed_rank") or 0)
+                assigned = {m.get("run") for m in match_list if m.get("run")}
+                candidate = 1
+                for match in pending:
+                    while candidate in assigned or candidate in pinned_sessions or candidate in tsv_reserved or candidate in existing_sessions:
+                        candidate += 1
+                    match["run"] = candidate
+                    match["pending_gap_fill"] = False
+                    match["action"] = match.get("action") or "assign_new"
+                    assigned.add(candidate)
+                    candidate += 1
+
+            inferred_study = self._infer_study(boost_id)
+            for match in match_list:
+                audit_rows.append(
+                    {
+                        "subject_id": boost_id,
+                        "study": match.get("study") or inferred_study,
+                        "proposed_rank": match.get("proposed_rank"),
+                        "final_rank": match.get("run"),
+                        "signature_match": match.get("signature_match"),
+                        "action": match.get("action"),
+                        "rdss_filename": match.get("filename"),
+                        "source": match.get("source"),
+                    }
+                )
+
+        self._append_signature_tsv(audit_rows)
         return matches
 
     # make sure this pushes??
@@ -478,6 +668,7 @@ class Save:
         Returns:
             dict: The updated matches dictionary with processed duplicates merged in.
         """
+        subject_session_sig, _ = self._build_signature_maps()
         # Group duplicates by lab_id.
         grouped = {}
         for dup in duplicates:
@@ -518,9 +709,8 @@ class Save:
             int_boost_id = str(int_entry['boost_id'])
             
             # Build the expected OBS session 1 path.
-            subject_folder_obs = f"sub-{obs_boost_id}"
-            obs_session1_path = os.path.join(self.OBS_DIR, subject_folder_obs, "accel",
-                                            f"sub-{obs_boost_id}_ses-1_accel.csv")
+            obs_session1_path = self._session_file_path("obs", obs_boost_id, 1)
+            existing_int_sessions = set(subject_session_sig.get(int_boost_id, {}).keys())
             
             new_entries = []
             if not os.path.exists(obs_session1_path):
@@ -536,35 +726,41 @@ class Save:
                     'file_path': obs_session1_path,
                     'subject_id': obs_boost_id
                 })
-                # All remaining files become interventional (run numbers start at 2).
-                for idx, (fname, fdate) in enumerate(combined[1:], start=1):
-                    subject_folder_int = f"sub-{int_boost_id}"
-                    int_file_path = os.path.join(self.INT_DIR, subject_folder_int, "accel",
-                                                f"sub-{int_boost_id}_ses-{idx}_accel.csv")
+                # All remaining files become interventional in the next free sessions.
+                candidate = 1
+                for fname, fdate in combined[1:]:
+                    while candidate in existing_int_sessions:
+                        candidate += 1
+                    int_file_path = self._session_file_path("int", int_boost_id, candidate)
                     new_entries.append({
                         'filename': fname,
                         'labID': lab_id,
                         'date': fdate,
                         'study': 'int',
-                        'run': idx,
+                        'run': candidate,
                         'file_path': int_file_path,
                         'subject_id': int_boost_id
                     })
+                    existing_int_sessions.add(candidate)
+                    candidate += 1
             else:
                 # OBS session 1 exists; assign all duplicate files as interventional.
-                for idx, (fname, fdate) in enumerate(combined, start=1):
-                    subject_folder_int = f"sub-{int_boost_id}"
-                    int_file_path = os.path.join(self.INT_DIR, subject_folder_int, "accel",
-                                                f"sub-{int_boost_id}_ses-{idx}_accel.csv")
+                candidate = 1
+                for fname, fdate in combined:
+                    while candidate in existing_int_sessions:
+                        candidate += 1
+                    int_file_path = self._session_file_path("int", int_boost_id, candidate)
                     new_entries.append({
                         'filename': fname,
                         'labID': lab_id,
                         'date': fdate,
                         'study': 'int',
-                        'run': idx,
+                        'run': candidate,
                         'file_path': int_file_path,
                         'subject_id': int_boost_id
                     })
+                    existing_int_sessions.add(candidate)
+                    candidate += 1
             
             # Merge the processed duplicate entries into the main matches dictionary.
             for entry in new_entries:
