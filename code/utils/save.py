@@ -3,11 +3,22 @@ import hashlib
 import logging
 import os
 import shutil
+import csv
 from code.utils.comparison_utils import ID_COMPARISONS
 
 
 logger = logging.getLogger(__name__)
 class Save:
+    SIGNATURE_TSV_COLUMNS = (
+        "subject_id",
+        "study",
+        "proposed_rank",
+        "final_rank",
+        "signature_match",
+        "action",
+        "rdss_filename",
+        "source",
+    )
 
     def __init__(self, intdir, obsdir, rdssdir, token, daysago=None, symlink=True):
         if not rdssdir:
@@ -198,6 +209,40 @@ class Save:
                     subject_sig_session.setdefault(subject_id, {})[signature] = session
 
         return subject_session_sig, subject_sig_session
+
+    def _signature_tsv_path(self):
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        return os.path.join(repo_root, "logs", "session_fingerprint.tsv")
+
+    def _load_signature_tsv(self, tsv_path=None):
+        path = tsv_path or self._signature_tsv_path()
+        if not os.path.exists(path):
+            return []
+
+        with open(path, "r", newline="") as handle:
+            reader = csv.DictReader(handle, delimiter="\t")
+            if reader.fieldnames is None:
+                return []
+            return list(reader)
+
+    def _append_signature_tsv(self, rows, tsv_path=None):
+        if not rows:
+            return
+
+        path = tsv_path or self._signature_tsv_path()
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        write_header = not os.path.exists(path) or os.path.getsize(path) == 0
+
+        with open(path, "a", newline="") as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=self.SIGNATURE_TSV_COLUMNS,
+                delimiter="\t",
+                extrasaction="ignore",
+            )
+            if write_header:
+                writer.writeheader()
+            writer.writerows(rows)
 
     def _refresh_subject_symlinks(self, csv_path):
         """

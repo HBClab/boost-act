@@ -41,33 +41,33 @@ Implementation outline:
 
 Fix Roadmap (with gated tests per step)
 
-  - Update helpers
-      - Add _peek_signature(path, n_lines=8) + _signature_key(meta) to code/utils/save.py.
-      - Unit: new test ensuring hash changes when first 10 lines differ; handles short files; ignores encoding errors.
-  - Build signature ledger
-      - Implement _build_signature_maps() to scan INT_DIR/OBS_DIR for existing session files → subject→session→sig and subject→sig→session.
-      - Unit: fixture creates two subs with sessions; assert maps return expected lookups and ignore non-CSV.
-  - TSV audit loader/writer
-      - Add _load_signature_tsv() (idempotent, missing-file safe) and _append_signature_tsv(rows) writing to logs/session_fingerprint.tsv.
-      - Unit: round-trip write/read preserves columns; missing file returns empty.
-  - Subject-batched determine_run
-      - Refactor _determine_run to batch by subject, consult signature maps and prior TSV, perform reuse/re-rank, queue unmatched for gap-fill.
-      - Unit: scenarios—exact signature reuse pins session; signature in different session re-ranks; unmatched stays pending.
-  - Conflict resolution vs TSV
-      - Within _determine_run, compare proposed rank to TSV history; on conflict bump to next free rank with reason bumped_conflict.
-      - Unit: TSV fixture with existing rank; incoming conflicting signature gets bumped and reason logged.
-  - Gap-fill allocator
-      - After reconciliation, assign smallest free session numbers per subject (dense 1,2,3…).
-      - Unit: preexisting sessions {1,3}; two new files get runs 2 and 4; ordering respects date.
-  - Integrate with location
-      - Ensure _determine_location consumes final runs unchanged; no path regressions.
-      - Unit: reuse existing test_save_session.py patterns plus one new case with re-ranked run.
-  - Logging coverage
-      - Emit TSV rows with proposed_rank, final_rank, signature_match, action, source.
-      - Unit: confirm TSV contains expected rows/actions for mixed reuse + bump + new.
-  - End-to-end dry slice
-      - Minimal integration test: construct Save with tmp dirs, seed existing file + TSV, feed three matches (reuse, bump, new); assert copy targets and TSV lines.
-      - Manual: run pytest code/tests/code_tests/test_save_session.py::... and new tests.
+  - [x] Update helpers
+       - Add _peek_signature(path, n_lines=8) + _signature_key(meta) to code/utils/save.py.
+       - Unit: new test ensuring hash changes when first 10 lines differ; handles short files; ignores encoding errors.
+  - [x] Build signature ledger
+       - Implement _build_signature_maps() to scan INT_DIR/OBS_DIR for existing session files → subject→session→sig and subject→sig→session.
+       - Unit: fixture creates two subs with sessions; assert maps return expected lookups and ignore non-CSV.
+  - [x] TSV audit loader/writer
+       - Add _load_signature_tsv() (idempotent, missing-file safe) and _append_signature_tsv(rows) writing to logs/session_fingerprint.tsv.
+       - Unit: round-trip write/read preserves columns; missing file returns empty.
+  - [ ] Subject-batched determine_run
+       - Refactor _determine_run to batch by subject, consult signature maps and prior TSV, perform reuse/re-rank, queue unmatched for gap-fill.
+       - Unit: scenarios—exact signature reuse pins session; signature in different session re-ranks; unmatched stays pending.
+  - [ ] Conflict resolution vs TSV
+       - Within _determine_run, compare proposed rank to TSV history; on conflict bump to next free rank with reason bumped_conflict.
+       - Unit: TSV fixture with existing rank; incoming conflicting signature gets bumped and reason logged.
+  - [ ] Gap-fill allocator
+       - After reconciliation, assign smallest free session numbers per subject (dense 1,2,3…).
+       - Unit: preexisting sessions {1,3}; two new files get runs 2 and 4; ordering respects date.
+  - [ ] Integrate with location
+       - Ensure _determine_location consumes final runs unchanged; no path regressions.
+       - Unit: reuse existing test_save_session.py patterns plus one new case with re-ranked run.
+  - [ ] Logging coverage
+       - Emit TSV rows with proposed_rank, final_rank, signature_match, action, source.
+       - Unit: confirm TSV contains expected rows/actions for mixed reuse + bump + new.
+  - [ ] End-to-end dry slice
+       - Minimal integration test: construct Save with tmp dirs, seed existing file + TSV, feed three matches (reuse, bump, new); assert copy targets and TSV lines.
+       - Manual: run pytest code/tests/code_tests/test_save_session.py::... and new tests.
 
   Proceed stepwise: only move to next bullet after its unit test passes.
 

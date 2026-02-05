@@ -71,3 +71,25 @@ def test_build_signature_maps_tracks_sessions_and_ignores_non_csv(tmp_path: Path
     assert subject_sig_session["8001"][sig_8001_s1] == 1
     assert subject_sig_session["8001"][sig_8001_s2] == 2
     assert subject_sig_session["7002"][sig_7002_s1] == 1
+
+
+def test_signature_helpers_integrate_with_ledger(tmp_path: Path):
+    save = _make_save(tmp_path)
+
+    file_s1 = _write_session_file(Path(save.INT_DIR), "8003", 1, ["alpha", "beta"])
+    file_s2 = _write_session_file(Path(save.INT_DIR), "8003", 2, ["alpha", "beta", "gamma"])
+
+    subject_session_sig, subject_sig_session = save._build_signature_maps()
+
+    sig_s1 = subject_session_sig["8003"][1]
+    sig_s2 = subject_session_sig["8003"][2]
+
+    assert sig_s1 != sig_s2
+    assert subject_sig_session["8003"][sig_s1] == 1
+    assert subject_sig_session["8003"][sig_s2] == 2
+
+    stats = file_s1.stat()
+    head_hash = Save._peek_signature(str(file_s1), n_lines=8)
+    assert Save._signature_key(
+        {"size_bytes": stats.st_size, "mtime": stats.st_mtime, "head_hash": head_hash}
+    ) == sig_s1
