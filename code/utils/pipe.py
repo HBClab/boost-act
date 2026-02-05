@@ -31,6 +31,11 @@ class Pipe:
             OBS_DIR="/Shared/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
             RDSS_DIR=None,
         ),
+        "vosslnx-test": dict(
+            INT_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test-2",
+            OBS_DIR="/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test-2",
+            RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
+        )
     }
 
     @classmethod
