@@ -241,3 +241,78 @@ def test_determine_run_logs_signature_rows_for_mixed_actions(tmp_path: Path):
     assert logged["sig.csv"]["signature_match"] == "exact"
     assert logged["fresh.csv"]["action"] == "assign_new"
     assert logged["fresh.csv"]["final_rank"] == "4"
+
+
+def test_determine_run_end_to_end_dry_slice(tmp_path: Path):
+    save = _make_save(tmp_path)
+    save.symlink = False
+    subject_id = "8011"
+    fixed_mtime = 1_700_000_666
+
+    existing_sig = _write_file(
+        Path(save.INT_DIR) / f"sub-{subject_id}" / "accel" / "ses-2" / f"sub-{subject_id}_ses-2_accel.csv",
+        "sig\nrow\n",
+        fixed_mtime,
+    )
+    existing_prior = _write_file(
+        Path(save.INT_DIR) / f"sub-{subject_id}" / "accel" / "ses-1" / f"sub-{subject_id}_ses-1_accel.csv",
+        "prior\nrow\n",
+        fixed_mtime - 1,
+    )
+
+    _write_file(Path(save.RDSS_DIR) / "incoming.csv", "incoming\nrow\n", fixed_mtime + 1)
+    _write_file(Path(save.RDSS_DIR) / "sig.csv", "sig\nrow\n", fixed_mtime)
+    _write_file(Path(save.RDSS_DIR) / "fresh.csv", "fresh\nrow\n", fixed_mtime + 2)
+
+    save._append_signature_tsv(
+        [
+            {
+                "subject_id": subject_id,
+                "study": "int",
+                "proposed_rank": "1",
+                "final_rank": "1",
+                "signature_match": "exact",
+                "action": "reuse",
+                "rdss_filename": "prior.csv",
+                "source": "tsv",
+            }
+        ]
+    )
+
+    matches = {
+        subject_id: [
+            {"filename": "incoming.csv", "date": dt.datetime(2024, 1, 1)},
+            {"filename": "sig.csv", "date": dt.datetime(2024, 1, 2)},
+            {"filename": "fresh.csv", "date": dt.datetime(2024, 1, 3)},
+        ]
+    }
+
+    updated = save._determine_run(matches)
+    updated = save._determine_study(updated)
+    updated = save._determine_location(updated)
+    save._move_files(updated)
+
+    assert existing_sig.exists()
+    assert existing_prior.exists()
+
+    renamed_prior = Path(save.INT_DIR) / f"sub-{subject_id}" / "accel" / "ses-3" / f"sub-{subject_id}_ses-3_accel.csv"
+    assert renamed_prior.exists()
+
+    incoming_path = Path(save.INT_DIR) / f"sub-{subject_id}" / "accel" / "ses-1" / f"sub-{subject_id}_ses-1_accel.csv"
+    fresh_path = Path(save.INT_DIR) / f"sub-{subject_id}" / "accel" / "ses-4" / f"sub-{subject_id}_ses-4_accel.csv"
+    assert incoming_path.exists()
+    assert fresh_path.exists()
+
+    rows = save._load_signature_tsv()
+    logged = {
+        row["rdss_filename"]: row
+        for row in rows
+        if row.get("subject_id") == subject_id
+        and row.get("rdss_filename") in {"incoming.csv", "sig.csv", "fresh.csv"}
+    }
+    assert logged["incoming.csv"]["action"] == "reassign_conflict"
+    assert logged["incoming.csv"]["final_rank"] == "1"
+    assert logged["sig.csv"]["action"] == "reuse"
+    assert logged["sig.csv"]["final_rank"] == "2"
+    assert logged["fresh.csv"]["action"] == "assign_new"
+    assert logged["fresh.csv"]["final_rank"] == "4"

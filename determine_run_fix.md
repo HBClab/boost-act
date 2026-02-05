@@ -64,10 +64,10 @@ Fix Roadmap (with gated tests per step)
   - [x] Integrate with location + renames
        - Ensure _determine_location consumes final runs unchanged; apply any session renames before copy to avoid collisions.
        - Unit: reuse existing test_save_session.py patterns plus one new case where an existing session is shifted to a later run.
-  - [ ] Logging coverage
+  - [x] Logging coverage
        - Emit TSV rows with proposed_rank, final_rank, signature_match, action, source.
        - Unit: confirm TSV contains expected rows/actions for mixed reuse + bump + new.
-  - [ ] End-to-end dry slice
+  - [x] End-to-end dry slice
        - Minimal integration test: construct Save with tmp dirs, seed existing file + TSV, feed three matches (reuse, bump, new); assert copy targets and TSV lines.
        - Manual: run pytest code/tests/code_tests/test_save_session.py::... and new tests.
 
