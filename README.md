@@ -107,17 +107,3 @@ Contributions are welcome! Start by reviewing `AGENTS.md` for code style, testin
 
 ## License
 No license has been specified yet. Until a license is published, usage is limited to collaborators with explicit permission from the maintainers.
-
-<<<<<<< HEAD
-/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/derivatives/GGIR-3.2.6/sub-8020/accel/ses-3/output_ses-3/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
-/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6/sub-7168/accel/ses-1/output_ses-1/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
-=======
-/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/derivatives/GGIR-3.2.6-test-ncp-sleep2/sub-8020/accel/ses-3/output_ses-3/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
-/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test/derivatives/GGIR-3.2.6-test-ncp-sleep2/sub-7168/accel/ses-1/output_ses-1/results/part5_personsummary_MM_L44.8M100.6V428.8_T5A5.csv
-
-```sh
-cp /mnt/rdss/VossLab/Repositories/Accelerometer_Data/1168\ \(2025-08-14\)RAW.csv \
-   /mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test/sub-8019/accel/ses-3
-```
-
->>>>>>> 77463126661d2d8dd46654410d811d2b3d50bf5f
