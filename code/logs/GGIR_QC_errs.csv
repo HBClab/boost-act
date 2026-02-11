@@ -483,7 +483,7 @@ sub-7214,ses-2,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing
 sub-7010,ses-3,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7010,ses-4,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7010,ses-2,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
-sub-7055,ses-2,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7055,ses-2,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7055,ses-3,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7207,ses-3,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
 sub-7207,ses-2,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
