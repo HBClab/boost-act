@@ -225,6 +225,12 @@
         "data/int/UI/8083/daily_plot.png",
         "data/int/UI/8083/summary_plot.png"
       ]
+    },
+    "NE": {
+      "9002": [
+        "data/int/NE/9002/daily_plot.png",
+        "data/int/NE/9002/summary_plot.png"
+      ]
     }
   },
   "obs": {
