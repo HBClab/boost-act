@@ -224,12 +224,112 @@
       "8083": [
         "data/int/UI/8083/daily_plot.png",
         "data/int/UI/8083/summary_plot.png"
+      ],
+      "8073": [
+        "data/int/UI/8073/daily_plot.png",
+        "data/int/UI/8073/summary_plot.png"
+      ],
+      "8090": [
+        "data/int/UI/8090/daily_plot.png",
+        "data/int/UI/8090/summary_plot.png"
       ]
     },
     "NE": {
       "9002": [
         "data/int/NE/9002/daily_plot.png",
         "data/int/NE/9002/summary_plot.png"
+      ],
+      "9030": [
+        "data/int/NE/9030/daily_plot.png",
+        "data/int/NE/9030/summary_plot.png"
+      ],
+      "9011": [
+        "data/int/NE/9011/daily_plot.png",
+        "data/int/NE/9011/summary_plot.png"
+      ],
+      "9029": [
+        "data/int/NE/9029/daily_plot.png",
+        "data/int/NE/9029/summary_plot.png"
+      ],
+      "9023": [
+        "data/int/NE/9023/daily_plot.png",
+        "data/int/NE/9023/summary_plot.png"
+      ],
+      "9005": [
+        "data/int/NE/9005/daily_plot.png",
+        "data/int/NE/9005/summary_plot.png"
+      ],
+      "9033": [
+        "data/int/NE/9033/daily_plot.png",
+        "data/int/NE/9033/summary_plot.png"
+      ],
+      "9020": [
+        "data/int/NE/9020/daily_plot.png",
+        "data/int/NE/9020/summary_plot.png"
+      ],
+      "9015": [
+        "data/int/NE/9015/daily_plot.png",
+        "data/int/NE/9015/summary_plot.png"
+      ],
+      "9034": [
+        "data/int/NE/9034/daily_plot.png",
+        "data/int/NE/9034/summary_plot.png"
+      ],
+      "9017": [
+        "data/int/NE/9017/daily_plot.png",
+        "data/int/NE/9017/summary_plot.png"
+      ],
+      "9010": [
+        "data/int/NE/9010/daily_plot.png",
+        "data/int/NE/9010/summary_plot.png"
+      ],
+      "9028": [
+        "data/int/NE/9028/daily_plot.png",
+        "data/int/NE/9028/summary_plot.png"
+      ],
+      "9009": [
+        "data/int/NE/9009/daily_plot.png",
+        "data/int/NE/9009/summary_plot.png"
+      ],
+      "9003": [
+        "data/int/NE/9003/daily_plot.png",
+        "data/int/NE/9003/summary_plot.png"
+      ],
+      "9031": [
+        "data/int/NE/9031/daily_plot.png",
+        "data/int/NE/9031/summary_plot.png"
+      ],
+      "9035": [
+        "data/int/NE/9035/daily_plot.png",
+        "data/int/NE/9035/summary_plot.png"
+      ],
+      "9007": [
+        "data/int/NE/9007/daily_plot.png",
+        "data/int/NE/9007/summary_plot.png"
+      ],
+      "9014": [
+        "data/int/NE/9014/daily_plot.png",
+        "data/int/NE/9014/summary_plot.png"
+      ],
+      "9019": [
+        "data/int/NE/9019/daily_plot.png",
+        "data/int/NE/9019/summary_plot.png"
+      ],
+      "9013": [
+        "data/int/NE/9013/daily_plot.png",
+        "data/int/NE/9013/summary_plot.png"
+      ],
+      "9021": [
+        "data/int/NE/9021/daily_plot.png",
+        "data/int/NE/9021/summary_plot.png"
+      ],
+      "9045": [
+        "data/int/NE/9045/daily_plot.png",
+        "data/int/NE/9045/summary_plot.png"
+      ],
+      "9038": [
+        "data/int/NE/9038/daily_plot.png",
+        "data/int/NE/9038/summary_plot.png"
       ]
     }
   },
@@ -1114,6 +1214,10 @@
       "7741": [
         "data/obs/UI/7741/daily_plot.png",
         "data/obs/UI/7741/summary_plot.png"
+      ],
+      "7736": [
+        "data/obs/UI/7736/daily_plot.png",
+        "data/obs/UI/7736/summary_plot.png"
       ]
     }
   }
