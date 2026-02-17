@@ -983,3 +983,4 @@ sub-9021,ses-3,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing
 sub-9045,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays
 sub-9038,ses-1,Pass,ERROR: Too few hours considered,ERROR: Cleaning code missing,ERROR: Fewer than 2 weekend days for at least one session
 sub-7736,ses-1,Pass,ERROR: Too few hours considered,Pass,Pass: ≥2 weekend days and ≥3 weekdays
+sub-7222,ses-2,Pass,WARNING: Exceeds expected hours (possible worn-day mismatch),ERROR: Cleaning code missing,Pass: ≥2 weekend days and ≥3 weekdays

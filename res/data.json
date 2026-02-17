@@ -1181,6 +1181,14 @@
       "run": 1,
       "study": "obs",
       "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7222/accel/ses-1/sub-7222_ses-1_accel.csv"
+    },
+    {
+      "filename": "1417 (2026-01-29)RAW.csv",
+      "labID": "1417",
+      "date": "2026-01-29T00:00:00",
+      "run": 2,
+      "study": "obs",
+      "file_path": "/mnt/nfs/lss/vosslabhpc/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2/sub-7222/accel/ses-2/sub-7222_ses-2_accel.csv"
     }
   ],
   "7223": [
