@@ -58,7 +58,7 @@
               ps.pyyaml
               ps.pyarrow
               ps.pytest
-            ] ++ [ catppuccin-jupyterlab ]
+            ] #++ [ catppuccin-jupyterlab ]
           );
         in {
           default = pkgs.mkShellNoCC {
