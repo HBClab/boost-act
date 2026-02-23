@@ -9,8 +9,8 @@ class NewGroup:
         self.int_path = "/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test"
         
         self.paths = [
-            os.path.join(self.obs_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep'),
-            os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep')
+            os.path.join(self.obs_path, 'derivatives', 'GGIR-3.2.6'),
+            os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6')
         ]
         
         self.path = './plots'
@@ -234,4 +234,3 @@ class NewGroup:
         os.makedirs(self.path, exist_ok=True)
         print(f"Writing plot to {os.path.join(self.path, filename)}")
         fig.write_html(os.path.join(self.path, filename))
-

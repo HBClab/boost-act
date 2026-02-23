@@ -1,13 +1,23 @@
-# grab any new code changes, otherwise skip
-git pull --ff-only origin main
+#!/usr/bin/env bash
 
-# run pipe
-cd code && python main.py 1 "DE4E2DB72778DACA9B8848574107D2F5"
+# set -euo pipefail
 
-#move back to home dir
-cd ..
+git pull --ff-only origin final-test
 
-# commit and push made changes
-git add .
-git commit -m "automated commit by vosslab linux"
-git push
+if [[ -z "${BOOST_TOKEN:-}" ]]; then
+  echo "BOOST_TOKEN is required. Aborting." >&2
+  exit 1
+fi
+
+SYSTEM="${BOOST_SYSTEM:-local}"
+DAYS_AGO="${DAYS_AGO:-30}"
+
+mkdir -p "logs/${SYSTEM}"
+python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" | tee "logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
+
+if ! git diff --quiet; then
+  git add .
+  git commit -m "automated commit by vosslab linux"
+  git push
+fi
+

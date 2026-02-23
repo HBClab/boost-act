@@ -1,16 +1,14 @@
+import errno
+import logging
 import os
-import re
 import shutil
 from code.utils.comparison_utils import ID_COMPARISONS
 
 
-SESSION_DIR_PATTERN = re.compile(r"^ses-(\d+)$")
-SESSION_FILE_PATTERN = re.compile(r"^sub-[^_]+_ses-(\d+)_accel\.csv$")
-
-
 class Save:
+    logger = logging.getLogger(__name__)
 
-    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None):
+    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None, symlink=True):
         if not rdssdir:
             raise ValueError("RDSS directory is not configured for this system; cannot ingest files.")
 
@@ -19,86 +17,14 @@ class Save:
         self.matches.pop('6022, 7143', None)
         self.matches.pop('7178, 8066', None)
         self.matches.pop('8057, 7219', None)
+
         print(self.matches)
         self.dupes = results['duplicates']
         print(f"Type of Dupes: {type(self.dupes)}")
         self.INT_DIR = intdir
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
-
-    def _list_existing_sessions(self, study_dir, subject_id):
-        """
-        Inspect the destination directory for an existing subject and collect any session numbers already present.
-
-        Returns:
-            set[int]: Session identifiers detected for the subject/study combination.
-        """
-        subject_accel_dir = os.path.join(study_dir, f"sub-{subject_id}", "accel")
-        sessions = set()
-
-        if not os.path.isdir(subject_accel_dir):
-            return sessions
-
-        try:
-            for entry in os.listdir(subject_accel_dir):
-                entry_path = os.path.join(subject_accel_dir, entry)
-
-                # Match folders such as "ses-1"
-                folder_match = SESSION_DIR_PATTERN.match(entry)
-                if folder_match:
-                    sessions.add(int(folder_match.group(1)))
-                    continue
-
-                # Match files that may have been written directly into the accel directory
-                if os.path.isfile(entry_path):
-                    file_match = SESSION_FILE_PATTERN.match(entry)
-                    if file_match:
-                        sessions.add(int(file_match.group(1)))
-                        continue
-
-                # Defensive: also inspect files inside unexpected sub-directories
-                if os.path.isdir(entry_path):
-                    try:
-                        for nested in os.listdir(entry_path):
-                            nested_match = SESSION_FILE_PATTERN.match(nested)
-                            if nested_match:
-                                sessions.add(int(nested_match.group(1)))
-                    except OSError:
-                        # If we cannot read the nested directory, skip it; we only need best-effort insight.
-                        continue
-        except OSError:
-            # If we cannot inspect the directory (permissions, race conditions), treat as no existing sessions.
-            return sessions
-
-        return sessions
-
-    def _next_available_session(self, used_sessions):
-        """
-        Determine the smallest positive session number that is not already in use.
-
-        Args:
-            used_sessions (set[int]): Sessions already present on disk or assigned in the current batch.
-
-        Returns:
-            int: The session number to assign next.
-        """
-        session = 1
-        while session in used_sessions:
-            session += 1
-        return session
-
-    def _build_destination_path(self, study_dir, subject_id, session):
-        """
-        Construct the canonical destination path for a given subject/session pair.
-        """
-        filename = f"sub-{subject_id}_ses-{session}_accel.csv"
-        return os.path.join(
-            study_dir,
-            f"sub-{subject_id}",
-            "accel",
-            f"ses-{session}",
-            filename,
-        )
+        self.symlink = symlink
 
     def save(self):
         # First, process the base matches.
@@ -149,10 +75,13 @@ class Save:
                     print(f"File already exists at destination: {destination_path}. Skipping.")
                 else:
                     try:
-                        shutil.copyfile(source_path, destination_path)
+                        shutil.copy(source_path, destination_path)
                         print(f"Copied {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
+                        continue
+                if self.symlink: 
+                    self._refresh_subject_symlinks(destination_path)
 
     def _move_files(self, matches):
         """
@@ -181,12 +110,77 @@ class Save:
 
                 if os.path.exists(destination_path):
                     print(f"File already exists at destination: {destination_path}. Skipping.")
-                else:
-                    try:
-                        shutil.copyfile(source_path, destination_path)
-                        print(f"Moved {source_path} -> {destination_path}")
-                    except Exception as e:
-                        print(f"Error moving {source_path} to {destination_path}: {e}")
+                    if self.symlink:
+                        self._refresh_subject_symlinks(destination_path)
+                    continue
+
+                try:
+                    shutil.copy(source_path, destination_path)
+                    print(f"Moved {source_path} -> {destination_path}")
+                except Exception as e:
+                    print(f"Error moving {source_path} to {destination_path}: {e}")
+                    continue
+
+                if self.symlink:
+                    self._refresh_subject_symlinks(destination_path)
+
+    def _refresh_subject_symlinks(self, csv_path):
+        """
+        Ensure sub-*/accel/all contains symlinks for every CSV under the accel tree.
+
+        Args:
+            csv_path (str): Absolute path to the CSV that was just copied or confirmed.
+        """
+        session_dir = os.path.dirname(csv_path)
+        subject_accel_dir = os.path.dirname(session_dir)
+
+        if not os.path.isdir(subject_accel_dir):
+            return
+
+        csv_records = []
+        for root, dirs, files in os.walk(subject_accel_dir):
+            dirs[:] = [d for d in dirs if d != "all"]
+
+            for name in files:
+                if not name.lower().endswith(".csv"):
+                    continue
+                full_path = os.path.join(root, name)
+                rel_path = os.path.relpath(full_path, subject_accel_dir)
+                csv_records.append((full_path, rel_path))
+
+        all_dir = os.path.join(subject_accel_dir, "all")
+        if os.path.exists(all_dir):
+            shutil.rmtree(all_dir)
+
+        os.makedirs(all_dir, exist_ok=True)
+
+        use_symlinks = True
+        for src, rel_path in csv_records:
+            rel_dir = os.path.dirname(rel_path)
+            target_dir = all_dir if rel_dir in ("", ".") else os.path.join(all_dir, rel_dir)
+            os.makedirs(target_dir, exist_ok=True)
+            link_path = os.path.join(target_dir, os.path.basename(rel_path))
+
+            if use_symlinks:
+                try:
+                    os.symlink(src, link_path)
+                    continue
+                except FileExistsError:
+                    os.unlink(link_path)
+                    os.symlink(src, link_path)
+                    continue
+                except OSError as exc:
+                    if exc.errno not in (errno.EOPNOTSUPP, errno.EPERM, errno.EACCES):
+                        raise
+                    use_symlinks = False
+                    self.logger.warning(
+                        "Symlinks are not supported in %s; copying CSVs into accel/all instead.",
+                        subject_accel_dir,
+                    )
+
+            if os.path.exists(link_path):
+                os.unlink(link_path)
+            shutil.copy2(src, link_path)
 
     def _determine_run(self, matches):
         """
@@ -215,6 +209,7 @@ class Save:
 
         return matches
 
+    # make sure this pushes??
     def _determine_study(self, matches):
         """
         Adds a 'study' key to the matches dictionary based on the boost_id.
@@ -261,39 +256,22 @@ class Save:
                         |-> accel
                             |-> sub-####_ses-#_accel.csv
         """
-        session_cache = {}
         for subject_id, records in matches.items():
             try:
-                # Sort by the original chronological run so we preserve ordering when assigning new sessions.
-                for record in sorted(records, key=lambda r: r.get('run', 0)):
-                    study = record.get('study')
-                    if study is None:
+                for record in records:
+                    if record['study'] is None:
                         raise TypeError(f"study is None for {subject_id}")
 
-                    if not isinstance(study, str):
-                        raise TypeError(f"study must be a string for {subject_id}")
+                    study_dir = self.INT_DIR if record['study'].lower() == 'int' else self.OBS_DIR
+                    subject_folder = f"sub-{subject_id}"
+                    session = record['run']  # 'run' is synonymous with 'session' or 'set'
+                    filename = f"sub-{subject_id}_ses-{session}_accel.csv"
 
-                    study_lower = study.lower()
-                    if study_lower == 'int':
-                        study_dir = self.INT_DIR
-                    elif study_lower == 'obs':
-                        study_dir = self.OBS_DIR
-                    else:
-                        raise TypeError(f"Unexpected study value '{study}' for {subject_id}")
+                    # Construct full path
+                    file_path = f"{study_dir}/{subject_folder}/accel/ses-{session}/{filename}"
 
-                    cache_key = (study_dir, subject_id)
-                    if cache_key not in session_cache:
-                        session_cache[cache_key] = self._list_existing_sessions(study_dir, subject_id)
-
-                    used_sessions = session_cache[cache_key]
-                    # Assumption: sessions are numbered with the smallest available positive integer,
-                    # so gaps left by deleted runs will be reused before new numbers are appended.
-                    session = self._next_available_session(used_sessions)
-                    used_sessions.add(session)
-
-                    # Keep run aligned with the session assigned on disk to avoid downstream confusion.
-                    record['run'] = session
-                    record['file_path'] = self._build_destination_path(study_dir, subject_id, session)
+                    # Append file path to record
+                    record['file_path'] = file_path
 
             except TypeError as e:
                 print(f"Skipping subject {subject_id} due to error: {e}")
@@ -315,6 +293,39 @@ class Save:
                     record['date'] = str(date_value)
         return matches
 
+    @staticmethod
+    def remove_symlink_directories(study_dirs):
+        """
+        Remove per-subject accel/all directories that only contain symlinks created during ingest.
+
+        Args:
+            study_dirs (Iterable[str]): Iterable of study root paths to inspect.
+        """
+        for base_dir in study_dirs:
+            if not base_dir or not os.path.isdir(base_dir):
+                continue
+
+            try:
+                subjects = os.listdir(base_dir)
+            except OSError:
+                continue
+
+            for subject in subjects:
+                accel_all_dir = os.path.join(base_dir, subject, "accel", "all")
+
+                if os.path.islink(accel_all_dir):
+                    try:
+                        os.unlink(accel_all_dir)
+                    except OSError as exc:
+                        print(f"Unable to unlink {accel_all_dir}: {exc}")
+                    continue
+
+                if os.path.isdir(accel_all_dir):
+                    try:
+                        shutil.rmtree(accel_all_dir)
+                    except OSError as exc:
+                        print(f"Unable to remove directory {accel_all_dir}: {exc}")
+
 
     def _handle_and_merge_duplicates(self, duplicates):
         """
@@ -325,11 +336,17 @@ class Save:
         the interventional study):
         
         1. Combine the filenames and dates from both entries and sort them chronologically.
-        2. Inspect existing sessions on disk for both studies to avoid overwriting prior outputs.
-        3. If the observational session-1 location is still free, assign the earliest file to the observational
-            study using the next available session number for that subject. All remaining files are assigned to the
-            interventional study, again using the next free session numbers to maintain continuity.
-            If observational session-1 already exists, every file is treated as interventional.
+        2. Pre-build the expected observational study session-1 path:
+                OBS_DIR/sub-<obs_boost_id>/accel/sub-<obs_boost_id>_ses-1_accel.csv
+            (Here the subject folder is built using the observational study ID, which must be less than 8000.)
+        3. If that OBS session-1 file does not exist:
+                - Assign the earliest file (by date) as observational (study = 'obs', run = 1)
+                using the obs boost_id.
+                - Assign any remaining files as interventional (study = 'int') with run numbers
+                starting at 1 and using the int boost_id.
+            If the OBS session-1 file does exist:
+                - Assign all files to the interventional study (study = 'int') with run numbers
+                starting at 1, using the int boost_id.
         4. Merge these processed duplicate entries into the main matches dictionary. Each entry
             is stored under the key equal to its subject_id.
             
@@ -382,49 +399,54 @@ class Save:
             obs_boost_id = str(obs_entry['boost_id'])
             int_boost_id = str(int_entry['boost_id'])
             
-            # Look up existing sessions so we can append without clobbering previously saved runs.
-            obs_existing_sessions = self._list_existing_sessions(self.OBS_DIR, obs_boost_id)
-            int_existing_sessions = self._list_existing_sessions(self.INT_DIR, int_boost_id)
-            obs_session1_path = self._build_destination_path(self.OBS_DIR, obs_boost_id, 1)
-            obs_session1_exists = os.path.exists(obs_session1_path) or 1 in obs_existing_sessions
+            # Build the expected OBS session 1 path.
+            subject_folder_obs = f"sub-{obs_boost_id}"
+            obs_session1_path = os.path.join(self.OBS_DIR, subject_folder_obs, "accel",
+                                            f"sub-{obs_boost_id}_ses-1_accel.csv")
             
             new_entries = []
-            remaining_for_int = combined
-            if not obs_session1_exists and combined:
+            if not os.path.exists(obs_session1_path):
                 # OBS session 1 does not exist.
                 # The first (oldest) file becomes observational.
                 first_fname, first_date = combined[0]
-                obs_session = self._next_available_session(obs_existing_sessions)
-                obs_existing_sessions.add(obs_session)
-                obs_file_path = self._build_destination_path(self.OBS_DIR, obs_boost_id, obs_session)
                 new_entries.append({
                     'filename': first_fname,
                     'labID': lab_id,
                     'date': first_date,
                     'study': 'obs',
-                    'run': obs_session,
-                    'file_path': obs_file_path,
+                    'run': 1,
+                    'file_path': obs_session1_path,
                     'subject_id': obs_boost_id
                 })
-                remaining_for_int = combined[1:]
+                # All remaining files become interventional (run numbers start at 2).
+                for idx, (fname, fdate) in enumerate(combined[1:], start=1):
+                    subject_folder_int = f"sub-{int_boost_id}"
+                    int_file_path = os.path.join(self.INT_DIR, subject_folder_int, "accel",
+                                                f"sub-{int_boost_id}_ses-{idx}_accel.csv")
+                    new_entries.append({
+                        'filename': fname,
+                        'labID': lab_id,
+                        'date': fdate,
+                        'study': 'int',
+                        'run': idx,
+                        'file_path': int_file_path,
+                        'subject_id': int_boost_id
+                    })
             else:
                 # OBS session 1 exists; assign all duplicate files as interventional.
-                remaining_for_int = combined
-
-            for fname, fdate in remaining_for_int:
-                # Maintain the same "fill the earliest gap" assumption when allocating interventional sessions.
-                int_session = self._next_available_session(int_existing_sessions)
-                int_existing_sessions.add(int_session)
-                int_file_path = self._build_destination_path(self.INT_DIR, int_boost_id, int_session)
-                new_entries.append({
-                    'filename': fname,
-                    'labID': lab_id,
-                    'date': fdate,
-                    'study': 'int',
-                    'run': int_session,
-                    'file_path': int_file_path,
-                    'subject_id': int_boost_id
-                })
+                for idx, (fname, fdate) in enumerate(combined, start=1):
+                    subject_folder_int = f"sub-{int_boost_id}"
+                    int_file_path = os.path.join(self.INT_DIR, subject_folder_int, "accel",
+                                                f"sub-{int_boost_id}_ses-{idx}_accel.csv")
+                    new_entries.append({
+                        'filename': fname,
+                        'labID': lab_id,
+                        'date': fdate,
+                        'study': 'int',
+                        'run': idx,
+                        'file_path': int_file_path,
+                        'subject_id': int_boost_id
+                    })
             
             # Merge the processed duplicate entries into the main matches dictionary.
             for entry in new_entries:

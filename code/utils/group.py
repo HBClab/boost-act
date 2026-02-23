@@ -5,8 +5,6 @@ import plotly.graph_objects as go
 import logging
 from code.utils.pipe import Pipe
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -16,7 +14,10 @@ class Group:
         self.system = system
         self.obs_path = Pipe.OBS_DIR 
         self.int_path = Pipe.INT_DIR
-        self.paths = [os.path.join(self.obs_path,'derivatives', 'GGIR-3.2.6-test-ncp-sleep2'), os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6-test-ncp-sleep2')]
+        self.paths = [
+            os.path.join(self.obs_path, 'derivatives', 'GGIR-3.2.6'),
+            os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6'),
+        ]
         self.path = './plots/group'
 
     '''
