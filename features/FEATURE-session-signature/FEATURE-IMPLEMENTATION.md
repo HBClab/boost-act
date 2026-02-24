@@ -20,28 +20,36 @@ Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest 
 Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (9 passed).
 
 ***Checkpoint 3: Chronological Ordering + Tie Conflict Policy***
-- [ ] Add `_subject_sort_key(record)` and strict ordering by date ascending for each subject.
-- [ ] Implement `_detect_same_date_conflict(records)` to detect duplicate dates within a subject across merged records.
-- [ ] Enforce skip policy on tie-date conflict (`warning` + no filesystem operations + no manifest mutation for that subject).
-- [ ] A test: add `test_same_date_conflict_warns_and_skips_subject` in `act/tests/test_save_manifest_reindex.py` and extend `act/tests/test_save_edge_cases.py` with a subject-skip assertion.
+- [x] Add `_subject_sort_key(record)` and strict ordering by date ascending for each subject.
+- [x] Implement `_detect_same_date_conflict(records)` to detect duplicate dates within a subject across merged records.
+- [x] Enforce skip policy on tie-date conflict (`warning` + no filesystem operations + no manifest mutation for that subject).
+- [x] A test: add `test_same_date_conflict_warns_and_skips_subject` in `act/tests/test_save_manifest_reindex.py` and extend `act/tests/test_save_edge_cases.py` with a subject-skip assertion.
+
+Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (10 passed).
 
 ***Checkpoint 4: Run Reindex Assignment Engine***
-- [ ] Replace date-only `_determine_run` logic with manifest-aware subject reindex that assigns dense runs `1..n` after canonical sort.
-- [ ] Handle three required flows: new subject defaults to `run=1`, later-date append behavior, and earlier-date insertion with run shifts.
-- [ ] Propagate reconciled runs to downstream location generation so `_determine_location` reflects final run mapping.
-- [ ] A test: add `test_new_subject_defaults_to_run_one`, `test_later_date_appends_next_run`, and `test_earlier_date_backfill_reindexes_and_shifts_runs` in `act/tests/test_save_manifest_reindex.py`.
+- [x] Replace date-only `_determine_run` logic with manifest-aware subject reindex that assigns dense runs `1..n` after canonical sort.
+- [x] Handle three required flows: new subject defaults to `run=1`, later-date append behavior, and earlier-date insertion with run shifts.
+- [x] Propagate reconciled runs to downstream location generation so `_determine_location` reflects final run mapping.
+- [x] A test: add `test_new_subject_defaults_to_run_one`, `test_later_date_appends_next_run`, and `test_earlier_date_backfill_reindexes_and_shifts_runs` in `act/tests/test_save_manifest_reindex.py`.
+
+Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (13 passed).
 
 ***Checkpoint 5: Two-Phase Rename Planning***
-- [ ] Add `_plan_subject_renames(subject_id, study, old_records, new_records)` to compute impacted `ses-*` file/directory moves.
-- [ ] Add `_apply_two_phase_renames(rename_plan)` using temporary paths to avoid name collisions during upward/downward session shifts.
-- [ ] Ensure rename plan is no-op when runs are unchanged and only touches subject/session paths in that subject’s study tree.
-- [ ] A test: add `test_two_phase_rename_avoids_collision` in `act/tests/test_save_manifest_reindex.py` using on-disk fixtures under temp roots.
+- [x] Add `_plan_subject_renames(subject_id, study, old_records, new_records)` to compute impacted `ses-*` file/directory moves.
+- [x] Add `_apply_two_phase_renames(rename_plan)` using temporary paths to avoid name collisions during upward/downward session shifts.
+- [x] Ensure rename plan is no-op when runs are unchanged and only touches subject/session paths in that subject’s study tree.
+- [x] A test: add `test_two_phase_rename_avoids_collision` in `act/tests/test_save_manifest_reindex.py` using on-disk fixtures under temp roots.
+
+Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (14 passed).
 
 ***Checkpoint 6: Subject Transaction Safety***
-- [ ] Execute per-subject flow as transaction-like sequence: compute plan -> rename -> copy new files -> in-memory manifest update.
-- [ ] On rename/copy failure, roll back temporary moves where possible and skip manifest mutation for that subject.
-- [ ] Emit structured logs (`append_latest`, `backfill_reindex`, `skip_tie_date`, `noop_duplicate`, `rename_failed`) via `logging` in `act/utils/save.py`.
-- [ ] A test: add `test_subject_failure_does_not_mutate_manifest` in `act/tests/test_save_manifest_reindex.py` with monkeypatched rename/copy failure.
+- [x] Execute per-subject flow as transaction-like sequence: compute plan -> rename -> copy new files -> in-memory manifest update.
+- [x] On rename/copy failure, roll back temporary moves where possible and skip manifest mutation for that subject.
+- [x] Emit structured logs (`append_latest`, `backfill_reindex`, `skip_tie_date`, `noop_duplicate`, `rename_failed`) via `logging` in `act/utils/save.py`.
+- [x] A test: add `test_subject_failure_does_not_mutate_manifest` in `act/tests/test_save_manifest_reindex.py` with monkeypatched rename/copy failure.
+
+Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py act/tests/test_pipeline_smoke.py` (17 passed).
 
 ***Checkpoint 7: Save Flow Integration + Regression Coverage***
 - [ ] Integrate manifest reindex output into existing `Save.save()` flow without breaking `_determine_study`, `_determine_location`, and `_move_files` behavior.

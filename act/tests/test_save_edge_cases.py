@@ -1,5 +1,6 @@
 import os
 import shutil
+import logging
 
 import pytest
 
@@ -14,6 +15,8 @@ def _make_save(temp_study_roots):
     save.symlink = False
     save.matches = {}
     save.dupes = []
+    save.manifest = {}
+    save.logger = logging.getLogger("act.utils.save")
     return save
 
 
@@ -41,12 +44,20 @@ def test_save_edge_cases_matrix(
             {
                 "filename": "1002 (2025-01-01)RAW.csv",
                 "labID": "1002",
-                "date": "2025-01-01",
+                "date": "2025-01-01" if edge_case == "duplicate_date" else "2025-01-02",
             },
         ]
     }
 
     save._determine_run(matches)
+
+    if edge_case == "duplicate_date":
+        assert matches[subject_id] == []
+        save._determine_study(matches)
+        save._determine_location(matches)
+        assert matches[subject_id] == []
+        return
+
     save._determine_study(matches)
     save._determine_location(matches)
 
@@ -65,7 +76,7 @@ def test_save_edge_cases_matrix(
         assert os.path.basename(path).startswith(f"sub-{subject_id}_ses-")
         assert path.endswith("_accel.csv")
 
-    # Duplicate dates should be deterministic and stable on re-run.
+    # Re-running run assignment should be deterministic.
     save._determine_run(matches)
     assert [record["run"] for record in matches[subject_id]] == [1, 2]
 

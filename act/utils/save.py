@@ -57,9 +57,12 @@ class Save:
         if not len(self.dupes) == 0:
             matches = self._handle_and_merge_duplicates(self.dupes)
 
-        # Move the files based on the final matches.
-        self._move_files(matches=matches)
-        return self._prepare_for_json(matches)
+        committed_matches = {}
+        for subject_id, records in matches.items():
+            committed_records = self._process_subject_transaction(subject_id, records)
+            committed_matches[str(subject_id)] = committed_records
+
+        return self._prepare_for_json(committed_matches)
 
     def _normalize_manifest_payload(self, payload):
         if not isinstance(payload, dict):
@@ -192,6 +195,347 @@ class Save:
                 merged_records.append(normalized_record)
 
         return merged_records
+
+    def _subject_sort_key(self, record):
+        normalized_date = self._normalize_record_date_value(record.get("date")) or ""
+        filename = str(record.get("filename", ""))
+        lab_id = str(record.get("labID", ""))
+        return (normalized_date, filename, lab_id)
+
+    def _detect_same_date_conflict(self, records):
+        seen_dates = set()
+        for record in records:
+            normalized_date = self._normalize_record_date_value(record.get("date"))
+            if normalized_date is None:
+                continue
+            if normalized_date in seen_dates:
+                return True
+            seen_dates.add(normalized_date)
+        return False
+
+    def _record_identity_key(self, record):
+        return (
+            str(record.get("labID", "")),
+            self._normalize_record_date_value(record.get("date")),
+            str(record.get("filename", "")),
+        )
+
+    def _subject_study_root(self, study):
+        if (study or "").lower() == "int":
+            return self.INT_DIR
+        return self.OBS_DIR
+
+    def _subject_session_paths(self, subject_id, study, run):
+        subject_key = str(subject_id)
+        session = int(run)
+        study_root = self._subject_study_root(study)
+        session_dir = os.path.join(
+            study_root,
+            f"sub-{subject_key}",
+            "accel",
+            f"ses-{session}",
+        )
+        session_file = os.path.join(
+            session_dir,
+            f"sub-{subject_key}_ses-{session}_accel.csv",
+        )
+        return session_dir, session_file
+
+    def _infer_subject_study(self, subject_id, fallback_records=None):
+        if fallback_records:
+            for record in fallback_records:
+                study = (record or {}).get("study")
+                if study in {"int", "obs"}:
+                    return study
+
+        try:
+            subject_val = int(subject_id)
+        except (TypeError, ValueError):
+            return "obs"
+
+        if subject_val >= 8000:
+            return "int"
+        return "obs"
+
+    def _copy_subject_record(self, record):
+        source_path = os.path.join(self.RDSS_DIR, record["filename"])
+        destination_path = record["file_path"]
+
+        if not os.path.exists(source_path):
+            print(f"Source file not found: {source_path}. Skipping.")
+            return None
+
+        destination_dir = os.path.dirname(destination_path)
+        os.makedirs(destination_dir, exist_ok=True)
+
+        if os.path.exists(destination_path):
+            print(f"File already exists at destination: {destination_path}. Skipping.")
+            if self.symlink:
+                self._refresh_subject_symlinks(destination_path)
+            return None
+
+        shutil.copy(source_path, destination_path)
+        if self.symlink:
+            self._refresh_subject_symlinks(destination_path)
+        return destination_path
+
+    def _rollback_rename_plan(self, rename_plan):
+        inverse_moves = []
+        for move in reversed((rename_plan or {}).get("moves", [])):
+            inverse_moves.append(
+                {
+                    "record_key": move.get("record_key"),
+                    "old_run": move.get("new_run"),
+                    "new_run": move.get("old_run"),
+                    "old_dir": move.get("new_dir"),
+                    "new_dir": move.get("old_dir"),
+                    "old_file": move.get("new_file"),
+                    "new_file": move.get("old_file"),
+                }
+            )
+
+        inverse_plan = {
+            "subject_id": (rename_plan or {}).get("subject_id"),
+            "study": (rename_plan or {}).get("study"),
+            "moves": inverse_moves,
+        }
+
+        if inverse_moves:
+            self._apply_two_phase_renames(inverse_plan)
+
+    def _process_subject_transaction(self, subject_id, incoming_records):
+        subject_key = str(subject_id)
+        incoming_records = incoming_records or []
+        existing_records = [dict(record) for record in self.manifest.get(subject_key, [])]
+        merged_records = self._reindex_subject_records(existing_records, incoming_records)
+
+        if self._detect_same_date_conflict(merged_records):
+            self.logger.warning("skip_tie_date subject=%s", subject_key)
+            return []
+
+        merged_records.sort(key=self._subject_sort_key)
+        subject_study = self._infer_subject_study(subject_key, incoming_records)
+
+        canonical_records = []
+        canonical_lookup = {}
+        for idx, record in enumerate(merged_records, start=1):
+            canonical = dict(record)
+            canonical["run"] = idx
+            canonical["study"] = subject_study
+            _, canonical_file = self._subject_session_paths(subject_key, subject_study, idx)
+            canonical["file_path"] = canonical_file
+            canonical_records.append(canonical)
+            canonical_lookup[self._record_identity_key(canonical)] = canonical
+
+        existing_keys = {
+            self._record_identity_key(record)
+            for record in existing_records
+            if isinstance(record, dict)
+        }
+        incoming_keys = {
+            self._record_identity_key(record)
+            for record in incoming_records
+            if isinstance(record, dict)
+        }
+        new_keys = incoming_keys - existing_keys
+
+        old_dates = [
+            self._normalize_record_date_value(record.get("date"))
+            for record in existing_records
+            if isinstance(record, dict)
+        ]
+        new_dates = [key[1] for key in new_keys if key[1] is not None]
+
+        rename_plan = self._plan_subject_renames(
+            subject_id=subject_key,
+            study=subject_study,
+            old_records=existing_records,
+            new_records=canonical_records,
+        )
+
+        if not new_keys and not rename_plan["moves"]:
+            self.logger.info("noop_duplicate subject=%s", subject_key)
+
+        if new_keys and old_dates and new_dates:
+            if min(new_dates) > max(old_dates):
+                self.logger.info("append_latest subject=%s", subject_key)
+            else:
+                self.logger.info("backfill_reindex subject=%s", subject_key)
+
+        applied_renames = False
+        copied_paths = []
+        try:
+            self._apply_two_phase_renames(rename_plan)
+            applied_renames = bool(rename_plan["moves"])
+
+            for record_key in new_keys:
+                canonical_record = canonical_lookup.get(record_key)
+                if canonical_record is None:
+                    continue
+                copied_path = self._copy_subject_record(canonical_record)
+                if copied_path:
+                    copied_paths.append(copied_path)
+
+            self.manifest[subject_key] = canonical_records
+
+            committed_records = []
+            for record in incoming_records:
+                mapped = canonical_lookup.get(self._record_identity_key(record))
+                if mapped is not None:
+                    committed_records.append(dict(mapped))
+
+            committed_records.sort(key=self._subject_sort_key)
+            return committed_records
+        except Exception as exc:
+            self.logger.warning("rename_failed subject=%s error=%s", subject_key, exc)
+
+            for copied_path in copied_paths:
+                try:
+                    if os.path.exists(copied_path):
+                        os.remove(copied_path)
+                except OSError:
+                    pass
+
+            if applied_renames:
+                try:
+                    self._rollback_rename_plan(rename_plan)
+                except Exception as rollback_exc:
+                    self.logger.warning(
+                        "rename_failed subject=%s rollback_error=%s",
+                        subject_key,
+                        rollback_exc,
+                    )
+
+            return []
+
+    def _plan_subject_renames(self, subject_id, study, old_records, new_records):
+        old_by_key = {
+            self._record_identity_key(record): record
+            for record in (old_records or [])
+            if isinstance(record, dict)
+        }
+        new_by_key = {
+            self._record_identity_key(record): record
+            for record in (new_records or [])
+            if isinstance(record, dict)
+        }
+
+        rename_steps = []
+        for record_key, old_record in old_by_key.items():
+            new_record = new_by_key.get(record_key)
+            if new_record is None:
+                continue
+
+            old_run = old_record.get("run")
+            new_run = new_record.get("run")
+            if old_run is None or new_run is None or int(old_run) == int(new_run):
+                continue
+
+            old_dir, old_file = self._subject_session_paths(subject_id, study, old_run)
+            new_dir, new_file = self._subject_session_paths(subject_id, study, new_run)
+
+            rename_steps.append(
+                {
+                    "record_key": record_key,
+                    "old_run": int(old_run),
+                    "new_run": int(new_run),
+                    "old_dir": old_dir,
+                    "new_dir": new_dir,
+                    "old_file": old_file,
+                    "new_file": new_file,
+                }
+            )
+
+        return {
+            "subject_id": str(subject_id),
+            "study": (study or "").lower(),
+            "moves": rename_steps,
+        }
+
+    def _apply_two_phase_renames(self, rename_plan):
+        moves = (rename_plan or {}).get("moves", [])
+        if not moves:
+            return []
+
+        temp_hops = []
+        moved_to_temp = []
+        moved_to_final = []
+
+        try:
+            for index, move in enumerate(moves, start=1):
+                old_dir = move["old_dir"]
+                if not os.path.exists(old_dir):
+                    continue
+
+                base_parent = os.path.dirname(old_dir)
+                temp_dir = os.path.join(
+                    base_parent,
+                    f".tmp-{rename_plan.get('subject_id', 'subject')}-{index}-{move['old_run']}-to-{move['new_run']}",
+                )
+                while os.path.exists(temp_dir):
+                    temp_dir = f"{temp_dir}-x"
+
+                os.makedirs(os.path.dirname(temp_dir), exist_ok=True)
+                os.rename(old_dir, temp_dir)
+
+                hop = {
+                    "temp_dir": temp_dir,
+                    "old_dir": move["old_dir"],
+                    "new_dir": move["new_dir"],
+                    "old_file": move["old_file"],
+                    "new_file": move["new_file"],
+                }
+                temp_hops.append(hop)
+                moved_to_temp.append(hop)
+
+            for hop in temp_hops:
+                new_dir = hop["new_dir"]
+                new_file = hop["new_file"]
+                temp_dir = hop["temp_dir"]
+
+                os.makedirs(os.path.dirname(new_dir), exist_ok=True)
+                os.rename(temp_dir, new_dir)
+                moved_to_final.append(hop)
+
+                current_file = None
+                for name in os.listdir(new_dir):
+                    if name.lower().endswith("_accel.csv"):
+                        current_file = os.path.join(new_dir, name)
+                        break
+
+                if current_file and current_file != new_file:
+                    if os.path.exists(new_file):
+                        os.remove(new_file)
+                    os.rename(current_file, new_file)
+        except Exception:
+            for hop in reversed(moved_to_final):
+                try:
+                    if os.path.exists(hop["new_dir"]):
+                        os.rename(hop["new_dir"], hop["old_dir"])
+                    old_dir = hop["old_dir"]
+                    old_file = hop["old_file"]
+                    current_file = None
+                    if os.path.isdir(old_dir):
+                        for name in os.listdir(old_dir):
+                            if name.lower().endswith("_accel.csv"):
+                                current_file = os.path.join(old_dir, name)
+                                break
+                    if current_file and current_file != old_file:
+                        if os.path.exists(old_file):
+                            os.remove(old_file)
+                        os.rename(current_file, old_file)
+                except OSError:
+                    pass
+
+            for hop in reversed(moved_to_temp):
+                try:
+                    if os.path.exists(hop["temp_dir"]):
+                        os.rename(hop["temp_dir"], hop["old_dir"])
+                except OSError:
+                    pass
+            raise
+
+        return temp_hops
 
     def _move_files_test(self, matches):
         """
@@ -358,13 +702,62 @@ class Save:
         """
         print(f"Type of matches: {type(matches)}")  # Debugging line
         print(f"Value of matches: {matches}")  # Debugging line
-        for boost_id, match_list in matches.items():
-            # Sort the match_list by date in ascending order
-            match_list.sort(key=lambda x: x["date"])
+        for boost_id, incoming_records in matches.items():
+            subject_id = str(boost_id)
+            existing_records = self.manifest.get(subject_id, [])
+            merged_records = self._reindex_subject_records(
+                existing_records=existing_records,
+                incoming_records=incoming_records,
+            )
 
-            # Assign a 'run' value to each entry based on its position in the sorted list
-            for idx, match in enumerate(match_list, start=1):
-                match["run"] = idx
+            if self._detect_same_date_conflict(merged_records):
+                self.logger.warning(
+                    "skip_tie_date subject=%s",
+                    subject_id,
+                )
+                matches[boost_id] = []
+                continue
+
+            merged_records.sort(key=self._subject_sort_key)
+            run_lookup = {}
+            for idx, record in enumerate(merged_records, start=1):
+                record["run"] = idx
+                dedupe_key = (
+                    str(record.get("labID", "")),
+                    self._normalize_record_date_value(record.get("date")),
+                    str(record.get("filename", "")),
+                )
+                run_lookup[dedupe_key] = idx
+
+            reconciled_records = []
+            seen_incoming_keys = set()
+            for record in incoming_records:
+                if not isinstance(record, dict):
+                    continue
+
+                reconciled = dict(record)
+                reconciled["date"] = self._normalize_record_date_value(
+                    reconciled.get("date")
+                )
+                dedupe_key = (
+                    str(reconciled.get("labID", "")),
+                    reconciled.get("date"),
+                    str(reconciled.get("filename", "")),
+                )
+
+                if dedupe_key in seen_incoming_keys:
+                    continue
+                seen_incoming_keys.add(dedupe_key)
+
+                assigned_run = run_lookup.get(dedupe_key)
+                if assigned_run is None:
+                    continue
+
+                reconciled["run"] = assigned_run
+                reconciled_records.append(reconciled)
+
+            reconciled_records.sort(key=self._subject_sort_key)
+            matches[boost_id] = reconciled_records
 
         return matches
 
