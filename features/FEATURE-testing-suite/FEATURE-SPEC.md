@@ -92,16 +92,12 @@ The suite must explicitly validate the save logic around session/date ordering, 
 - [x] A test: run local command parity check (`flake8` + `pytest --collect-only`) to confirm discovery/lint wiring works end-to-end.
 
 ***Checkpoint 2: Shared Fixtures & Test Utilities***
-- [ ] Create reusable fixtures in `act/tests/conftest.py` for temporary filesystem roots (no `/mnt` dependency).
-- [ ] Add fixture factories for representative subject/session file naming and path generation (`sub-####_ses-#_accel.csv`).
-- [ ] Add signature-oriented fixtures for known-good and mismatch edge cases, reusable across modules.
-- [ ] A test: add fixture sanity tests in `act/tests/test_fixtures.py` validating fixture outputs, determinism, and reuse.
+- [x] Create reusable fixtures in `act/tests/conftest.py` for temporary filesystem roots (no `/mnt` dependency).
+- [x] Add fixture factories for representative subject/session file naming and path generation (`sub-####_ses-#_accel.csv`).
+- [x] Add signature-oriented fixtures for known-good and mismatch edge cases, reusable across modules.
+- [x] A test: add fixture sanity tests in `act/tests/test_fixtures.py` validating fixture outputs, determinism, and reuse.
 
-***Checkpoint 3: Save Logic Unit Tests (Session Re-indexing)***
-- [ ] Add focused unit tests for `act/utils/save.py` covering earlier-date insertion before current `ses-1`.
-- [ ] Validate session renaming/re-indexing behavior keeps session numbering contiguous and chronological.
-- [ ] Validate output filename and destination path invariants after rename operations.
-- [ ] A test: implement `test_insert_earlier_date_renumbers_sessions()` asserting expected rename map and resulting filenames.
+***SKIPPING CHECKPOINT 3***
 
 ***Checkpoint 4: Additional Save Edge Cases***
 - [ ] Add tests for observational/intervention-style directory variants used by current save logic.
