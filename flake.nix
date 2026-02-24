@@ -58,6 +58,7 @@
               ps.pyyaml
               ps.pyarrow
               ps.pytest
+              ps.pytest-cov
               ps.flake8
             ] #++ [ catppuccin-jupyterlab ]
           );

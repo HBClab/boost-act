@@ -1,20 +1,21 @@
 import logging
 import os
 import sys
-
 from code.utils.group import Group
-from code.core.gg import GG
 from code.utils.pipe import Pipe
-import logging
 
 def _configure_logging() -> None:
+
     log_file = os.getenv("LOG_FILE")
     handlers = []
+
     if log_file:
+
         log_dir = os.path.dirname(log_file)
         if log_dir:
             os.makedirs(log_dir, exist_ok=True)
         handlers.append(logging.FileHandler(log_file))
+
     else:
         handlers.append(logging.StreamHandler())
 
@@ -23,8 +24,6 @@ def _configure_logging() -> None:
         format='[%(levelname)s] %(message)s',
         handlers=handlers,
     )
-
-
 
 if __name__ == '__main__':
     _configure_logging()
