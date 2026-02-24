@@ -86,10 +86,10 @@ The suite must explicitly validate the save logic around session/date ordering, 
 ## Implementation Plan
 
 ***Checkpoint 1: Testing Scaffolding & Config***
-- [ ] Add/standardize pytest configuration in `pyproject.toml` for discovery under `act/tests/` and `test_*.py` patterns.
-- [ ] Add/standardize flake8 configuration in `pyproject.toml` (or `.flake8`) for project linting with `E502` ignored.
-- [ ] Add baseline test dependencies to `act/requirements.txt` (or documented dev install path) for `pytest`, coverage plugin, and linting tools.
-- [ ] A test: run local command parity check (`flake8` + `pytest --collect-only`) to confirm discovery/lint wiring works end-to-end.
+- [x] Add/standardize pytest configuration in `pyproject.toml` for discovery under `act/tests/` and `test_*.py` patterns.
+- [x] Add/standardize flake8 configuration in `pyproject.toml` (or `.flake8`) for project linting with `E501` ignored.
+- [x] Add baseline test dependencies to `act/requirements.txt` (or documented dev install path) for `pytest`, coverage plugin, and linting tools.
+- [x] A test: run local command parity check (`flake8` + `pytest --collect-only`) to confirm discovery/lint wiring works end-to-end.
 
 ***Checkpoint 2: Shared Fixtures & Test Utilities***
 - [ ] Create reusable fixtures in `act/tests/conftest.py` for temporary filesystem roots (no `/mnt` dependency).
