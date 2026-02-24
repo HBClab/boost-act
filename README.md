@@ -83,10 +83,15 @@ For ad-hoc diagnostics, re-run plot generation with `python act/tests/gt3x/plots
 - Logging defaults to INFO via `logging.basicConfig` in `act/main.py`; adjust the level for verbose runs.
 
 ## Testing & QA
-- Lightweight Python tests can be added under `act/tests/<area>/test_*.py` and executed with `pytest`.
-- QA notebooks in `act/tests/*/*.ipynb` document exploratory checks; rerun them after major data or script changes.
+- Run local checks with the same commands used by CI:
+  - `flake8 act/tests act/main.py act/utils/pipe.py act/utils/comparison_utils.py`
+  - `pytest -q --cov=act.utils.pipe --cov-report=term-missing --cov-fail-under=90`
+  - `pytest -q act/tests/test_pipeline_smoke.py::test_pipeline_smoke_mocked_dependencies`
+- CI runs on pull requests targeting `main` and fails when lint, tests, coverage (`< 90%` for scoped modules), or smoke integration checks fail.
+- Add or update tests under `act/tests/test_*.py` for Python-only validation; keep QA notebooks in `act/tests/*/*.ipynb` for manual exploratory checks.
 - `utils.qc` aggregates results into `logs/GGIR_QC_errs.csv`; inspect this file to confirm expected wear-time and calibration checks.
-- Use sandbox tokens and the `local` system flag to validate changes without touching production mounts.
+- Use sandbox tokens and mocked/local paths for tests; do not require `/mnt` mounts or real secrets.
+- Detailed testing contributor guidance lives in `act/docs/TESTING.md`.
 
 ## Automation & Cron Support
 - `cron.sh` bootstraps the conda env, pulls latest `main`, runs the pipeline (`daysago=1`, production token), and pushes any resulting artifacts.

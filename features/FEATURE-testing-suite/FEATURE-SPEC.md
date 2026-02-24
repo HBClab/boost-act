@@ -106,16 +106,16 @@ The suite must explicitly validate the save logic around session/date ordering, 
 - [x] A test: implement `test_save_edge_cases_matrix()` parameterized across path style and edge-case scenarios.
 
 ***Checkpoint 5: Pipeline Smoke Integration (Python-first e2e)***
-- [ ] Add lightweight integration test(s) targeting Python orchestration path (`act/main.py` + `act/utils/pipe.py`) with external systems mocked.
-- [ ] Stub GGIR/R boundaries (`act/core/gg.py` calls) so CI validates orchestration flow without full GGIR execution.
-- [ ] Validate key outputs/logical side effects (manifest write, expected calls, and no mount dependence).
-- [ ] A test: implement `test_pipeline_smoke_mocked_dependencies()` as PR smoke e2e gate.
+- [x] Add lightweight integration test(s) targeting Python orchestration path (`act/main.py` + `act/utils/pipe.py`) with external systems mocked.
+- [x] Stub GGIR/R boundaries (`act/core/gg.py` calls) so CI validates orchestration flow without full GGIR execution.
+- [x] Validate key outputs/logical side effects (manifest write, expected calls, and no mount dependence).
+- [x] A test: implement `test_pipeline_smoke_mocked_dependencies()` as PR smoke e2e gate.
 
 ***Checkpoint 6: CI Workflow on PR to main***
-- [ ] Add GitHub Actions workflow under `.github/workflows/` triggered on `pull_request` to `main` only.
-- [ ] Configure workflow jobs for lint (`flake8` with `E502` excluded), tests, and coverage fail-under 90%.
-- [ ] Include smoke e2e test execution in required PR checks and keep runtime bounded for fast feedback.
-- [ ] A test: validate workflow config with a PR dry run by intentionally failing/passing lint and test stages in separate commits.
+- [x] Add GitHub Actions workflow under `.github/workflows/` triggered on `pull_request` to `main` only.
+- [x] Configure workflow jobs for lint (`flake8` with `E502` excluded), tests, and coverage fail-under 90%.
+- [x] Include smoke e2e test execution in required PR checks and keep runtime bounded for fast feedback.
+- [x] A test: validate workflow config with a PR dry run by intentionally failing/passing lint and test stages in separate commits.
 
 ***Checkpoint 7: Documentation & Contributor UX***
 - [ ] Update `README.md` Testing & QA section with exact local commands and CI expectations.
