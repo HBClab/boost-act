@@ -5,7 +5,7 @@ THIS FILE SYMBOLICALLY LINKS RDSS and LSS TO WORKING DIRECTORY
 """
 
 
-def create_symlinks(target_dir='../mnt', system='vosslnx'):
+def create_symlinks(target_dir="../mnt", system="vosslnx"):
     """
     Create symlinks to the system-specific mount points defined on Pipe.
     """
@@ -13,7 +13,7 @@ def create_symlinks(target_dir='../mnt', system='vosslnx'):
 
     os.makedirs(target_dir, exist_ok=True)
 
-    system = system or 'vosslnx'
+    system = system or "vosslnx"
     try:
         paths = Pipe.system_paths(system)
     except ValueError as exc:
@@ -22,14 +22,16 @@ def create_symlinks(target_dir='../mnt', system='vosslnx'):
         ) from exc
 
     symlinks = {
-        'int_dir': paths.get('INT_DIR'),
-        'obs_dir': paths.get('OBS_DIR'),
-        'rdss_dir': paths.get('RDSS_DIR')
+        "int_dir": paths.get("INT_DIR"),
+        "obs_dir": paths.get("OBS_DIR"),
+        "rdss_dir": paths.get("RDSS_DIR"),
     }
 
     for link_name, target_path in symlinks.items():
         if not target_path:
-            print(f"Skipping symlink for {link_name}: no path configured for system '{system}'.")
+            print(
+                f"Skipping symlink for {link_name}: no path configured for system '{system}'."
+            )
             continue
 
         link_path = os.path.join(target_dir, link_name)

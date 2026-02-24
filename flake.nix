@@ -60,6 +60,7 @@
               ps.pytest
               ps.pytest-cov
               ps.flake8
+              ps.black
             ] #++ [ catppuccin-jupyterlab ]
           );
         in {

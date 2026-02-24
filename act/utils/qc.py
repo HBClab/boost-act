@@ -6,7 +6,7 @@ from code.utils.plots import ACT_PLOTS, create_json
 
 
 class QC:
-    def __init__(self, project: str, system: str = 'vosslnx'):
+    def __init__(self, project: str, system: str = "vosslnx"):
         """
         Initialize a QC instance.
 
@@ -31,19 +31,17 @@ class QC:
         self.system = system
 
         # Determine the expected days worn based on project type
-        if project == 'obs':
-            self.base_dir = os.path.join(Pipe.OBS_DIR, 'derivatives', 'GGIR-3.2.6')
+        if project == "obs":
+            self.base_dir = os.path.join(Pipe.OBS_DIR, "derivatives", "GGIR-3.2.6")
             self.n_days_worn = 7
-        elif project == 'int':
+        elif project == "int":
             self.n_days_worn = 9
-            self.base_dir = os.path.join(Pipe.INT_DIR, 'derivatives', 'GGIR-3.2.6')
+            self.base_dir = os.path.join(Pipe.INT_DIR, "derivatives", "GGIR-3.2.6")
         else:
             raise ValueError("Project must be 'obs' or 'int'")
 
-
         # Path to the master CSV that accumulates QC errors/warnings
         self.csv_path = "./act/logs/GGIR_QC_errs.csv"
-
 
     def qc(self) -> None:
         """
@@ -88,9 +86,10 @@ class QC:
                 if not os.path.isdir(ses_path):
                     continue
 
-
                 # Now construct path to results
-                results_dir = os.path.join(ses_path, f"output_{session_folder}", "results") # new design needs to use output_{session_folder} instead of output_accel
+                results_dir = os.path.join(
+                    ses_path, f"output_{session_folder}", "results"
+                )  # new design needs to use output_{session_folder} instead of output_accel
                 if not os.path.isdir(results_dir):
                     continue
 
@@ -100,19 +99,17 @@ class QC:
                     continue
 
                 # 2. Locate the person summary using glob for MM
-                person_matches = glob.glob(os.path.join(
-                    results_dir,
-                    "part5_personsummary_MM*.csv"
-                ))
+                person_matches = glob.glob(
+                    os.path.join(results_dir, "part5_personsummary_MM*.csv")
+                )
                 if not person_matches:
                     continue
                 person_file = person_matches[0]
 
                 # 3. Locate the day summary using glob for MM
-                day_matches = glob.glob(os.path.join(
-                    results_dir,
-                    "part5_daysummary_MM*.csv"
-                ))
+                day_matches = glob.glob(
+                    os.path.join(results_dir, "part5_daysummary_MM*.csv")
+                )
                 if not day_matches:
                     continue
                 day_file = day_matches[0]
@@ -120,7 +117,9 @@ class QC:
                 # Extract subject/session and metrics
                 dfs = [qc_file, person_file, day_file]
                 metrics, sub, ses = self.extract_metrics(dfs)
-                cal_err, h_considered, valid_days, clean_code_series, calendar_date = metrics
+                cal_err, h_considered, valid_days, clean_code_series, calendar_date = (
+                    metrics
+                )
 
                 # Run QC checks
                 self.cal_error_check(cal_err, sub, ses)
@@ -129,12 +128,14 @@ class QC:
                 self.cleaning_code_check(clean_code_series, calendar_date, sub, ses)
 
                 # Store session-level MM files for fallback plotting
-                session_records.append({
-                    "sub": sub,
-                    "ses": ses,
-                    "person": person_file,
-                    "day": day_file,
-                })
+                session_records.append(
+                    {
+                        "sub": sub,
+                        "ses": ses,
+                        "person": person_file,
+                        "day": day_file,
+                    }
+                )
 
                 # Clean up
                 try:
@@ -145,7 +146,9 @@ class QC:
 
             # After per‐session QC, make summary plots using the MM files
             all_ses_dir = os.path.join(sub_path, "accel", "output_accel", "results")
-            agg_person = glob.glob(os.path.join(all_ses_dir, "part5_personsummary_MM*.csv"))
+            agg_person = glob.glob(
+                os.path.join(all_ses_dir, "part5_personsummary_MM*.csv")
+            )
             agg_day = glob.glob(os.path.join(all_ses_dir, "part5_daysummary_MM*.csv"))
 
             if agg_person and agg_day:
@@ -168,9 +171,8 @@ class QC:
             plotter.day_plots()
 
         # create the json file used in the application
-        create_json('plots')
-            # End of qc loop
-
+        create_json("plots")
+        # End of qc loop
 
     def extract_metrics(self, dfs: list) -> tuple:
         """
@@ -215,9 +217,9 @@ class QC:
         # Split on '_' to get subject and session identifiers
         file_id = qc_df["filename"].iloc[0]
         parts = file_id.split("_")
-        sub = parts[0]   # e.g., 'sub-7001'
+        sub = parts[0]  # e.g., 'sub-7001'
         print(f"Processing subject: {sub}")
-        ses = parts[1]   # e.g., 'ses-1'
+        ses = parts[1]  # e.g., 'ses-1'
         print(f"Processing session: {ses}")
 
         # Extract metrics from each DataFrame:
@@ -236,12 +238,13 @@ class QC:
         self.df_day = day_df
         return metrics, sub, ses
 
-
     # ─────────────────────────────────────────────────────────────────────
     # #2: Append/Update Master QC CSV with human-readable messages
     # ─────────────────────────────────────────────────────────────────────
 
-    def create_and_return_csv(self, check: str, code: int, sub: str, ses: str, date=None, clean_code=None) -> None:
+    def create_and_return_csv(
+        self, check: str, code: int, sub: str, ses: str, date=None, clean_code=None
+    ) -> None:
         """
         Appends or updates a row in self.csv_path for (sub, ses), setting
         the human-readable interpretation for the specified QC check.
@@ -251,44 +254,46 @@ class QC:
         """
         # Map internal check names to CSV column names
         name_map = {
-            'cal_err':      'Calibration_Error',
-            'h_considered': 'Hours_Considered',
-            'clean_code':   'Cleaning_Code',
-            'val_days':     'Valid_Days'
+            "cal_err": "Calibration_Error",
+            "h_considered": "Hours_Considered",
+            "clean_code": "Cleaning_Code",
+            "val_days": "Valid_Days",
         }
         col = name_map.get(check, check)
 
         # Human-readable interpretations for each check / response code
         meanings = {
-            'Calibration_Error': {
-                0: 'Pass',
-                1: 'ERROR: Calibration error too high',
-                3: 'ERROR: Calibration error missing'
+            "Calibration_Error": {
+                0: "Pass",
+                1: "ERROR: Calibration error too high",
+                3: "ERROR: Calibration error missing",
             },
-            'Hours_Considered': {
-                0: 'Pass',
-                1: 'ERROR: Too few hours considered',
-                2: 'WARNING: Exceeds expected hours (possible worn-day mismatch)',
-                3: 'ERROR: Hours considered missing'
+            "Hours_Considered": {
+                0: "Pass",
+                1: "ERROR: Too few hours considered",
+                2: "WARNING: Exceeds expected hours (possible worn-day mismatch)",
+                3: "ERROR: Hours considered missing",
             },
-            'Cleaning_Code': {
-                0: 'Pass',
-                1: 'ERROR: Invalid cleaning code found',
-                2: 'WARNING: Missing (NaN) cleaning codes present',
-                3: 'ERROR: Cleaning code missing'
+            "Cleaning_Code": {
+                0: "Pass",
+                1: "ERROR: Invalid cleaning code found",
+                2: "WARNING: Missing (NaN) cleaning codes present",
+                3: "ERROR: Cleaning code missing",
             },
-            'Valid_Days': {
-                0: 'Pass: ≥2 weekend days and ≥3 weekdays',
-                1: 'ERROR: Fewer than 2 weekend days for at least one session',
-                2: 'ERROR: Fewer than 3 weekdays for at least one session',
-                3: 'ERROR: No valid-days data found for at least one session'
-            }
+            "Valid_Days": {
+                0: "Pass: ≥2 weekend days and ≥3 weekdays",
+                1: "ERROR: Fewer than 2 weekend days for at least one session",
+                2: "ERROR: Fewer than 3 weekdays for at least one session",
+                3: "ERROR: No valid-days data found for at least one session",
+            },
         }
-        interpretation = meanings[col].get(code, 'ERROR: Unknown code')
+        interpretation = meanings[col].get(code, "ERROR: Unknown code")
 
         # Append the actual cleaning codes and dates if applicable
-        if check == 'clean_code' and code == 1 and clean_code is not None:
-            invalids = clean_code[~clean_code.isin([0, 1]) & clean_code.notna()].unique()
+        if check == "clean_code" and code == 1 and clean_code is not None:
+            invalids = clean_code[
+                ~clean_code.isin([0, 1]) & clean_code.notna()
+            ].unique()
             if len(invalids) > 0:
                 interpretation += f" — Invalid codes: {', '.join(map(str, invalids))}"
                 if date is not None and len(date) > 0:
@@ -298,32 +303,35 @@ class QC:
         if os.path.exists(self.csv_path):
             master_df = pd.read_csv(self.csv_path)
         else:
-            cols = ['Subject', 'Session'] + list(name_map.values())
+            cols = ["Subject", "Session"] + list(name_map.values())
             master_df = pd.DataFrame(columns=cols)
 
         # Check if a row for this (sub, ses) already exists
-        mask = (master_df['Subject'] == sub) & (master_df['Session'] == ses)
+        mask = (master_df["Subject"] == sub) & (master_df["Session"] == ses)
         if mask.any():
             # Overwrite only this column’s value
             master_df.loc[mask, col] = interpretation
         else:
             # Create a new row, with blanks in all QC columns except this one
-            new_row = {c: '' for c in master_df.columns}
-            new_row['Subject'] = sub
-            new_row['Session'] = ses
+            new_row = {c: "" for c in master_df.columns}
+            new_row["Subject"] = sub
+            new_row["Session"] = ses
             new_row[col] = interpretation
-            master_df = pd.concat([master_df, pd.DataFrame([new_row])], ignore_index=True)
+            master_df = pd.concat(
+                [master_df, pd.DataFrame([new_row])], ignore_index=True
+            )
 
         # Write back to CSV (index=False to avoid an extra column)
         master_df.to_csv(self.csv_path, index=False)
-
 
     # ─────────────────────────────────────────────────────────────────────
     # #3: Individual QC Check Methods (append to CSV via create_and_return_csv)
     #      Modified to catch “variable not set” and report code = 3
     # ─────────────────────────────────────────────────────────────────────
 
-    def cal_error_check(self, cal_error: float, sub: str, ses: str, threshold: float = 0.03) -> int:
+    def cal_error_check(
+        self, cal_error: float, sub: str, ses: str, threshold: float = 0.03
+    ) -> int:
         """
         Check calibration error against a threshold.
 
@@ -335,23 +343,26 @@ class QC:
         """
         try:
             # If cal_error is None or NaN, treat as missing
-            if cal_error is None or (isinstance(cal_error, float) and pd.isna(cal_error)):
+            if cal_error is None or (
+                isinstance(cal_error, float) and pd.isna(cal_error)
+            ):
                 raise ValueError("cal_error is missing")
 
             if cal_error > threshold:
-                self.create_and_return_csv('cal_err', 1, sub, ses)
+                self.create_and_return_csv("cal_err", 1, sub, ses)
                 return 1
             else:
-                self.create_and_return_csv('cal_err', 0, sub, ses)
+                self.create_and_return_csv("cal_err", 0, sub, ses)
                 return 0
 
         except Exception:
             # Any exception (NameError, ValueError, etc.) means variable not set
-            self.create_and_return_csv('cal_err', 3, sub, ses)
+            self.create_and_return_csv("cal_err", 3, sub, ses)
             return 3
 
-
-    def h_considered_check(self, h_considered: int, sub: str, ses: str, tolerance: int = 5) -> int:
+    def h_considered_check(
+        self, h_considered: int, sub: str, ses: str, tolerance: int = 5
+    ) -> int:
         """
         Check if the number of hours considered is within the expected window.
 
@@ -364,24 +375,25 @@ class QC:
         """
         try:
             # If h_considered is None or NaN, treat as missing
-            if h_considered is None or (isinstance(h_considered, (int, float)) and pd.isna(h_considered)):
+            if h_considered is None or (
+                isinstance(h_considered, (int, float)) and pd.isna(h_considered)
+            ):
                 raise ValueError("h_considered is missing")
 
             expected_hours = self.n_days_worn * 24
             if h_considered < (expected_hours - tolerance):
-                self.create_and_return_csv('h_considered', 1, sub, ses)
+                self.create_and_return_csv("h_considered", 1, sub, ses)
                 return 1
             elif h_considered > expected_hours:
-                self.create_and_return_csv('h_considered', 2, sub, ses)
+                self.create_and_return_csv("h_considered", 2, sub, ses)
                 return 2
             else:
-                self.create_and_return_csv('h_considered', 0, sub, ses)
+                self.create_and_return_csv("h_considered", 0, sub, ses)
                 return 0
 
         except Exception:
-            self.create_and_return_csv('h_considered', 3, sub, ses)
+            self.create_and_return_csv("h_considered", 3, sub, ses)
             return 3
-
 
     def valid_days_check(self, sub: str, ses: str) -> int:
         """
@@ -399,7 +411,7 @@ class QC:
             print(f"Valid Days - Checking session {ses} for subject {sub}")
 
             # select only the rows for this session
-            mask = self.df_day['filename'].str.contains(f"{ses}_")
+            mask = self.df_day["filename"].str.contains(f"{ses}_")
             session_df = self.df_day[mask]
 
             if session_df.empty:
@@ -407,31 +419,32 @@ class QC:
                 raise ValueError("No data for session")
 
             # count weekends vs weekdays
-            is_weekend = session_df['weekday'].isin(['Saturday', 'Sunday'])
+            is_weekend = session_df["weekday"].isin(["Saturday", "Sunday"])
             weekend_count = is_weekend.sum()
             weekday_count = (~is_weekend).sum()
 
             # QC rules
             if weekend_count < 2:
-                self.create_and_return_csv('val_days', 1, sub, ses)
+                self.create_and_return_csv("val_days", 1, sub, ses)
                 return 1
 
             if weekday_count < 3:
-                self.create_and_return_csv('val_days', 2, sub, ses)
+                self.create_and_return_csv("val_days", 2, sub, ses)
                 return 2
 
             # all good
-            self.create_and_return_csv('val_days', 0, sub, ses)
+            self.create_and_return_csv("val_days", 0, sub, ses)
             return 0
 
         except Exception as e:
             # anything else counts as “missing”
             print(str(e))
-            self.create_and_return_csv('val_days', 3, sub, ses)
+            self.create_and_return_csv("val_days", 3, sub, ses)
             return 3
 
-
-    def cleaning_code_check(self, clean_code: pd.Series, calendar_dates: pd.Series, sub: str, ses: str) -> int:
+    def cleaning_code_check(
+        self, clean_code: pd.Series, calendar_dates: pd.Series, sub: str, ses: str
+    ) -> int:
         """
         Inspect the 'cleaningcode' column from the day summary.
 
@@ -451,22 +464,34 @@ class QC:
             invalid_codes = clean_code[invalid_mask].unique()
 
             if len(invalid_codes) > 0:
-                invalid_dates = calendar_dates[invalid_mask].dt.strftime('%Y-%m-%d').unique()
-                print(f"Found invalid cleaning codes: {invalid_codes} on dates: {invalid_dates}")
+                invalid_dates = (
+                    calendar_dates[invalid_mask].dt.strftime("%Y-%m-%d").unique()
+                )
+                print(
+                    f"Found invalid cleaning codes: {invalid_codes} on dates: {invalid_dates}"
+                )
                 self.create_and_return_csv(
-                    'clean_code', 1, sub, ses,
+                    "clean_code",
+                    1,
+                    sub,
+                    ses,
                     clean_code=clean_code,
-                    date=invalid_dates  # Pass the list of dates to include in interpretation
+                    date=invalid_dates,  # Pass the list of dates to include in interpretation
                 )
                 return 1
             # If all values are NaN → warning (no cleaning codes present)
             elif clean_code.isna().all():
-                self.create_and_return_csv('clean_code', 2, sub, ses,)
+                self.create_and_return_csv(
+                    "clean_code",
+                    2,
+                    sub,
+                    ses,
+                )
                 return 2
             else:
-                self.create_and_return_csv('clean_code', 0, sub, ses)
+                self.create_and_return_csv("clean_code", 0, sub, ses)
                 return 0
 
         except Exception:
-            self.create_and_return_csv('clean_code', 3, sub, ses)
+            self.create_and_return_csv("clean_code", 3, sub, ses)
             return 3

@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class GG:
     """
     Class to execute GGIR processing for matched subject records.
@@ -18,8 +19,8 @@ class GG:
             obsdir (str): Path to the observational directory.
         """
         self.matched = matched
-        self.INTDIR = intdir.rstrip('/') + '/'
-        self.OBSDIR = obsdir.rstrip('/') + '/'
+        self.INTDIR = intdir.rstrip("/") + "/"
+        self.OBSDIR = obsdir.rstrip("/") + "/"
         self.DERIVATIVES = "derivatives/GGIR-3.2.6/"  # Defined within the class
         self.system = system
 
@@ -43,7 +44,7 @@ class GG:
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     bufsize=1,
-                    universal_newlines=True
+                    universal_newlines=True,
                 )
 
                 # Stream output line-by-line
@@ -59,10 +60,10 @@ class GG:
                 logger.info("GGIR completed successfully for %s.", project_dir)
 
                 # Determine project type for QC ('int' for internal, 'obs' for observational)
-                if project_dir.rstrip('/') == self.INTDIR.rstrip('/'):
-                    project_type = 'int'
+                if project_dir.rstrip("/") == self.INTDIR.rstrip("/"):
+                    project_type = "int"
                 else:
-                    project_type = 'obs'
+                    project_type = "obs"
 
                 # Run QC for this project
                 logger.info("Starting QC pipeline for %s project.", project_type)

@@ -1,7 +1,5 @@
-from pathlib import Path
 from code.utils.save import Save
 from code.core.gg import GG
-
 
 
 class Pipe:
@@ -51,7 +49,7 @@ class Pipe:
         cls.OBS_DIR = paths["OBS_DIR"]
         cls.RDSS_DIR = paths["RDSS_DIR"]
 
-    def __init__(self, token, daysago, system='vosslnx'):
+    def __init__(self, token, daysago, system="vosslnx"):
         # ensure class attrs are set for everyone (Pipe.INT_DIR etc.)
         type(self).configure(system)
         self.token = token
@@ -65,16 +63,18 @@ class Pipe:
             rdssdir=type(self).RDSS_DIR,
             token=self.token,
             daysago=self.daysago,
-            symlink=False
+            symlink=False,
         )
 
         try:
             matched = save_instance.save()
 
             # (side note: your JSON writing was invalid; use json.dump)
-            import json, pathlib
+            import json
+            import pathlib
+
             pathlib.Path("res").mkdir(exist_ok=True)
-            with open('res/data.json', 'w') as f:
+            with open("res/data.json", "w") as f:
                 json.dump(matched, f, indent=2)
 
             GG(

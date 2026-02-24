@@ -1,8 +1,23 @@
 from __future__ import annotations
 
+import importlib
 from pathlib import Path
+import sys
+import types
 
 import pytest
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+_comparison_utils = importlib.import_module("act.utils.comparison_utils")
+_stdlib_code = importlib.import_module("code")
+_code_utils = types.ModuleType("code.utils")
+_code_utils.comparison_utils = _comparison_utils
+_stdlib_code.utils = _code_utils
+sys.modules["code.utils"] = _code_utils
+sys.modules["code.utils.comparison_utils"] = _comparison_utils
 
 
 @pytest.fixture

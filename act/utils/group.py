@@ -9,30 +9,22 @@ logger = logging.getLogger(__name__)
 
 
 class Group:
-    def __init__(self, system: str = 'vosslnx'):
+    def __init__(self, system: str = "vosslnx"):
         Pipe.configure(system)
         self.system = system
-        self.obs_path = Pipe.OBS_DIR 
+        self.obs_path = Pipe.OBS_DIR
         self.int_path = Pipe.INT_DIR
         self.paths = [
-            os.path.join(self.obs_path, 'derivatives', 'GGIR-3.2.6'),
-            os.path.join(self.int_path, 'derivatives', 'GGIR-3.2.6'),
+            os.path.join(self.obs_path, "derivatives", "GGIR-3.2.6"),
+            os.path.join(self.int_path, "derivatives", "GGIR-3.2.6"),
         ]
-        self.path = './plots/group'
+        self.path = "./plots/group"
 
-    '''
+    """
     New person logic:
         GGIR with ncp and sleep no longer are outputting the output_accel files for all sessions (may be premature)
-        New goal is to iterate through the folders and grab the metrics, then average 
-    '''
-
-    def _parse_person_files(self, subject, study):
-        person_path = "/output_accel/part5_personsummary_MM_L40M100V400_T5A5.csv"
-        if study == 'int':
-            base_path = os.path.join(self.path[1], subject)
-        elif study == 'obs':
-            base_path = os.path.join(self.path[0], subject)
-
+        New goal is to iterate through the folders and grab the metrics, then average
+    """
 
     def _parse_person_file(self, file_path):
         try:
@@ -44,26 +36,33 @@ class Group:
             vig = df["dur_day_total_VIG_min_pla"].iloc[0]
             mvpa = mod + vig
             total = sleep + inactivity + light + mvpa
-            logger.debug(f"Parsed {file_path}: sleep={sleep}, inactivity={inactivity}, light={light}, mvpa={mvpa}, total={total}")
+            logger.debug(
+                f"Parsed {file_path}: sleep={sleep}, inactivity={inactivity}, light={light}, mvpa={mvpa}, total={total}"
+            )
             if total == 0:
-                logger.warning(f"Total was 0 for {file_path}. Columns found: {df.columns.tolist()}")
+                logger.warning(
+                    f"Total was 0 for {file_path}. Columns found: {df.columns.tolist()}"
+                )
                 return None
             if df.empty:
                 logger.warning(f"{file_path} is empty.")
                 return None
-            session = df.get("filename", [""])[0].split("_")[-2] if "filename" in df else "unknown"
+            session = (
+                df.get("filename", [""])[0].split("_")[-2]
+                if "filename" in df
+                else "unknown"
+            )
             return {
                 "Sleep": sleep / total * 1440,
                 "Inactivity": inactivity / total * 1440,
                 "Light": light / total * 1440,
                 "MVPA": mvpa / total * 1440,
-                "Session": session
+                "Session": session,
             }
         except Exception as e:
             logger.warning(f"Error reading file {file_path}: {e}")
             return None
 
-    
     def plot_person(self):
         durations = []
 
@@ -73,16 +72,19 @@ class Group:
                     continue
 
                 results_dir = os.path.join(
-                    base_dir, entry,
-                    "accel", "output_accel", "results"
+                    base_dir, entry, "accel", "output_accel", "results"
                 )
                 if not os.path.isdir(results_dir):
-                    logger.debug("Results directory missing for %s: %s", entry, results_dir)
+                    logger.debug(
+                        "Results directory missing for %s: %s", entry, results_dir
+                    )
                     continue
                 pattern = os.path.join(results_dir, "part5_personsummary_MM*.csv")
                 matches = glob.glob(pattern)
                 if not matches:
-                    logger.debug(f"No matching files in {results_dir}, skipping {entry}")
+                    logger.debug(
+                        f"No matching files in {results_dir}, skipping {entry}"
+                    )
                     continue
 
                 for person_file in matches:
@@ -95,7 +97,9 @@ class Group:
 
         df_all = pd.DataFrame(durations)
         if not df_all.empty and "Subject" in df_all.columns:
-            df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+            df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(
+                drop=True
+            )
             df_all = df_all.sort_values("Subject").reset_index(drop=True)
         else:
             logger.warning("No valid data found — skipping Subject filtering.")
@@ -103,9 +107,8 @@ class Group:
         self._plot_stacked_bar(
             df_all,
             title="Normalized Average Activity Composition by Subject (All Sessions)",
-            filename="avg_plot_all.html"
+            filename="avg_plot_all.html",
         )
-
 
     def plot_session(self):
         durations = []
@@ -127,15 +130,22 @@ class Group:
                         subject_path,
                         session_folder,
                         f"output_{session_folder}",
-                        "results"
+                        "results",
                     )
                     if not os.path.isdir(results_dir):
-                        logger.debug("Results directory missing for %s/%s: %s", entry, session_folder, results_dir)
+                        logger.debug(
+                            "Results directory missing for %s/%s: %s",
+                            entry,
+                            session_folder,
+                            results_dir,
+                        )
                         continue
                     pattern = os.path.join(results_dir, "part5_personsummary_MM*.csv")
                     matches = glob.glob(pattern)
                     if not matches:
-                        logger.debug(f"No matching files in {results_dir}, skipping {entry}/{session_folder}")
+                        logger.debug(
+                            f"No matching files in {results_dir}, skipping {entry}/{session_folder}"
+                        )
                         continue
 
                     for person_file in matches:
@@ -149,7 +159,9 @@ class Group:
 
         df_all = pd.DataFrame(durations)
         if not df_all.empty and {"Subject", "Session"}.issubset(df_all.columns):
-            df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(drop=True)
+            df_all = df_all[~df_all["Subject"].str.startswith("sub-6")].reset_index(
+                drop=True
+            )
             df_all = df_all.sort_values(["Session", "Subject"]).reset_index(drop=True)
         else:
             logger.warning("No valid data found — skipping Subject/Session filtering.")
@@ -159,7 +171,7 @@ class Group:
                 group_df,
                 title=f"Average Activity Composition — Session {session.upper()}",
                 y_key="Subject",
-                filename=f"avg_plot_{session}.html"
+                filename=f"avg_plot_{session}.html",
             )
 
     def _plot_stacked_bar(self, df, title, filename, y_key="Subject"):
@@ -172,30 +184,34 @@ class Group:
             "Sleep": "#A8DADC",
             "Inactivity": "#F1FAEE",
             "Light": "#FFD6A5",
-            "MVPA": "#FF9F1C"
+            "MVPA": "#FF9F1C",
         }
 
         fig = go.Figure()
         for activity in activities:
-            fig.add_trace(go.Bar(
-                y=df[y_key],
-                x=df[activity],
-                name=activity,
-                orientation='h',
-                marker_color=colors[activity],
-                hovertemplate=df[y_key] + f" - {activity} = " +
-                              (df[activity] / 60).round(2).astype(str) + " hr<extra></extra>"
-            ))
+            fig.add_trace(
+                go.Bar(
+                    y=df[y_key],
+                    x=df[activity],
+                    name=activity,
+                    orientation="h",
+                    marker_color=colors[activity],
+                    hovertemplate=df[y_key]
+                    + f" - {activity} = "
+                    + (df[activity] / 60).round(2).astype(str)
+                    + " hr<extra></extra>",
+                )
+            )
 
         fig.update_layout(
-            barmode='stack',
+            barmode="stack",
             title=title,
             xaxis=dict(title="Hours (normalized to 24)"),
             yaxis=dict(title=y_key),
             height=30 * len(df),
             margin=dict(l=20, r=20, t=40, b=20),
             showlegend=True,
-            autosize=True
+            autosize=True,
         )
         os.makedirs(self.path, exist_ok=True)
         fig.write_html(os.path.join(self.path, filename))

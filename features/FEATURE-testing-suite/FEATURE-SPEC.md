@@ -100,10 +100,10 @@ The suite must explicitly validate the save logic around session/date ordering, 
 ***SKIPPING CHECKPOINT 3***
 
 ***Checkpoint 4: Additional Save Edge Cases***
-- [ ] Add tests for observational/intervention-style directory variants used by current save logic.
-- [ ] Add tests for duplicate-date/no-op behavior to ensure deterministic handling without accidental session drift.
-- [ ] Add error-path tests for partial write/rename failures using mocks to verify safe failure semantics.
-- [ ] A test: implement `test_save_edge_cases_matrix()` parameterized across path style and edge-case scenarios.
+- [x] Add tests for observational/intervention-style directory variants used by current save logic.
+- [x] Add tests for duplicate-date/no-op behavior to ensure deterministic handling without accidental session drift.
+- [x] Add error-path tests for partial write/rename failures using mocks to verify safe failure semantics.
+- [x] A test: implement `test_save_edge_cases_matrix()` parameterized across path style and edge-case scenarios.
 
 ***Checkpoint 5: Pipeline Smoke Integration (Python-first e2e)***
 - [ ] Add lightweight integration test(s) targeting Python orchestration path (`act/main.py` + `act/utils/pipe.py`) with external systems mocked.
