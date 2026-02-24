@@ -4,7 +4,7 @@ import logging
 import os
 import shutil
 from datetime import date, datetime
-from code.utils.comparison_utils import ID_COMPARISONS
+from act.utils.comparison_utils import ID_COMPARISONS
 
 
 class Save:
