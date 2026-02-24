@@ -63,7 +63,7 @@ conda activate act-newer
 ## Running the Pipeline
 ```bash
 export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-python -m code.main <daysago> $BOOST_TOKEN <system>
+python -m act.main <daysago> $BOOST_TOKEN <system>
 ```
 - `daysago` filters RDSS files by acquisition date; use `1` for “yesterday’s drops”.
 - `system` controls filesystem roots: `vosslnx` (default), `vosslnxft`, `local`, or `argon`.
@@ -99,7 +99,7 @@ For ad-hoc diagnostics, re-run plot generation with `python act/tests/gt3x/plots
 - Review git staging before enabling cron on a new host to avoid committing large raw exports.
 
 ## Troubleshooting Tips
-- **Missing symlinks:** run `python -c "from code.utils.mnt import create_symlinks; create_symlinks('../mnt', system='argon')"` (swap `system` as needed) and confirm mount availability.
+- **Missing symlinks:** run `python -c "from act.utils.mnt import create_symlinks; create_symlinks('../mnt', system='argon')"` (swap `system` as needed) and confirm mount availability.
 - **GGIR failures:** check the console output and logs under `act/core/` or R’s stderr; ensure the conda env includes GGIR dependencies.
 - **REDCap mismatches:** `utils.comparison_utils.ID_COMPARISONS` logs duplicate IDs; review its stdout and `AGENTS.md` for remediation steps.
 - **Permission errors:** verify the executing user can read RDSS and write to the LSS target directories.

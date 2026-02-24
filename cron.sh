@@ -22,7 +22,7 @@ DAYS_AGO="${DAYS_AGO:-30}"
 mkdir -p "logs/${SYSTEM}"
 LOG_FILE="logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
 export LOG_FILE
-python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" >> "${LOG_FILE}" 2>&1
+python -m act.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" >> "${LOG_FILE}" 2>&1
 
 if ! git diff --quiet; then
   git add .

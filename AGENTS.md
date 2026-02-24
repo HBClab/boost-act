@@ -10,7 +10,7 @@
 ## Build, Test, and Development Commands
 - `python -m venv .venv && source .venv/bin/activate` – create a local env (Python 3.11).
 - `pip install -r act/requirements.txt` – install runtime deps; add extras here only when they are runtime-critical.
-- `python -m code.main 1 "$BOOST_TOKEN" vosslnx` – run the ingest + GGIR pipeline; system flag may be `vosslnxft`, `local`, or `argon`.
+- `python -m act.main 1 "$BOOST_TOKEN" vosslnx` – run the ingest + GGIR pipeline; system flag may be `vosslnxft`, `local`, or `argon`.
 - `python act/tests/gt3x/plots.py` – regenerate GT3X diagnostic plots and CSV summaries; confirm paths before running.
 - `bash cron.sh` – mirrors production cron behaviour; ensure credentials and git remotes are safe before invoking.
 

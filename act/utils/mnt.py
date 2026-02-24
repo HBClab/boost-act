@@ -9,7 +9,7 @@ def create_symlinks(target_dir="../mnt", system="vosslnx"):
     """
     Create symlinks to the system-specific mount points defined on Pipe.
     """
-    from code.utils.pipe import Pipe
+    from act.utils.pipe import Pipe
 
     os.makedirs(target_dir, exist_ok=True)
 

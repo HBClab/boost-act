@@ -14,11 +14,11 @@ if str(PROJECT_ROOT) not in sys.path:
 
 _comparison_utils = importlib.import_module("act.utils.comparison_utils")
 _stdlib_code = importlib.import_module("code")
-_code_utils = types.ModuleType("code.utils")
+_code_utils = types.ModuleType("act.utils")
 _code_utils.comparison_utils = _comparison_utils
-_stdlib_code.utils = _code_utils
-sys.modules["code.utils"] = _code_utils
-sys.modules["code.utils.comparison_utils"] = _comparison_utils
+_stdlib_act.utils = _code_utils
+sys.modules["act.utils"] = _code_utils
+sys.modules["act.utils.comparison_utils"] = _comparison_utils
 
 
 @pytest.fixture

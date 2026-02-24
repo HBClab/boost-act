@@ -40,12 +40,12 @@ def test_pipeline_smoke_mocked_dependencies(tmp_path, monkeypatch):
             gg_state["ran"] = True
 
     code_pkg = _ensure_package(monkeypatch, "code")
-    utils_pkg = _ensure_package(monkeypatch, "code.utils")
-    core_pkg = _ensure_package(monkeypatch, "code.core")
+    utils_pkg = _ensure_package(monkeypatch, "act.utils")
+    core_pkg = _ensure_package(monkeypatch, "act.core")
 
-    save_mod = types.ModuleType("code.utils.save")
+    save_mod = types.ModuleType("act.utils.save")
     save_mod.Save = FakeSave
-    gg_mod = types.ModuleType("code.core.gg")
+    gg_mod = types.ModuleType("act.core.gg")
     gg_mod.GG = FakeGG
 
     utils_pkg.save = save_mod
@@ -53,8 +53,8 @@ def test_pipeline_smoke_mocked_dependencies(tmp_path, monkeypatch):
     code_pkg.utils = utils_pkg
     code_pkg.core = core_pkg
 
-    _install_module(monkeypatch, "code.utils.save", save_mod)
-    _install_module(monkeypatch, "code.core.gg", gg_mod)
+    _install_module(monkeypatch, "act.utils.save", save_mod)
+    _install_module(monkeypatch, "act.core.gg", gg_mod)
 
     pipe_mod = importlib.import_module("act.utils.pipe")
     pipe_mod = importlib.reload(pipe_mod)
@@ -103,17 +103,17 @@ def test_main_smoke_invokes_pipe_and_group(monkeypatch):
             call_state["group_systems"].append("session")
 
     code_pkg = _ensure_package(monkeypatch, "code")
-    utils_pkg = _ensure_package(monkeypatch, "code.utils")
-    pipe_mod = types.ModuleType("code.utils.pipe")
-    group_mod = types.ModuleType("code.utils.group")
+    utils_pkg = _ensure_package(monkeypatch, "act.utils")
+    pipe_mod = types.ModuleType("act.utils.pipe")
+    group_mod = types.ModuleType("act.utils.group")
     pipe_mod.Pipe = FakePipe
     group_mod.Group = FakeGroup
     utils_pkg.pipe = pipe_mod
     utils_pkg.group = group_mod
     code_pkg.utils = utils_pkg
 
-    _install_module(monkeypatch, "code.utils.pipe", pipe_mod)
-    _install_module(monkeypatch, "code.utils.group", group_mod)
+    _install_module(monkeypatch, "act.utils.pipe", pipe_mod)
+    _install_module(monkeypatch, "act.utils.group", group_mod)
 
     monkeypatch.setattr(
         sys,

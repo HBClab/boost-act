@@ -1,5 +1,5 @@
-from code.utils.save import Save
-from code.core.gg import GG
+from act.utils.save import Save
+from act.core.gg import GG
 
 
 class Pipe:

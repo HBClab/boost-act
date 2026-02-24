@@ -1,8 +1,8 @@
 import os
 import glob
 import pandas as pd
-from code.utils.pipe import Pipe
-from code.utils.plots import ACT_PLOTS, create_json
+from act.utils.pipe import Pipe
+from act.utils.plots import ACT_PLOTS, create_json
 
 
 class QC:
@@ -292,7 +292,7 @@ class QC:
         # Append the actual cleaning codes and dates if applicable
         if check == "clean_code" and code == 1 and clean_code is not None:
             invalids = clean_code[
-                ~clean_code.isin([0, 1]) & clean_code.notna()
+                ~clean_act.isin([0, 1]) & clean_act.notna()
             ].unique()
             if len(invalids) > 0:
                 interpretation += f" — Invalid codes: {', '.join(map(str, invalids))}"
@@ -460,7 +460,7 @@ class QC:
                 raise ValueError("clean_code is missing")
 
             # If any value outside {0,1} appears and is not NaN → error
-            invalid_mask = ~clean_code.isin([0, 1]) & clean_code.notna()
+            invalid_mask = ~clean_act.isin([0, 1]) & clean_act.notna()
             invalid_codes = clean_code[invalid_mask].unique()
 
             if len(invalid_codes) > 0:
@@ -480,7 +480,7 @@ class QC:
                 )
                 return 1
             # If all values are NaN → warning (no cleaning codes present)
-            elif clean_code.isna().all():
+            elif clean_act.isna().all():
                 self.create_and_return_csv(
                     "clean_code",
                     2,

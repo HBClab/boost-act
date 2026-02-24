@@ -3,7 +3,7 @@ import glob
 import pandas as pd
 import plotly.graph_objects as go
 import logging
-from code.utils.pipe import Pipe
+from act.utils.pipe import Pipe
 
 logger = logging.getLogger(__name__)
 

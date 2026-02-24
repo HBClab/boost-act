@@ -30,7 +30,7 @@ class GG:
         After each GGIR run, invoke the QC pipeline for that project.
         """
         # Assume QC is available at this import path
-        from code.utils.qc import QC
+        from act.utils.qc import QC
 
         for project_dir in [self.INTDIR, self.OBSDIR]:
             command = f"Rscript act/core/acc_new.R --project_dir {project_dir} --deriv_dir {self.DERIVATIVES}"
