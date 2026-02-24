@@ -1,8 +1,8 @@
 import logging
 import os
 import sys
-from code.utils.group import Group
-from code.utils.pipe import Pipe
+from act.utils.group import Group
+from act.utils.pipe import Pipe
 
 
 def _configure_logging() -> None:
