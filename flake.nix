@@ -58,7 +58,10 @@
               ps.pyyaml
               ps.pyarrow
               ps.pytest
-            ] ++ [ catppuccin-jupyterlab ]
+              ps.pytest-cov
+              ps.flake8
+              ps.black
+            ] #++ [ catppuccin-jupyterlab ]
           );
         in {
           default = pkgs.mkShellNoCC {
