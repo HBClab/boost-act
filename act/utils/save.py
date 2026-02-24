@@ -1,14 +1,25 @@
 import errno
+import json
 import logging
 import os
 import shutil
+from datetime import date, datetime
 from code.utils.comparison_utils import ID_COMPARISONS
 
 
 class Save:
     logger = logging.getLogger(__name__)
 
-    def __init__(self, intdir, obsdir, rdssdir, token, daysago=None, symlink=True):
+    def __init__(
+        self,
+        intdir,
+        obsdir,
+        rdssdir,
+        token,
+        daysago=None,
+        symlink=True,
+        manifest_path="res/data.json",
+    ):
         if not rdssdir:
             raise ValueError(
                 "RDSS directory is not configured for this system; cannot ingest files."
@@ -29,8 +40,14 @@ class Save:
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
         self.symlink = symlink
+        self.manifest_path = manifest_path
+        self.manifest = {}
 
     def save(self):
+        self.manifest = self._load_manifest(
+            getattr(self, "manifest_path", "res/data.json")
+        )
+
         # First, process the base matches.
         matches = self._determine_run(matches=self.matches)
         matches = self._determine_study(matches=matches)
@@ -43,6 +60,138 @@ class Save:
         # Move the files based on the final matches.
         self._move_files(matches=matches)
         return self._prepare_for_json(matches)
+
+    def _normalize_manifest_payload(self, payload):
+        if not isinstance(payload, dict):
+            self.logger.warning(
+                "Manifest payload is not a dict; using empty fallback payload."
+            )
+            return {}
+
+        normalized = {}
+        for subject_id, records in payload.items():
+            subject_key = str(subject_id)
+            if not isinstance(records, list):
+                self.logger.warning(
+                    "Manifest subject %s payload is not a list; coercing to empty list.",
+                    subject_key,
+                )
+                normalized[subject_key] = []
+                continue
+
+            normalized_records = []
+            for record in records:
+                if isinstance(record, dict):
+                    normalized_records.append(dict(record))
+                else:
+                    self.logger.warning(
+                        "Manifest subject %s contains non-dict record; skipping record.",
+                        subject_key,
+                    )
+
+            normalized[subject_key] = normalized_records
+
+        return normalized
+
+    def _load_manifest(self, path):
+        manifest_path = path or getattr(self, "manifest_path", "res/data.json")
+
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except FileNotFoundError:
+            self.logger.warning(
+                "Manifest file not found at %s; using empty fallback payload.",
+                manifest_path,
+            )
+            return {}
+        except (OSError, json.JSONDecodeError) as exc:
+            self.logger.warning(
+                "Unable to load manifest from %s (%s); using empty fallback payload.",
+                manifest_path,
+                exc,
+            )
+            return {}
+
+        return self._normalize_manifest_payload(payload)
+
+    def _save_manifest(self, path):
+        manifest_path = path or getattr(self, "manifest_path", "res/data.json")
+        payload = self._normalize_manifest_payload(getattr(self, "manifest", {}))
+        payload = self._prepare_for_json(payload)
+
+        os.makedirs(os.path.dirname(manifest_path) or ".", exist_ok=True)
+        with open(manifest_path, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=2)
+
+        return payload
+
+    def _normalize_record_date_value(self, date_value):
+        if date_value is None:
+            return None
+
+        if hasattr(date_value, "to_pydatetime"):
+            try:
+                date_value = date_value.to_pydatetime()
+            except Exception:
+                pass
+
+        if isinstance(date_value, datetime):
+            return date_value.date().isoformat()
+
+        if isinstance(date_value, date):
+            return date_value.isoformat()
+
+        if isinstance(date_value, str):
+            normalized = date_value.strip()
+            if not normalized:
+                return normalized
+
+            parse_candidates = (normalized, normalized.replace("Z", "+00:00"))
+            for candidate in parse_candidates:
+                try:
+                    parsed = datetime.fromisoformat(candidate)
+                except ValueError:
+                    continue
+                return parsed.date().isoformat()
+
+            return normalized
+
+        if hasattr(date_value, "isoformat"):
+            return date_value.isoformat()
+
+        return str(date_value)
+
+    def _reindex_subject_records(self, existing_records, incoming_records):
+        merged_records = []
+        seen_keys = set()
+
+        for record_list in (existing_records or [], incoming_records or []):
+            if not isinstance(record_list, list):
+                continue
+
+            for record in record_list:
+                if not isinstance(record, dict):
+                    continue
+
+                normalized_record = dict(record)
+                normalized_record["date"] = self._normalize_record_date_value(
+                    normalized_record.get("date")
+                )
+
+                dedupe_key = (
+                    str(normalized_record.get("labID", "")),
+                    normalized_record.get("date"),
+                    str(normalized_record.get("filename", "")),
+                )
+
+                if dedupe_key in seen_keys:
+                    continue
+
+                seen_keys.add(dedupe_key)
+                merged_records.append(normalized_record)
+
+        return merged_records
 
     def _move_files_test(self, matches):
         """
