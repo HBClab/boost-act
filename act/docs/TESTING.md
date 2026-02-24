@@ -58,6 +58,30 @@ When adding save logic tests:
   - destination paths include expected `accel/ses-#` structure
 - For error paths, mock file operations (for example `shutil.copy`) and assert graceful continuation or expected failure semantics.
 
+## Manifest Reindex Testing
+Manifest-only session reindex tests live in:
+- `act/tests/test_save_manifest_reindex.py`
+- `act/tests/test_save_edge_cases.py`
+
+Use these focused commands during development:
+
+```bash
+pytest --collect-only -q act/tests/test_save_manifest_reindex.py
+pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py
+```
+
+Expected behaviors covered by this suite:
+- append: incoming session later than existing history receives the next dense run.
+- backfill: incoming earlier session inserts chronologically and shifts later runs.
+- tie-date skip: same-date subject conflicts are skipped with no manifest/filesystem mutation.
+- duplicate noop: repeat ingest of the same `(labID, date, filename)` does not drift runs.
+
+## Operator Guidance
+- `res/data.json` is the canonical source of truth for session run ordering.
+- Current design assumes single-writer ingest semantics for `res/data.json`.
+- Manual edits to `res/data.json` can force session reindex/rename behavior on the next run.
+- If manual edits are necessary, run the manifest-focused tests above before production ingest.
+
 ## Smoke E2E Constraints
 - Smoke tests must stay Python-only and fast.
 - Mock external boundaries:

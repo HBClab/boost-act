@@ -60,7 +60,9 @@ Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest 
 Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (19 passed).
 
 ***Checkpoint 8: Documentation + Operator Guidance***
-- [ ] Update `act/docs/TESTING.md` with manifest-only reindex test commands and expected behaviors (append, backfill, tie-date skip).
-- [ ] Add a short operational note on single-writer assumption and the impact of manual edits to `res/data.json`.
-- [ ] Document where checkpoint tests live and how to run only manifest-reindex tests during development.
-- [ ] A test: validate docs commands from a clean venv using `pytest --collect-only` for the new module and targeted test run for updated modules.
+- [x] Update `act/docs/TESTING.md` with manifest-only reindex test commands and expected behaviors (append, backfill, tie-date skip).
+- [x] Add a short operational note on single-writer assumption and the impact of manual edits to `res/data.json`.
+- [x] Document where checkpoint tests live and how to run only manifest-reindex tests during development.
+- [x] A test: validate docs commands from a clean venv using `pytest --collect-only` for the new module and targeted test run for updated modules.
+
+Checkpoint note: Completed on 2026-02-24 with docs command verification via `pytest --collect-only -q act/tests/test_save_manifest_reindex.py` (10 collected) and `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (19 passed).
