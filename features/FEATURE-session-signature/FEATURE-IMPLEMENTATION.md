@@ -52,10 +52,12 @@ Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest 
 Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py act/tests/test_pipeline_smoke.py` (17 passed).
 
 ***Checkpoint 7: Save Flow Integration + Regression Coverage***
-- [ ] Integrate manifest reindex output into existing `Save.save()` flow without breaking `_determine_study`, `_determine_location`, and `_move_files` behavior.
-- [ ] Update or extend fixtures in `act/tests/conftest.py`: `manifest_factory`, `rdss_record_factory`, and `subject_tree_factory`.
-- [ ] Extend `act/tests/test_save_edge_cases.py` for manifest-driven run stability and gap-shift behavior in both `int` and `obs` study roots.
-- [ ] A test: run targeted suite `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` and confirm all new checkpoints are covered.
+- [x] Integrate manifest reindex output into existing `Save.save()` flow without breaking `_determine_study`, `_determine_location`, and `_move_files` behavior.
+- [x] Update or extend fixtures in `act/tests/conftest.py`: `manifest_factory`, `rdss_record_factory`, and `subject_tree_factory`.
+- [x] Extend `act/tests/test_save_edge_cases.py` for manifest-driven run stability and gap-shift behavior in both `int` and `obs` study roots.
+- [x] A test: run targeted suite `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` and confirm all new checkpoints are covered.
+
+Checkpoint note: Completed on 2026-02-24 with targeted verification via `pytest -q act/tests/test_save_manifest_reindex.py act/tests/test_save_edge_cases.py` (19 passed).
 
 ***Checkpoint 8: Documentation + Operator Guidance***
 - [ ] Update `act/docs/TESTING.md` with manifest-only reindex test commands and expected behaviors (append, backfill, tie-date skip).

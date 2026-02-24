@@ -57,12 +57,11 @@ class Save:
         if not len(self.dupes) == 0:
             matches = self._handle_and_merge_duplicates(self.dupes)
 
-        committed_matches = {}
         for subject_id, records in matches.items():
-            committed_records = self._process_subject_transaction(subject_id, records)
-            committed_matches[str(subject_id)] = committed_records
+            self._process_subject_transaction(subject_id, records)
 
-        return self._prepare_for_json(committed_matches)
+        persisted_manifest = self._save_manifest(self.manifest_path)
+        return self._prepare_for_json(persisted_manifest)
 
     def _normalize_manifest_payload(self, payload):
         if not isinstance(payload, dict):
