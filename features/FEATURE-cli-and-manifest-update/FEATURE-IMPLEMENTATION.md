@@ -20,10 +20,12 @@ Checkpoint note: CLI now uses explicit required flags (`--token`, `--daysago`, `
 Checkpoint note: `Pipe.run_pipe()` now skips GGIR in manifest-only mode, and `act.main` skips plotting when `--rebuild-manifest-only` is set.
 
 ***Checkpoint 3: LSS Session Discovery Engine***
-- [ ] Implement LSS scanner in `act/utils/save.py` (or a focused helper module) to discover `sub-*/accel/ses-*` session CSVs from configured `INT_DIR`/`OBS_DIR`.
-- [ ] Derive `subject_id`, `study`, and `run` strictly from folder layout (`ses-# -> run=#`).
-- [ ] Enforce single-candidate-session rule: if multiple candidate accel CSVs exist in a session folder, register subject conflict.
-- [ ] A test: add `act/tests/test_manifest_rebuild_from_lss.py` with fixtures that validate discovery and multi-CSV conflict detection.
+- [x] Implement LSS scanner in `act/utils/save.py` (or a focused helper module) to discover `sub-*/accel/ses-*` session CSVs from configured `INT_DIR`/`OBS_DIR`.
+- [x] Derive `subject_id`, `study`, and `run` strictly from folder layout (`ses-# -> run=#`).
+- [x] Enforce single-candidate-session rule: if multiple candidate accel CSVs exist in a session folder, register subject conflict.
+- [x] A test: add `act/tests/test_manifest_rebuild_from_lss.py` with fixtures that validate discovery and multi-CSV conflict detection.
+
+Checkpoint note: Added `Save.discover_lss_sessions()` returning `(discovered, conflicts)` with strict `ses-#` parsing and multi-candidate session conflict reporting.
 
 ***Checkpoint 4: RedCap Subject→Lab Mapping Layer***
 - [ ] Add a reusable mapping fetch path from RedCap report to resolve `subject_id -> labID` for discovered LSS subjects.

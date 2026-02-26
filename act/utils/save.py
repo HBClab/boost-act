@@ -2,6 +2,7 @@ import errno
 import json
 import logging
 import os
+import re
 import shutil
 from datetime import date, datetime
 from act.utils.comparison_utils import ID_COMPARISONS
@@ -223,6 +224,77 @@ class Save:
         if (study or "").lower() == "int":
             return self.INT_DIR
         return self.OBS_DIR
+
+    def _session_run_from_folder(self, session_folder_name):
+        match = re.fullmatch(r"ses-(\d+)", str(session_folder_name or ""))
+        if not match:
+            return None
+        return int(match.group(1))
+
+    def _candidate_session_csvs(self, session_dir):
+        if not os.path.isdir(session_dir):
+            return []
+
+        candidates = []
+        for name in sorted(os.listdir(session_dir)):
+            lower_name = name.lower()
+            if lower_name.endswith("_accel.csv"):
+                candidates.append(os.path.join(session_dir, name))
+        return candidates
+
+    def discover_lss_sessions(self):
+        discovered = {}
+        conflicts = {}
+
+        for study, study_root in (("int", self.INT_DIR), ("obs", self.OBS_DIR)):
+            if not study_root or not os.path.isdir(study_root):
+                continue
+
+            for subject_folder in sorted(os.listdir(study_root)):
+                if not subject_folder.startswith("sub-"):
+                    continue
+
+                subject_id = subject_folder[len("sub-") :]
+                accel_root = os.path.join(study_root, subject_folder, "accel")
+                if not os.path.isdir(accel_root):
+                    continue
+
+                for session_folder in sorted(os.listdir(accel_root)):
+                    run = self._session_run_from_folder(session_folder)
+                    if run is None:
+                        continue
+
+                    session_dir = os.path.join(accel_root, session_folder)
+                    if not os.path.isdir(session_dir):
+                        continue
+
+                    candidates = self._candidate_session_csvs(session_dir)
+                    if len(candidates) > 1:
+                        conflict_message = (
+                            f"multiple accel csv candidates in {session_dir}: "
+                            + ", ".join(os.path.basename(path) for path in candidates)
+                        )
+                        conflicts.setdefault(subject_id, []).append(conflict_message)
+                        continue
+
+                    if len(candidates) == 0:
+                        continue
+
+                    csv_path = candidates[0]
+                    discovered.setdefault(subject_id, []).append(
+                        {
+                            "subject_id": subject_id,
+                            "study": study,
+                            "run": run,
+                            "file_path": csv_path,
+                            "filename": os.path.basename(csv_path),
+                        }
+                    )
+
+        for subject_id in discovered:
+            discovered[subject_id].sort(key=lambda record: record["run"])
+
+        return discovered, conflicts
 
     def _subject_session_paths(self, subject_id, study, run):
         subject_key = str(subject_id)
