@@ -114,3 +114,62 @@ def test_resolve_subject_lab_mapping_missing_subject_strict_error(tmp_path, monk
 
     assert "Missing RedCap subject->lab mappings" in str(exc.value)
     assert "9999" in str(exc.value)
+
+
+def test_resolve_rdss_session_metadata_success(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+
+    discovered = {
+        "8001": [
+            {"subject_id": "8001", "study": "int", "run": 1},
+            {"subject_id": "8001", "study": "int", "run": 2},
+        ]
+    }
+    subject_to_lab = {"8001": "1201"}
+
+    monkeypatch.setattr(
+        save,
+        "_list_rdss_metadata_rows",
+        lambda: [
+            {"filename": "1201 (2025-03-01)RAW.csv", "labID": "1201", "date": "2025-03-01"},
+            {"filename": "1201 (2025-03-02)RAW.csv", "labID": "1201", "date": "2025-03-02"},
+        ],
+    )
+
+    resolved = save.resolve_rdss_session_metadata(discovered, subject_to_lab)
+
+    assert list(resolved.keys()) == ["8001"]
+    assert [row["run"] for row in resolved["8001"]] == [1, 2]
+    assert [row["filename"] for row in resolved["8001"]] == [
+        "1201 (2025-03-01)RAW.csv",
+        "1201 (2025-03-02)RAW.csv",
+    ]
+    assert [row["labID"] for row in resolved["8001"]] == ["1201", "1201"]
+    assert [row["date"] for row in resolved["8001"]] == ["2025-03-01", "2025-03-02"]
+
+
+def test_resolve_rdss_session_metadata_strict_failure_when_unresolved(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+
+    discovered = {
+        "8001": [
+            {"subject_id": "8001", "study": "int", "run": 1},
+            {"subject_id": "8001", "study": "int", "run": 2},
+        ]
+    }
+    subject_to_lab = {"8001": "1201"}
+
+    monkeypatch.setattr(
+        save,
+        "_list_rdss_metadata_rows",
+        lambda: [
+            {"filename": "1201 (2025-03-01)RAW.csv", "labID": "1201", "date": "2025-03-01"},
+        ],
+    )
+
+    with pytest.raises(ValueError) as exc:
+        save.resolve_rdss_session_metadata(discovered, subject_to_lab)
+
+    message = str(exc.value)
+    assert "Unresolved RDSS metadata" in message
+    assert "subject=8001 run=2 labID=1201" in message

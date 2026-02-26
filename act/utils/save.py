@@ -349,6 +349,89 @@ class Save:
 
         return discovered, conflicts
 
+    def _list_rdss_metadata_rows(self):
+        rdss_dir = getattr(self, "RDSS_DIR", None)
+        if not rdss_dir or not os.path.isdir(rdss_dir):
+            return []
+
+        rows = []
+        pattern = re.compile(r"^(?P<lab_id>\S+)\s*\((?P<date>[^)]+)\).+\.csv$", re.IGNORECASE)
+
+        for filename in sorted(os.listdir(rdss_dir)):
+            if not filename.lower().endswith(".csv"):
+                continue
+
+            match = pattern.match(filename)
+            if not match:
+                continue
+
+            rows.append(
+                {
+                    "filename": filename,
+                    "labID": str(match.group("lab_id")),
+                    "date": self._normalize_record_date_value(match.group("date")),
+                }
+            )
+
+        rows.sort(
+            key=lambda row: (
+                self._normalize_record_date_value(row.get("date")) or "",
+                str(row.get("filename", "")),
+            )
+        )
+        return rows
+
+    def resolve_rdss_session_metadata(self, discovered_sessions, subject_lab_mapping):
+        rdss_rows = self._list_rdss_metadata_rows()
+        rows_by_lab = {}
+        for row in rdss_rows:
+            lab_id = str(row.get("labID", ""))
+            rows_by_lab.setdefault(lab_id, []).append(row)
+
+        enriched = {}
+        missing = []
+
+        for subject_id, sessions in (discovered_sessions or {}).items():
+            subject_key = str(subject_id)
+            mapped_lab_id = str((subject_lab_mapping or {}).get(subject_key, ""))
+            lab_rows = rows_by_lab.get(mapped_lab_id, [])
+
+            for session in sorted(sessions or [], key=lambda item: int(item.get("run", 0))):
+                run = int(session.get("run"))
+                if run <= 0 or run > len(lab_rows):
+                    missing.append(
+                        f"subject={subject_key} run={run} labID={mapped_lab_id}"
+                    )
+                    continue
+
+                selected = lab_rows[run - 1]
+                if not all(selected.get(field) for field in ("filename", "labID", "date")):
+                    missing.append(
+                        f"subject={subject_key} run={run} labID={mapped_lab_id}"
+                    )
+                    continue
+
+                enriched.setdefault(subject_key, []).append(
+                    {
+                        "subject_id": subject_key,
+                        "study": session.get("study"),
+                        "run": run,
+                        "filename": selected["filename"],
+                        "labID": selected["labID"],
+                        "date": selected["date"],
+                    }
+                )
+
+        for subject_id in enriched:
+            enriched[subject_id].sort(key=lambda item: item["run"])
+
+        if missing:
+            raise ValueError(
+                "Unresolved RDSS metadata for session(s): " + "; ".join(sorted(missing))
+            )
+
+        return enriched
+
     def _subject_session_paths(self, subject_id, study, run):
         subject_key = str(subject_id)
         session = int(run)

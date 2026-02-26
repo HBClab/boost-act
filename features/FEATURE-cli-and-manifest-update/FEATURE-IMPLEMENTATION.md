@@ -36,10 +36,12 @@ Checkpoint note: Added `Save.discover_lss_sessions()` returning `(discovered, co
 Checkpoint note: Added `Save._fetch_redcap_subject_lab_rows()` and `Save.resolve_subject_lab_mapping()` with strict missing-subject failure and direct monkeypatch-friendly tests.
 
 ***Checkpoint 5: RDSS Metadata Resolution Layer***
-- [ ] Implement RDSS lookup that resolves required metadata (`filename`, `labID`, `date`) for each discovered LSS session.
-- [ ] Treat unresolved metadata as strict failure for rebuild mode.
-- [ ] Keep RDSS as enrichment-only (must not create manifest rows absent on LSS).
-- [ ] A test: add success/failure lookup tests in `act/tests/test_manifest_rebuild_from_lss.py` covering complete resolution and unresolved metadata failure.
+- [x] Implement RDSS lookup that resolves required metadata (`filename`, `labID`, `date`) for each discovered LSS session.
+- [x] Treat unresolved metadata as strict failure for rebuild mode.
+- [x] Keep RDSS as enrichment-only (must not create manifest rows absent on LSS).
+- [x] A test: add success/failure lookup tests in `act/tests/test_manifest_rebuild_from_lss.py` covering complete resolution and unresolved metadata failure.
+
+Checkpoint note: Added `Save._list_rdss_metadata_rows()` and `Save.resolve_rdss_session_metadata()`; resolver enriches only LSS-discovered sessions and raises on unresolved run-level metadata.
 
 ***Checkpoint 6: Manifest Rebuild Assembly + Strict Error Model***
 - [ ] Assemble canonical manifest payload from LSS-discovered sessions enriched by RedCap/RDSS.
