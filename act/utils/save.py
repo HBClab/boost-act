@@ -273,7 +273,7 @@ class Save:
                 self._refresh_subject_symlinks(destination_path)
             return None
 
-        shutil.copy(source_path, destination_path)
+        #shutil.copy(source_path, destination_path)
         if self.symlink:
             self._refresh_subject_symlinks(destination_path)
         return destination_path
@@ -350,6 +350,13 @@ class Save:
             study=subject_study,
             old_records=existing_records,
             new_records=canonical_records,
+        )
+
+        self._log_subject_file_plan(
+            subject_id=subject_key,
+            new_keys=new_keys,
+            canonical_lookup=canonical_lookup,
+            rename_plan=rename_plan,
         )
 
         if not new_keys and not rename_plan["moves"]:
@@ -450,6 +457,53 @@ class Save:
             "study": (study or "").lower(),
             "moves": rename_steps,
         }
+
+    def _log_subject_file_plan(self, subject_id, new_keys, canonical_lookup, rename_plan):
+        subject_key = str(subject_id)
+
+        planned_new_records = []
+        for record_key in new_keys:
+            record = canonical_lookup.get(record_key)
+            if record is not None:
+                planned_new_records.append(record)
+
+        planned_new_records.sort(key=self._subject_sort_key)
+
+        if planned_new_records:
+            self.logger.info(
+                "planned_new_files subject=%s count=%s",
+                subject_key,
+                len(planned_new_records),
+            )
+            for record in planned_new_records:
+                source_path = os.path.join(self.RDSS_DIR, str(record.get("filename", "")))
+                self.logger.info(
+                    "planned_save subject=%s run=%s source=%s destination=%s",
+                    subject_key,
+                    record.get("run"),
+                    source_path,
+                    record.get("file_path"),
+                )
+
+        planned_switches = (rename_plan or {}).get("moves", [])
+        if planned_switches:
+            self.logger.info(
+                "planned_file_switches subject=%s count=%s",
+                subject_key,
+                len(planned_switches),
+            )
+            for move in sorted(
+                planned_switches,
+                key=lambda item: (item.get("old_run"), item.get("new_run")),
+            ):
+                self.logger.info(
+                    "planned_switch subject=%s from_run=%s to_run=%s from=%s to=%s",
+                    subject_key,
+                    move.get("old_run"),
+                    move.get("new_run"),
+                    move.get("old_file"),
+                    move.get("new_file"),
+                )
 
     def _apply_two_phase_renames(self, rename_plan):
         moves = (rename_plan or {}).get("moves", [])
@@ -573,7 +627,7 @@ class Save:
                     )
                 else:
                     try:
-                        shutil.copy(source_path, destination_path)
+                        #shutil.copy(source_path, destination_path)
                         print(f"Copied {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
