@@ -273,7 +273,7 @@ class Save:
                 self._refresh_subject_symlinks(destination_path)
             return None
 
-        #shutil.copy(source_path, destination_path)
+        shutil.copy(source_path, destination_path)
         if self.symlink:
             self._refresh_subject_symlinks(destination_path)
         return destination_path
@@ -627,7 +627,7 @@ class Save:
                     )
                 else:
                     try:
-                        #shutil.copy(source_path, destination_path)
+                        shutil.copy(source_path, destination_path)
                         print(f"Copied {source_path} -> {destination_path}")
                     except Exception as e:
                         print(f"Error moving {source_path} to {destination_path}: {e}")
