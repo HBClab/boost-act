@@ -255,6 +255,22 @@ class Save:
         if hasattr(report_rows, "to_dict"):
             report_rows = report_rows.to_dict(orient="records")
 
+        mapping, missing_subjects = self._build_subject_lab_mapping(
+            requested_subjects,
+            report_rows,
+        )
+
+        if missing_subjects:
+            raise ValueError(
+                "Missing RedCap subject->lab mappings for subject(s): "
+                + ", ".join(missing_subjects)
+            )
+
+        return {subject_id: mapping[subject_id] for subject_id in requested_subjects}
+
+    def _build_subject_lab_mapping(self, requested_subjects, report_rows):
+        requested_subjects = [str(subject_id) for subject_id in (requested_subjects or [])]
+
         mapping = {}
         for row in report_rows or []:
             if not isinstance(row, dict):
@@ -270,13 +286,83 @@ class Save:
         missing_subjects = [
             subject_id for subject_id in requested_subjects if subject_id not in mapping
         ]
-        if missing_subjects:
-            raise ValueError(
-                "Missing RedCap subject->lab mappings for subject(s): "
-                + ", ".join(missing_subjects)
+        return mapping, missing_subjects
+
+    def _subject_order_key(self, subject_id):
+        subject = str(subject_id)
+        try:
+            return (0, int(subject))
+        except ValueError:
+            return (1, subject)
+
+    def _resolve_rdss_session_metadata_with_missing(
+        self,
+        discovered_sessions,
+        subject_lab_mapping,
+    ):
+        rdss_rows = self._list_rdss_metadata_rows()
+        rows_by_lab = {}
+        for row in rdss_rows:
+            lab_id = str(row.get("labID", ""))
+            rows_by_lab.setdefault(lab_id, []).append(row)
+
+        for lab_id in rows_by_lab:
+            rows_by_lab[lab_id].sort(
+                key=lambda row: (
+                    self._normalize_record_date_value(row.get("date")) or "",
+                    str(row.get("filename", "")),
+                )
             )
 
-        return {subject_id: mapping[subject_id] for subject_id in requested_subjects}
+        enriched = {}
+        missing = []
+
+        for subject_id, sessions in (discovered_sessions or {}).items():
+            subject_key = str(subject_id)
+            mapped_lab_id = str((subject_lab_mapping or {}).get(subject_key, ""))
+            if not mapped_lab_id:
+                continue
+
+            lab_rows = rows_by_lab.get(mapped_lab_id, [])
+
+            for session in sorted(sessions or [], key=lambda item: int(item.get("run", 0))):
+                run = int(session.get("run"))
+                if run <= 0 or run > len(lab_rows):
+                    missing.append(
+                        {
+                            "subject_id": subject_key,
+                            "run": run,
+                            "labID": mapped_lab_id,
+                        }
+                    )
+                    continue
+
+                selected = lab_rows[run - 1]
+                if not all(selected.get(field) for field in ("filename", "labID", "date")):
+                    missing.append(
+                        {
+                            "subject_id": subject_key,
+                            "run": run,
+                            "labID": mapped_lab_id,
+                        }
+                    )
+                    continue
+
+                enriched.setdefault(subject_key, []).append(
+                    {
+                        "filename": selected["filename"],
+                        "labID": selected["labID"],
+                        "date": selected["date"],
+                        "run": run,
+                        "study": session.get("study"),
+                        "file_path": session.get("file_path"),
+                    }
+                )
+
+        for subject_id in enriched:
+            enriched[subject_id].sort(key=lambda item: int(item["run"]))
+
+        return enriched, missing
 
     def _session_run_from_folder(self, session_folder_name):
         match = re.fullmatch(r"ses-(\d+)", str(session_folder_name or ""))
@@ -382,55 +468,76 @@ class Save:
         return rows
 
     def resolve_rdss_session_metadata(self, discovered_sessions, subject_lab_mapping):
-        rdss_rows = self._list_rdss_metadata_rows()
-        rows_by_lab = {}
-        for row in rdss_rows:
-            lab_id = str(row.get("labID", ""))
-            rows_by_lab.setdefault(lab_id, []).append(row)
-
-        enriched = {}
-        missing = []
-
-        for subject_id, sessions in (discovered_sessions or {}).items():
-            subject_key = str(subject_id)
-            mapped_lab_id = str((subject_lab_mapping or {}).get(subject_key, ""))
-            lab_rows = rows_by_lab.get(mapped_lab_id, [])
-
-            for session in sorted(sessions or [], key=lambda item: int(item.get("run", 0))):
-                run = int(session.get("run"))
-                if run <= 0 or run > len(lab_rows):
-                    missing.append(
-                        f"subject={subject_key} run={run} labID={mapped_lab_id}"
-                    )
-                    continue
-
-                selected = lab_rows[run - 1]
-                if not all(selected.get(field) for field in ("filename", "labID", "date")):
-                    missing.append(
-                        f"subject={subject_key} run={run} labID={mapped_lab_id}"
-                    )
-                    continue
-
-                enriched.setdefault(subject_key, []).append(
-                    {
-                        "subject_id": subject_key,
-                        "study": session.get("study"),
-                        "run": run,
-                        "filename": selected["filename"],
-                        "labID": selected["labID"],
-                        "date": selected["date"],
-                    }
-                )
-
-        for subject_id in enriched:
-            enriched[subject_id].sort(key=lambda item: item["run"])
+        enriched, missing = self._resolve_rdss_session_metadata_with_missing(
+            discovered_sessions,
+            subject_lab_mapping,
+        )
 
         if missing:
             raise ValueError(
-                "Unresolved RDSS metadata for session(s): " + "; ".join(sorted(missing))
+                "Unresolved RDSS metadata for session(s): "
+                + "; ".join(
+                    sorted(
+                        f"subject={entry['subject_id']} run={entry['run']} labID={entry['labID']}"
+                        for entry in missing
+                    )
+                )
             )
 
         return enriched
+
+    def rebuild_manifest_payload_from_lss(self):
+        discovered, discovery_conflicts = self.discover_lss_sessions()
+
+        subject_errors = {}
+        for subject_id, messages in (discovery_conflicts or {}).items():
+            subject_errors.setdefault(str(subject_id), []).extend(list(messages or []))
+
+        subject_ids = sorted(discovered.keys(), key=self._subject_order_key)
+
+        report_rows = self._fetch_redcap_subject_lab_rows()
+        if hasattr(report_rows, "to_dict"):
+            report_rows = report_rows.to_dict(orient="records")
+
+        subject_lab_mapping, missing_subjects = self._build_subject_lab_mapping(
+            subject_ids,
+            report_rows,
+        )
+        for subject_id in missing_subjects:
+            subject_errors.setdefault(subject_id, []).append(
+                "missing RedCap subject->lab mapping"
+            )
+
+        discovered_with_mapping = {
+            subject_id: discovered[subject_id]
+            for subject_id in subject_ids
+            if subject_id in subject_lab_mapping
+        }
+        enriched, rdss_missing = self._resolve_rdss_session_metadata_with_missing(
+            discovered_with_mapping,
+            subject_lab_mapping,
+        )
+        for item in rdss_missing:
+            subject_id = str(item["subject_id"])
+            subject_errors.setdefault(subject_id, []).append(
+                f"unresolved RDSS metadata for run={item['run']} labID={item['labID']}"
+            )
+
+        if subject_errors:
+            parts = []
+            for subject_id in sorted(subject_errors.keys(), key=self._subject_order_key):
+                messages = "; ".join(sorted(set(subject_errors[subject_id])))
+                parts.append(f"subject={subject_id}: {messages}")
+            raise ValueError(
+                "Manifest rebuild failed due to strict conflict(s): " + " | ".join(parts)
+            )
+
+        payload = {}
+        for subject_id in sorted(enriched.keys(), key=self._subject_order_key):
+            records = sorted(enriched[subject_id], key=lambda row: int(row["run"]))
+            payload[str(subject_id)] = records
+
+        return self._prepare_for_json(payload)
 
     def _subject_session_paths(self, subject_id, study, run):
         subject_key = str(subject_id)

@@ -173,3 +173,125 @@ def test_resolve_rdss_session_metadata_strict_failure_when_unresolved(tmp_path, 
     message = str(exc.value)
     assert "Unresolved RDSS metadata" in message
     assert "subject=8001 run=2 labID=1201" in message
+
+
+def test_rebuild_manifest_payload_from_lss_deterministic_output(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+
+    monkeypatch.setattr(
+        save,
+        "discover_lss_sessions",
+        lambda: (
+            {
+                "8001": [
+                    {
+                        "subject_id": "8001",
+                        "study": "int",
+                        "run": 2,
+                        "file_path": "/lss/int/sub-8001/accel/ses-2/sub-8001_ses-2_accel.csv",
+                    },
+                    {
+                        "subject_id": "8001",
+                        "study": "int",
+                        "run": 1,
+                        "file_path": "/lss/int/sub-8001/accel/ses-1/sub-8001_ses-1_accel.csv",
+                    },
+                ],
+                "7001": [
+                    {
+                        "subject_id": "7001",
+                        "study": "obs",
+                        "run": 1,
+                        "file_path": "/lss/obs/sub-7001/accel/ses-1/sub-7001_ses-1_accel.csv",
+                    }
+                ],
+            },
+            {},
+        ),
+    )
+    monkeypatch.setattr(
+        save,
+        "_fetch_redcap_subject_lab_rows",
+        lambda: [
+            {"boost_id": "7001", "lab_id": "2201"},
+            {"boost_id": "8001", "lab_id": "1201"},
+        ],
+    )
+    monkeypatch.setattr(
+        save,
+        "_list_rdss_metadata_rows",
+        lambda: [
+            {"filename": "2201 (2025-02-10)RAW.csv", "labID": "2201", "date": "2025-02-10"},
+            {"filename": "1201 (2025-03-02)RAW.csv", "labID": "1201", "date": "2025-03-02"},
+            {"filename": "1201 (2025-03-01)RAW.csv", "labID": "1201", "date": "2025-03-01"},
+        ],
+    )
+
+    payload = save.rebuild_manifest_payload_from_lss()
+
+    assert list(payload.keys()) == ["7001", "8001"]
+    assert [record["run"] for record in payload["8001"]] == [1, 2]
+    assert [record["filename"] for record in payload["8001"]] == [
+        "1201 (2025-03-01)RAW.csv",
+        "1201 (2025-03-02)RAW.csv",
+    ]
+    assert payload["8001"][0]["file_path"].endswith("ses-1/sub-8001_ses-1_accel.csv")
+    assert payload["8001"][1]["file_path"].endswith("ses-2/sub-8001_ses-2_accel.csv")
+
+
+def test_rebuild_manifest_payload_from_lss_aggregates_strict_errors(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+
+    monkeypatch.setattr(
+        save,
+        "discover_lss_sessions",
+        lambda: (
+            {
+                "8001": [
+                    {
+                        "subject_id": "8001",
+                        "study": "int",
+                        "run": 1,
+                        "file_path": "/lss/int/sub-8001/accel/ses-1/sub-8001_ses-1_accel.csv",
+                    }
+                ],
+                "8002": [
+                    {
+                        "subject_id": "8002",
+                        "study": "int",
+                        "run": 2,
+                        "file_path": "/lss/int/sub-8002/accel/ses-2/sub-8002_ses-2_accel.csv",
+                    }
+                ],
+                "7001": [
+                    {
+                        "subject_id": "7001",
+                        "study": "obs",
+                        "run": 1,
+                        "file_path": "/lss/obs/sub-7001/accel/ses-1/sub-7001_ses-1_accel.csv",
+                    }
+                ],
+            },
+            {"7001": ["multiple accel csv candidates in /lss/obs/sub-7001/accel/ses-1"]},
+        ),
+    )
+    monkeypatch.setattr(
+        save,
+        "_fetch_redcap_subject_lab_rows",
+        lambda: [{"boost_id": "8001", "lab_id": "1201"}],
+    )
+    monkeypatch.setattr(
+        save,
+        "_list_rdss_metadata_rows",
+        lambda: [{"filename": "1201 (2025-03-01)RAW.csv", "labID": "1201", "date": "2025-03-01"}],
+    )
+
+    with pytest.raises(ValueError) as exc:
+        save.rebuild_manifest_payload_from_lss()
+
+    message = str(exc.value)
+    assert "Manifest rebuild failed due to strict conflict(s)" in message
+    assert "subject=7001:" in message
+    assert "multiple accel csv candidates" in message
+    assert "subject=8002:" in message
+    assert "missing RedCap subject->lab mapping" in message

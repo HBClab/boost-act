@@ -44,10 +44,12 @@ Checkpoint note: Added `Save._fetch_redcap_subject_lab_rows()` and `Save.resolve
 Checkpoint note: Added `Save._list_rdss_metadata_rows()` and `Save.resolve_rdss_session_metadata()`; resolver enriches only LSS-discovered sessions and raises on unresolved run-level metadata.
 
 ***Checkpoint 6: Manifest Rebuild Assembly + Strict Error Model***
-- [ ] Assemble canonical manifest payload from LSS-discovered sessions enriched by RedCap/RDSS.
-- [ ] Produce deterministic ordering by subject and run for stable output.
-- [ ] Aggregate subject-level errors and fail command when any strict conflict exists.
-- [ ] A test: add end-to-end rebuild unit tests in `act/tests/test_manifest_rebuild_from_lss.py` for deterministic output and strict fail-on-error behavior.
+- [x] Assemble canonical manifest payload from LSS-discovered sessions enriched by RedCap/RDSS.
+- [x] Produce deterministic ordering by subject and run for stable output.
+- [x] Aggregate subject-level errors and fail command when any strict conflict exists.
+- [x] A test: add end-to-end rebuild unit tests in `act/tests/test_manifest_rebuild_from_lss.py` for deterministic output and strict fail-on-error behavior.
+
+Checkpoint note: Added `Save.rebuild_manifest_payload_from_lss()` with deterministic subject/run ordering and aggregated strict subject-level conflicts across LSS discovery, RedCap mapping, and RDSS metadata resolution.
 
 ***Checkpoint 7: Atomic Manifest Write + Exit Semantics***
 - [ ] Implement atomic write (`temp -> fsync -> replace`) for `res/data.json` in rebuild mode.
