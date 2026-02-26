@@ -4,6 +4,8 @@ import runpy
 import sys
 import types
 
+import pytest
+
 
 def _install_module(monkeypatch, name, module):
     monkeypatch.setitem(sys.modules, name, module)
@@ -82,12 +84,95 @@ def test_pipeline_smoke_mocked_dependencies(tmp_path, monkeypatch):
     ]
 
 
+def test_pipeline_manifest_only_skips_ggir(tmp_path, monkeypatch):
+    save_state = {
+        "init_kwargs": None,
+        "remove_calls": [],
+        "save_called": 0,
+        "rebuild_called": 0,
+        "atomic_called": 0,
+    }
+    gg_state = {"ran": False}
+
+    class FakeSave:
+        def __init__(self, **kwargs):
+            save_state["init_kwargs"] = kwargs
+            self.manifest_path = "res/data.json"
+
+        def save(self):
+            save_state["save_called"] += 1
+            return {"8001": [{"filename": "1001 (2025-01-01)RAW.csv"}]}
+
+        def rebuild_manifest_payload_from_lss(self):
+            save_state["rebuild_called"] += 1
+            return {"8001": [{"filename": "sub-8001_ses-1_accel.csv", "run": 1}]}
+
+        def _atomic_write_manifest(self, payload, path=None):
+            save_state["atomic_called"] += 1
+            return payload
+
+        @staticmethod
+        def remove_symlink_directories(study_dirs):
+            save_state["remove_calls"].append(study_dirs)
+
+    class FakeGG:
+        def __init__(self, **kwargs):
+            pass
+
+        def run_gg(self):
+            gg_state["ran"] = True
+
+    code_pkg = _ensure_package(monkeypatch, "code")
+    utils_pkg = _ensure_package(monkeypatch, "act.utils")
+    core_pkg = _ensure_package(monkeypatch, "act.core")
+
+    save_mod = types.ModuleType("act.utils.save")
+    save_mod.Save = FakeSave
+    gg_mod = types.ModuleType("act.core.gg")
+    gg_mod.GG = FakeGG
+
+    utils_pkg.save = save_mod
+    core_pkg.gg = gg_mod
+    code_pkg.utils = utils_pkg
+    code_pkg.core = core_pkg
+
+    _install_module(monkeypatch, "act.utils.save", save_mod)
+    _install_module(monkeypatch, "act.core.gg", gg_mod)
+
+    pipe_mod = importlib.import_module("act.utils.pipe")
+    pipe_mod = importlib.reload(pipe_mod)
+    monkeypatch.chdir(tmp_path)
+    pipe_mod.Pipe._SYSTEM_PATHS["local"] = {
+        "INT_DIR": str(tmp_path / "int"),
+        "OBS_DIR": str(tmp_path / "obs"),
+        "RDSS_DIR": str(tmp_path / "rdss"),
+    }
+
+    pipe = pipe_mod.Pipe(
+        token="token", daysago=1, system="local", rebuild_manifest_only=True
+    )
+    pipe.run_pipe()
+
+    assert gg_state["ran"] is False
+    assert save_state["save_called"] == 0
+    assert save_state["rebuild_called"] == 1
+    assert save_state["atomic_called"] == 1
+    assert save_state["remove_calls"] == [
+        [str(tmp_path / "int"), str(tmp_path / "obs")]
+    ]
+
+
 def test_main_smoke_invokes_pipe_and_group(monkeypatch):
     call_state = {"pipe_args": None, "run_pipe": 0, "group_systems": []}
 
     class FakePipe:
-        def __init__(self, token, daysago, system):
-            call_state["pipe_args"] = (token, daysago, system)
+        def __init__(self, token, daysago, system, rebuild_manifest_only=False):
+            call_state["pipe_args"] = {
+                "token": token,
+                "daysago": daysago,
+                "system": system,
+                "rebuild_manifest_only": rebuild_manifest_only,
+            }
 
         def run_pipe(self):
             call_state["run_pipe"] += 1
@@ -118,11 +203,180 @@ def test_main_smoke_invokes_pipe_and_group(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["main.py", "2", "token-value", "local"],
+        [
+            "main.py",
+            "--daysago",
+            "2",
+            "--token",
+            "token-value",
+            "--system",
+            "local",
+        ],
     )
 
-    runpy.run_module("act.main", run_name="__main__")
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_module("act.main", run_name="__main__")
 
-    assert call_state["pipe_args"] == ("token-value", 2, "local")
+    assert exc.value.code == 0
+
+    assert call_state["pipe_args"] == {
+        "token": "token-value",
+        "daysago": 2,
+        "system": "local",
+        "rebuild_manifest_only": False,
+    }
     assert call_state["run_pipe"] == 1
     assert call_state["group_systems"] == ["local", "person", "local", "session"]
+
+
+def test_main_manifest_only_skips_plotting(monkeypatch):
+    call_state = {"pipe_args": None, "run_pipe": 0, "group_inits": 0}
+
+    class FakePipe:
+        def __init__(self, token, daysago, system, rebuild_manifest_only=False):
+            call_state["pipe_args"] = {
+                "token": token,
+                "daysago": daysago,
+                "system": system,
+                "rebuild_manifest_only": rebuild_manifest_only,
+            }
+
+        def run_pipe(self):
+            call_state["run_pipe"] += 1
+
+    class FakeGroup:
+        def __init__(self, system):
+            call_state["group_inits"] += 1
+
+        def plot_person(self):
+            raise AssertionError("plot_person should not run in manifest-only mode")
+
+        def plot_session(self):
+            raise AssertionError("plot_session should not run in manifest-only mode")
+
+    code_pkg = _ensure_package(monkeypatch, "code")
+    utils_pkg = _ensure_package(monkeypatch, "act.utils")
+    pipe_mod = types.ModuleType("act.utils.pipe")
+    group_mod = types.ModuleType("act.utils.group")
+    pipe_mod.Pipe = FakePipe
+    group_mod.Group = FakeGroup
+    utils_pkg.pipe = pipe_mod
+    utils_pkg.group = group_mod
+    code_pkg.utils = utils_pkg
+
+    _install_module(monkeypatch, "act.utils.pipe", pipe_mod)
+    _install_module(monkeypatch, "act.utils.group", group_mod)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "main.py",
+            "--daysago",
+            "2",
+            "--token",
+            "token-value",
+            "--system",
+            "local",
+            "--rebuild-manifest-only",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_module("act.main", run_name="__main__")
+
+    assert exc.value.code == 0
+    assert call_state["pipe_args"] == {
+        "token": "token-value",
+        "daysago": 2,
+        "system": "local",
+        "rebuild_manifest_only": True,
+    }
+    assert call_state["run_pipe"] == 1
+    assert call_state["group_inits"] == 0
+
+
+def test_main_manifest_only_returns_nonzero_on_rebuild_error(monkeypatch):
+    class FakePipe:
+        def __init__(self, token, daysago, system, rebuild_manifest_only=False):
+            pass
+
+        def run_pipe(self):
+            raise ValueError("Manifest rebuild failed due to strict conflict(s): subject=8001")
+
+    class FakeGroup:
+        def __init__(self, system):
+            raise AssertionError("Group should not be constructed on rebuild error")
+
+    code_pkg = _ensure_package(monkeypatch, "code")
+    utils_pkg = _ensure_package(monkeypatch, "act.utils")
+    pipe_mod = types.ModuleType("act.utils.pipe")
+    group_mod = types.ModuleType("act.utils.group")
+    pipe_mod.Pipe = FakePipe
+    group_mod.Group = FakeGroup
+    utils_pkg.pipe = pipe_mod
+    utils_pkg.group = group_mod
+    code_pkg.utils = utils_pkg
+
+    _install_module(monkeypatch, "act.utils.pipe", pipe_mod)
+    _install_module(monkeypatch, "act.utils.group", group_mod)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "main.py",
+            "--daysago",
+            "2",
+            "--token",
+            "token-value",
+            "--system",
+            "local",
+            "--rebuild-manifest-only",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_module("act.main", run_name="__main__")
+
+    assert exc.value.code == 1
+
+
+def test_parse_args_valid_rebuild_manifest_only():
+    main_mod = importlib.import_module("act.main")
+    args = main_mod.build_parser().parse_args(
+        [
+            "--token",
+            "abc123",
+            "--daysago",
+            "3",
+            "--system",
+            "vosslnx",
+            "--rebuild-manifest-only",
+        ]
+    )
+
+    assert args.token == "abc123"
+    assert args.daysago == 3
+    assert args.system == "vosslnx"
+    assert args.rebuild_manifest_only is True
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["--token", "abc123", "--daysago", "3"],
+        ["--token", "abc123", "--daysago", "-1", "--system", "local"],
+        ["--token", "abc123", "--daysago", "three", "--system", "local"],
+        ["--token", "", "--daysago", "3", "--system", "local"],
+        ["--token", "abc123", "--daysago", "3", "--system", "unknown"],
+    ],
+)
+def test_parse_args_invalid_invocations(argv):
+    main_mod = importlib.import_module("act.main")
+    parser = main_mod.build_parser()
+
+    with pytest.raises(SystemExit) as exc:
+        parser.parse_args(argv)
+
+    assert exc.value.code == 2

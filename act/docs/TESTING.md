@@ -82,6 +82,38 @@ Expected behaviors covered by this suite:
 - Manual edits to `res/data.json` can force session reindex/rename behavior on the next run.
 - If manual edits are necessary, run the manifest-focused tests above before production ingest.
 
+### Manifest Rebuild-Only Operations
+- CLI mode: `--rebuild-manifest-only`.
+- Rebuild mode skips ingest copy/rename, GGIR, and plotting.
+- Rebuild mode still requires a valid RedCap token because subject→lab mapping is enforced.
+- Rebuild exits non-zero on strict failures:
+  - multi-candidate session CSVs in a single `ses-*` folder,
+  - missing RedCap subject mapping,
+  - missing RDSS metadata for any discovered LSS session.
+
+Linux (venv) example:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r act/requirements.txt
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system local --rebuild-manifest-only
+```
+
+NixOS example:
+
+```bash
+nix develop
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --rebuild-manifest-only
+```
+
+Checkpoint-8 validation commands:
+
+```bash
+pytest --collect-only -q act/tests/test_manifest_rebuild_from_lss.py
+pytest -q act/tests/test_manifest_rebuild_from_lss.py act/tests/test_pipeline_smoke.py
+```
+
 ## Smoke E2E Constraints
 - Smoke tests must stay Python-only and fast.
 - Mock external boundaries:

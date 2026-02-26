@@ -2,7 +2,9 @@ import errno
 import json
 import logging
 import os
+import re
 import shutil
+import tempfile
 from datetime import date, datetime
 from act.utils.comparison_utils import ID_COMPARISONS
 
@@ -128,6 +130,48 @@ class Save:
 
         return payload
 
+    def _atomic_write_manifest(self, payload, path=None):
+        manifest_path = path or getattr(self, "manifest_path", "res/data.json")
+        normalized_payload = self._normalize_manifest_payload(payload)
+        normalized_payload = self._prepare_for_json(normalized_payload)
+
+        manifest_dir = os.path.dirname(manifest_path) or "."
+        os.makedirs(manifest_dir, exist_ok=True)
+
+        temp_path = None
+        try:
+            fd, temp_path = tempfile.mkstemp(
+                prefix=".manifest-",
+                suffix=".json",
+                dir=manifest_dir,
+            )
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                json.dump(normalized_payload, handle, indent=2)
+                handle.flush()
+                os.fsync(handle.fileno())
+
+            os.replace(temp_path, manifest_path)
+
+            try:
+                dir_fd = os.open(manifest_dir, os.O_DIRECTORY)
+            except (AttributeError, OSError):
+                dir_fd = None
+
+            if dir_fd is not None:
+                try:
+                    os.fsync(dir_fd)
+                finally:
+                    os.close(dir_fd)
+
+            return normalized_payload
+        except Exception:
+            if temp_path and os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except OSError:
+                    pass
+            raise
+
     def _normalize_record_date_value(self, date_value):
         if date_value is None:
             return None
@@ -223,6 +267,320 @@ class Save:
         if (study or "").lower() == "int":
             return self.INT_DIR
         return self.OBS_DIR
+
+    def _fetch_redcap_subject_lab_rows(self):
+        token = getattr(self, "token", None)
+        if not token:
+            raise ValueError("RedCap token is required to fetch subject mappings")
+
+        rdss_dir = getattr(self, "RDSS_DIR", None) or "."
+        daysago = getattr(self, "daysago", None)
+
+        report_df, _ = ID_COMPARISONS(
+            rdss_dir=rdss_dir,
+            token=token,
+            daysago=daysago,
+        )._return_report()
+        return report_df
+
+    def resolve_subject_lab_mapping(self, subject_ids):
+        requested_subjects = sorted(
+            {
+                str(subject_id)
+                for subject_id in (subject_ids or [])
+                if str(subject_id).strip()
+            }
+        )
+        if not requested_subjects:
+            return {}
+
+        report_rows = self._fetch_redcap_subject_lab_rows()
+        if hasattr(report_rows, "to_dict"):
+            report_rows = report_rows.to_dict(orient="records")
+
+        mapping, missing_subjects = self._build_subject_lab_mapping(
+            requested_subjects,
+            report_rows,
+        )
+
+        if missing_subjects:
+            raise ValueError(
+                "Missing RedCap subject->lab mappings for subject(s): "
+                + ", ".join(missing_subjects)
+            )
+
+        return {subject_id: mapping[subject_id] for subject_id in requested_subjects}
+
+    def _build_subject_lab_mapping(self, requested_subjects, report_rows):
+        requested_subjects = [str(subject_id) for subject_id in (requested_subjects or [])]
+
+        mapping = {}
+        for row in report_rows or []:
+            if not isinstance(row, dict):
+                continue
+
+            boost_id = row.get("boost_id")
+            lab_id = row.get("lab_id")
+            if boost_id is None or lab_id is None:
+                continue
+
+            mapping[str(boost_id)] = str(lab_id)
+
+        missing_subjects = [
+            subject_id for subject_id in requested_subjects if subject_id not in mapping
+        ]
+        return mapping, missing_subjects
+
+    def _subject_order_key(self, subject_id):
+        subject = str(subject_id)
+        try:
+            return (0, int(subject))
+        except ValueError:
+            return (1, subject)
+
+    def _resolve_rdss_session_metadata_with_missing(
+        self,
+        discovered_sessions,
+        subject_lab_mapping,
+    ):
+        rdss_rows = self._list_rdss_metadata_rows()
+        rows_by_lab = {}
+        for row in rdss_rows:
+            lab_id = str(row.get("labID", ""))
+            rows_by_lab.setdefault(lab_id, []).append(row)
+
+        for lab_id in rows_by_lab:
+            rows_by_lab[lab_id].sort(
+                key=lambda row: (
+                    self._normalize_record_date_value(row.get("date")) or "",
+                    str(row.get("filename", "")),
+                )
+            )
+
+        enriched = {}
+        missing = []
+
+        for subject_id, sessions in (discovered_sessions or {}).items():
+            subject_key = str(subject_id)
+            mapped_lab_id = str((subject_lab_mapping or {}).get(subject_key, ""))
+            if not mapped_lab_id:
+                continue
+
+            lab_rows = rows_by_lab.get(mapped_lab_id, [])
+
+            for session in sorted(sessions or [], key=lambda item: int(item.get("run", 0))):
+                run = int(session.get("run"))
+                if run <= 0 or run > len(lab_rows):
+                    missing.append(
+                        {
+                            "subject_id": subject_key,
+                            "run": run,
+                            "labID": mapped_lab_id,
+                        }
+                    )
+                    continue
+
+                selected = lab_rows[run - 1]
+                if not all(selected.get(field) for field in ("filename", "labID", "date")):
+                    missing.append(
+                        {
+                            "subject_id": subject_key,
+                            "run": run,
+                            "labID": mapped_lab_id,
+                        }
+                    )
+                    continue
+
+                enriched.setdefault(subject_key, []).append(
+                    {
+                        "filename": selected["filename"],
+                        "labID": selected["labID"],
+                        "date": selected["date"],
+                        "run": run,
+                        "study": session.get("study"),
+                        "file_path": session.get("file_path"),
+                    }
+                )
+
+        for subject_id in enriched:
+            enriched[subject_id].sort(key=lambda item: int(item["run"]))
+
+        return enriched, missing
+
+    def _session_run_from_folder(self, session_folder_name):
+        match = re.fullmatch(r"ses-(\d+)", str(session_folder_name or ""))
+        if not match:
+            return None
+        return int(match.group(1))
+
+    def _candidate_session_csvs(self, session_dir):
+        if not os.path.isdir(session_dir):
+            return []
+
+        candidates = []
+        for name in sorted(os.listdir(session_dir)):
+            lower_name = name.lower()
+            if lower_name.endswith("_accel.csv"):
+                candidates.append(os.path.join(session_dir, name))
+        return candidates
+
+    def discover_lss_sessions(self):
+        discovered = {}
+        conflicts = {}
+
+        for study, study_root in (("int", self.INT_DIR), ("obs", self.OBS_DIR)):
+            if not study_root or not os.path.isdir(study_root):
+                continue
+
+            for subject_folder in sorted(os.listdir(study_root)):
+                if not subject_folder.startswith("sub-"):
+                    continue
+
+                subject_id = subject_folder[len("sub-") :]
+                accel_root = os.path.join(study_root, subject_folder, "accel")
+                if not os.path.isdir(accel_root):
+                    continue
+
+                for session_folder in sorted(os.listdir(accel_root)):
+                    run = self._session_run_from_folder(session_folder)
+                    if run is None:
+                        continue
+
+                    session_dir = os.path.join(accel_root, session_folder)
+                    if not os.path.isdir(session_dir):
+                        continue
+
+                    candidates = self._candidate_session_csvs(session_dir)
+                    if len(candidates) > 1:
+                        conflict_message = (
+                            f"multiple accel csv candidates in {session_dir}: "
+                            + ", ".join(os.path.basename(path) for path in candidates)
+                        )
+                        conflicts.setdefault(subject_id, []).append(conflict_message)
+                        continue
+
+                    if len(candidates) == 0:
+                        continue
+
+                    csv_path = candidates[0]
+                    discovered.setdefault(subject_id, []).append(
+                        {
+                            "subject_id": subject_id,
+                            "study": study,
+                            "run": run,
+                            "file_path": csv_path,
+                            "filename": os.path.basename(csv_path),
+                        }
+                    )
+
+        for subject_id in discovered:
+            discovered[subject_id].sort(key=lambda record: record["run"])
+
+        return discovered, conflicts
+
+    def _list_rdss_metadata_rows(self):
+        rdss_dir = getattr(self, "RDSS_DIR", None)
+        if not rdss_dir or not os.path.isdir(rdss_dir):
+            return []
+
+        rows = []
+        pattern = re.compile(r"^(?P<lab_id>\S+)\s*\((?P<date>[^)]+)\).+\.csv$", re.IGNORECASE)
+
+        for filename in sorted(os.listdir(rdss_dir)):
+            if not filename.lower().endswith(".csv"):
+                continue
+
+            match = pattern.match(filename)
+            if not match:
+                continue
+
+            rows.append(
+                {
+                    "filename": filename,
+                    "labID": str(match.group("lab_id")),
+                    "date": self._normalize_record_date_value(match.group("date")),
+                }
+            )
+
+        rows.sort(
+            key=lambda row: (
+                self._normalize_record_date_value(row.get("date")) or "",
+                str(row.get("filename", "")),
+            )
+        )
+        return rows
+
+    def resolve_rdss_session_metadata(self, discovered_sessions, subject_lab_mapping):
+        enriched, missing = self._resolve_rdss_session_metadata_with_missing(
+            discovered_sessions,
+            subject_lab_mapping,
+        )
+
+        if missing:
+            raise ValueError(
+                "Unresolved RDSS metadata for session(s): "
+                + "; ".join(
+                    sorted(
+                        f"subject={entry['subject_id']} run={entry['run']} labID={entry['labID']}"
+                        for entry in missing
+                    )
+                )
+            )
+
+        return enriched
+
+    def rebuild_manifest_payload_from_lss(self):
+        discovered, discovery_conflicts = self.discover_lss_sessions()
+
+        subject_errors = {}
+        for subject_id, messages in (discovery_conflicts or {}).items():
+            subject_errors.setdefault(str(subject_id), []).extend(list(messages or []))
+
+        subject_ids = sorted(discovered.keys(), key=self._subject_order_key)
+
+        report_rows = self._fetch_redcap_subject_lab_rows()
+        if hasattr(report_rows, "to_dict"):
+            report_rows = report_rows.to_dict(orient="records")
+
+        subject_lab_mapping, missing_subjects = self._build_subject_lab_mapping(
+            subject_ids,
+            report_rows,
+        )
+        for subject_id in missing_subjects:
+            subject_errors.setdefault(subject_id, []).append(
+                "missing RedCap subject->lab mapping"
+            )
+
+        discovered_with_mapping = {
+            subject_id: discovered[subject_id]
+            for subject_id in subject_ids
+            if subject_id in subject_lab_mapping
+        }
+        enriched, rdss_missing = self._resolve_rdss_session_metadata_with_missing(
+            discovered_with_mapping,
+            subject_lab_mapping,
+        )
+        for item in rdss_missing:
+            subject_id = str(item["subject_id"])
+            subject_errors.setdefault(subject_id, []).append(
+                f"unresolved RDSS metadata for run={item['run']} labID={item['labID']}"
+            )
+
+        if subject_errors:
+            parts = []
+            for subject_id in sorted(subject_errors.keys(), key=self._subject_order_key):
+                messages = "; ".join(sorted(set(subject_errors[subject_id])))
+                parts.append(f"subject={subject_id}: {messages}")
+            raise ValueError(
+                "Manifest rebuild failed due to strict conflict(s): " + " | ".join(parts)
+            )
+
+        payload = {}
+        for subject_id in sorted(enriched.keys(), key=self._subject_order_key):
+            records = sorted(enriched[subject_id], key=lambda row: int(row["run"]))
+            payload[str(subject_id)] = records
+
+        return self._prepare_for_json(payload)
 
     def _subject_session_paths(self, subject_id, study, run):
         subject_key = str(subject_id)

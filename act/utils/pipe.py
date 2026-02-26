@@ -49,12 +49,13 @@ class Pipe:
         cls.OBS_DIR = paths["OBS_DIR"]
         cls.RDSS_DIR = paths["RDSS_DIR"]
 
-    def __init__(self, token, daysago, system="vosslnx"):
+    def __init__(self, token, daysago, system="vosslnx", rebuild_manifest_only=False):
         # ensure class attrs are set for everyone (Pipe.INT_DIR etc.)
         type(self).configure(system)
         self.token = token
         self.daysago = daysago
         self.system = system
+        self.rebuild_manifest_only = rebuild_manifest_only
 
     def run_pipe(self):
         save_instance = Save(
@@ -67,6 +68,14 @@ class Pipe:
         )
 
         try:
+            if self.rebuild_manifest_only:
+                rebuilt_payload = save_instance.rebuild_manifest_payload_from_lss()
+                save_instance._atomic_write_manifest(
+                    rebuilt_payload,
+                    save_instance.manifest_path,
+                )
+                return None
+
             matched = save_instance.save()
 
             # (side note: your JSON writing was invalid; use json.dump)
@@ -77,12 +86,13 @@ class Pipe:
             with open("res/data.json", "w") as f:
                 json.dump(matched, f, indent=2)
 
-            GG(
-                matched=matched,
-                intdir=type(self).INT_DIR,
-                obsdir=type(self).OBS_DIR,
-                system=self.system,
-            ).run_gg()
+            if not self.rebuild_manifest_only:
+                GG(
+                    matched=matched,
+                    intdir=type(self).INT_DIR,
+                    obsdir=type(self).OBS_DIR,
+                    system=self.system,
+                ).run_gg()
         finally:
             Save.remove_symlink_directories([type(self).INT_DIR, type(self).OBS_DIR])
 
