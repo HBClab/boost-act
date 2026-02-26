@@ -9,7 +9,7 @@ conda activate act
 
 cd "${REPO_ROOT}"
 
-git pull --ff-only origin final-test
+git pull --ff-only
 
 if [[ -z "${BOOST_TOKEN:-}" ]]; then
   echo "BOOST_TOKEN is required. Aborting." >&2
