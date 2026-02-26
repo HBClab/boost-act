@@ -78,12 +78,13 @@ class Pipe:
             with open("res/data.json", "w") as f:
                 json.dump(matched, f, indent=2)
 
-            GG(
-                matched=matched,
-                intdir=type(self).INT_DIR,
-                obsdir=type(self).OBS_DIR,
-                system=self.system,
-            ).run_gg()
+            if not self.rebuild_manifest_only:
+                GG(
+                    matched=matched,
+                    intdir=type(self).INT_DIR,
+                    obsdir=type(self).OBS_DIR,
+                    system=self.system,
+                ).run_gg()
         finally:
             Save.remove_symlink_directories([type(self).INT_DIR, type(self).OBS_DIR])
 

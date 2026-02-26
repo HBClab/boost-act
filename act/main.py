@@ -63,7 +63,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="python -m act.main",
         description=(
             "Run BOOST ingest pipeline using explicit typed arguments. "
-            "Use --rebuild-manifest-only to enable manifest-only mode plumbing."
+            "Use --rebuild-manifest-only to rebuild manifest and skip GGIR/plotting."
         ),
     )
     parser.add_argument(
@@ -87,10 +87,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--rebuild-manifest-only",
         action="store_true",
-        help=(
-            "Parse-only wiring for manifest rebuild mode. "
-            "Behavior routing is added in a later checkpoint."
-        ),
+        help="Rebuild manifest-only mode (skips GGIR and plotting)",
     )
     return parser
 
@@ -110,8 +107,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.run_pipe()
 
-    Group(args.system).plot_person()
-    Group(args.system).plot_session()
+    if not args.rebuild_manifest_only:
+        Group(args.system).plot_person()
+        Group(args.system).plot_session()
     return 0
 
 

@@ -12,10 +12,12 @@
 Checkpoint note: CLI now uses explicit required flags (`--token`, `--daysago`, `--system`) and carries `--rebuild-manifest-only` into `Pipe` without mode switching yet.
 
 ***Checkpoint 2: Mode Routing in Pipeline***
-- [ ] Add mode-aware execution path in `act/utils/pipe.py` so normal mode and `--rebuild-manifest-only` branch cleanly.
-- [ ] Ensure manifest-only mode skips GGIR and plotting calls while preserving existing behavior in default mode.
-- [ ] Keep system-path resolution unchanged and shared between modes.
-- [ ] A test: extend `act/tests/test_pipeline_smoke.py` to assert GGIR/plot are not invoked when manifest-only is active.
+- [x] Add mode-aware execution path in `act/utils/pipe.py` so normal mode and `--rebuild-manifest-only` branch cleanly.
+- [x] Ensure manifest-only mode skips GGIR and plotting calls while preserving existing behavior in default mode.
+- [x] Keep system-path resolution unchanged and shared between modes.
+- [x] A test: extend `act/tests/test_pipeline_smoke.py` to assert GGIR/plot are not invoked when manifest-only is active.
+
+Checkpoint note: `Pipe.run_pipe()` now skips GGIR in manifest-only mode, and `act.main` skips plotting when `--rebuild-manifest-only` is set.
 
 ***Checkpoint 3: LSS Session Discovery Engine***
 - [ ] Implement LSS scanner in `act/utils/save.py` (or a focused helper module) to discover `sub-*/accel/ses-*` session CSVs from configured `INT_DIR`/`OBS_DIR`.
