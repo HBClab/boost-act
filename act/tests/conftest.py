@@ -12,13 +12,25 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-_comparison_utils = importlib.import_module("act.utils.comparison_utils")
-_stdlib_code = importlib.import_module("code")
-_code_utils = types.ModuleType("act.utils")
-_code_utils.comparison_utils = _comparison_utils
-_stdlib_act.utils = _code_utils
-sys.modules["act.utils"] = _code_utils
-sys.modules["act.utils.comparison_utils"] = _comparison_utils
+_comparison_utils_stub = types.ModuleType("act.utils.comparison_utils")
+
+
+class _IDComparisonsStub:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def compare_ids(self):
+        return {"matches": {}, "duplicates": []}
+
+
+_comparison_utils_stub.ID_COMPARISONS = _IDComparisonsStub
+sys.modules["act.utils.comparison_utils"] = _comparison_utils_stub
+
+try:
+    _act_utils = importlib.import_module("act.utils")
+    _act_utils.comparison_utils = _comparison_utils_stub
+except ModuleNotFoundError:
+    pass
 
 
 @pytest.fixture
