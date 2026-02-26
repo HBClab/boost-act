@@ -60,7 +60,9 @@ Checkpoint note: Added `Save.rebuild_manifest_payload_from_lss()` with determini
 Checkpoint note: Rebuild mode now uses `Save._atomic_write_manifest()` and `main()` returns exit code `1` on strict rebuild `ValueError`; tests cover non-zero exit and manifest preservation when replace fails.
 
 ***Checkpoint 8: Documentation + Operator Runbook***
-- [ ] Update feature docs and operator guidance for new CLI usage and `--rebuild-manifest-only` behavior.
-- [ ] Document strict-failure conditions (multi-CSV session, missing RedCap mapping, missing RDSS metadata).
-- [ ] Add example commands for NixOS and generic Linux execution contexts.
-- [ ] A test: validate docs commands via `pytest --collect-only -q act/tests/test_manifest_rebuild_from_lss.py` and targeted run `pytest -q act/tests/test_manifest_rebuild_from_lss.py act/tests/test_pipeline_smoke.py`.
+- [x] Update feature docs and operator guidance for new CLI usage and `--rebuild-manifest-only` behavior.
+- [x] Document strict-failure conditions (multi-CSV session, missing RedCap mapping, missing RDSS metadata).
+- [x] Add example commands for NixOS and generic Linux execution contexts.
+- [x] A test: validate docs commands via `pytest --collect-only -q act/tests/test_manifest_rebuild_from_lss.py` and targeted run `pytest -q act/tests/test_manifest_rebuild_from_lss.py act/tests/test_pipeline_smoke.py`.
+
+Checkpoint note: Updated README + TESTING runbook for new flag-based CLI and rebuild-only strict-failure semantics; targeted test run for documented files passed (`20 passed`).
