@@ -52,10 +52,12 @@ Checkpoint note: Added `Save._list_rdss_metadata_rows()` and `Save.resolve_rdss_
 Checkpoint note: Added `Save.rebuild_manifest_payload_from_lss()` with deterministic subject/run ordering and aggregated strict subject-level conflicts across LSS discovery, RedCap mapping, and RDSS metadata resolution.
 
 ***Checkpoint 7: Atomic Manifest Write + Exit Semantics***
-- [ ] Implement atomic write (`temp -> fsync -> replace`) for `res/data.json` in rebuild mode.
-- [ ] Guarantee prior manifest remains unchanged on failure.
-- [ ] Return non-zero exit from CLI when rebuild conflicts/errors occur.
-- [ ] A test: add write-safety and exit-code assertions in `act/tests/test_pipeline_smoke.py` and `act/tests/test_manifest_rebuild_from_lss.py`.
+- [x] Implement atomic write (`temp -> fsync -> replace`) for `res/data.json` in rebuild mode.
+- [x] Guarantee prior manifest remains unchanged on failure.
+- [x] Return non-zero exit from CLI when rebuild conflicts/errors occur.
+- [x] A test: add write-safety and exit-code assertions in `act/tests/test_pipeline_smoke.py` and `act/tests/test_manifest_rebuild_from_lss.py`.
+
+Checkpoint note: Rebuild mode now uses `Save._atomic_write_manifest()` and `main()` returns exit code `1` on strict rebuild `ValueError`; tests cover non-zero exit and manifest preservation when replace fails.
 
 ***Checkpoint 8: Documentation + Operator Runbook***
 - [ ] Update feature docs and operator guidance for new CLI usage and `--rebuild-manifest-only` behavior.

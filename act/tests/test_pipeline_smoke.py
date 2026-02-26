@@ -85,15 +85,31 @@ def test_pipeline_smoke_mocked_dependencies(tmp_path, monkeypatch):
 
 
 def test_pipeline_manifest_only_skips_ggir(tmp_path, monkeypatch):
-    save_state = {"init_kwargs": None, "remove_calls": []}
+    save_state = {
+        "init_kwargs": None,
+        "remove_calls": [],
+        "save_called": 0,
+        "rebuild_called": 0,
+        "atomic_called": 0,
+    }
     gg_state = {"ran": False}
 
     class FakeSave:
         def __init__(self, **kwargs):
             save_state["init_kwargs"] = kwargs
+            self.manifest_path = "res/data.json"
 
         def save(self):
+            save_state["save_called"] += 1
             return {"8001": [{"filename": "1001 (2025-01-01)RAW.csv"}]}
+
+        def rebuild_manifest_payload_from_lss(self):
+            save_state["rebuild_called"] += 1
+            return {"8001": [{"filename": "sub-8001_ses-1_accel.csv", "run": 1}]}
+
+        def _atomic_write_manifest(self, payload, path=None):
+            save_state["atomic_called"] += 1
+            return payload
 
         @staticmethod
         def remove_symlink_directories(study_dirs):
@@ -137,9 +153,10 @@ def test_pipeline_manifest_only_skips_ggir(tmp_path, monkeypatch):
     )
     pipe.run_pipe()
 
-    written_manifest = tmp_path / "res" / "data.json"
-    assert written_manifest.exists()
     assert gg_state["ran"] is False
+    assert save_state["save_called"] == 0
+    assert save_state["rebuild_called"] == 1
+    assert save_state["atomic_called"] == 1
     assert save_state["remove_calls"] == [
         [str(tmp_path / "int"), str(tmp_path / "obs")]
     ]
@@ -277,6 +294,52 @@ def test_main_manifest_only_skips_plotting(monkeypatch):
     }
     assert call_state["run_pipe"] == 1
     assert call_state["group_inits"] == 0
+
+
+def test_main_manifest_only_returns_nonzero_on_rebuild_error(monkeypatch):
+    class FakePipe:
+        def __init__(self, token, daysago, system, rebuild_manifest_only=False):
+            pass
+
+        def run_pipe(self):
+            raise ValueError("Manifest rebuild failed due to strict conflict(s): subject=8001")
+
+    class FakeGroup:
+        def __init__(self, system):
+            raise AssertionError("Group should not be constructed on rebuild error")
+
+    code_pkg = _ensure_package(monkeypatch, "code")
+    utils_pkg = _ensure_package(monkeypatch, "act.utils")
+    pipe_mod = types.ModuleType("act.utils.pipe")
+    group_mod = types.ModuleType("act.utils.group")
+    pipe_mod.Pipe = FakePipe
+    group_mod.Group = FakeGroup
+    utils_pkg.pipe = pipe_mod
+    utils_pkg.group = group_mod
+    code_pkg.utils = utils_pkg
+
+    _install_module(monkeypatch, "act.utils.pipe", pipe_mod)
+    _install_module(monkeypatch, "act.utils.group", group_mod)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "main.py",
+            "--daysago",
+            "2",
+            "--token",
+            "token-value",
+            "--system",
+            "local",
+            "--rebuild-manifest-only",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_module("act.main", run_name="__main__")
+
+    assert exc.value.code == 1
 
 
 def test_parse_args_valid_rebuild_manifest_only():

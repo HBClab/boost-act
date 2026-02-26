@@ -68,6 +68,14 @@ class Pipe:
         )
 
         try:
+            if self.rebuild_manifest_only:
+                rebuilt_payload = save_instance.rebuild_manifest_payload_from_lss()
+                save_instance._atomic_write_manifest(
+                    rebuilt_payload,
+                    save_instance.manifest_path,
+                )
+                return None
+
             matched = save_instance.save()
 
             # (side note: your JSON writing was invalid; use json.dump)

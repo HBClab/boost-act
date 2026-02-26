@@ -105,7 +105,12 @@ def main(argv: list[str] | None = None) -> int:
         system=args.system,
         rebuild_manifest_only=args.rebuild_manifest_only,
     )
-    p.run_pipe()
+
+    try:
+        p.run_pipe()
+    except ValueError as exc:
+        logging.error("%s", exc)
+        return 1
 
     if not args.rebuild_manifest_only:
         Group(args.system).plot_person()

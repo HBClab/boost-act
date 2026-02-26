@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import shutil
+import tempfile
 from datetime import date, datetime
 from act.utils.comparison_utils import ID_COMPARISONS
 
@@ -128,6 +129,48 @@ class Save:
             json.dump(payload, handle, indent=2)
 
         return payload
+
+    def _atomic_write_manifest(self, payload, path=None):
+        manifest_path = path or getattr(self, "manifest_path", "res/data.json")
+        normalized_payload = self._normalize_manifest_payload(payload)
+        normalized_payload = self._prepare_for_json(normalized_payload)
+
+        manifest_dir = os.path.dirname(manifest_path) or "."
+        os.makedirs(manifest_dir, exist_ok=True)
+
+        temp_path = None
+        try:
+            fd, temp_path = tempfile.mkstemp(
+                prefix=".manifest-",
+                suffix=".json",
+                dir=manifest_dir,
+            )
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                json.dump(normalized_payload, handle, indent=2)
+                handle.flush()
+                os.fsync(handle.fileno())
+
+            os.replace(temp_path, manifest_path)
+
+            try:
+                dir_fd = os.open(manifest_dir, os.O_DIRECTORY)
+            except (AttributeError, OSError):
+                dir_fd = None
+
+            if dir_fd is not None:
+                try:
+                    os.fsync(dir_fd)
+                finally:
+                    os.close(dir_fd)
+
+            return normalized_payload
+        except Exception:
+            if temp_path and os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except OSError:
+                    pass
+            raise
 
     def _normalize_record_date_value(self, date_value):
         if date_value is None:

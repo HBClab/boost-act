@@ -295,3 +295,25 @@ def test_rebuild_manifest_payload_from_lss_aggregates_strict_errors(tmp_path, mo
     assert "multiple accel csv candidates" in message
     assert "subject=8002:" in message
     assert "missing RedCap subject->lab mapping" in message
+
+
+def test_atomic_manifest_write_preserves_existing_manifest_on_failure(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+    manifest_path = tmp_path / "res" / "data.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text('{"existing": [{"run": 1}]}', encoding="utf-8")
+
+    original_contents = manifest_path.read_text(encoding="utf-8")
+
+    def fail_replace(src, dst):
+        raise OSError("simulated replace failure")
+
+    monkeypatch.setattr("act.utils.save.os.replace", fail_replace)
+
+    with pytest.raises(OSError):
+        save._atomic_write_manifest(
+            {"new": [{"run": 1}]},
+            str(manifest_path),
+        )
+
+    assert manifest_path.read_text(encoding="utf-8") == original_contents
