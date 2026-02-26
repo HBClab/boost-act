@@ -28,10 +28,12 @@ Checkpoint note: `Pipe.run_pipe()` now skips GGIR in manifest-only mode, and `ac
 Checkpoint note: Added `Save.discover_lss_sessions()` returning `(discovered, conflicts)` with strict `ses-#` parsing and multi-candidate session conflict reporting.
 
 ***Checkpoint 4: RedCap Subject→Lab Mapping Layer***
-- [ ] Add a reusable mapping fetch path from RedCap report to resolve `subject_id -> labID` for discovered LSS subjects.
-- [ ] Handle missing subject mappings as strict rebuild errors (no partial write).
-- [ ] Ensure mapping logic is isolated for direct unit testing (no filesystem side effects).
-- [ ] A test: add mapping unit tests in `act/tests/test_manifest_rebuild_from_lss.py` using monkeypatched report responses for found/missing subjects.
+- [x] Add a reusable mapping fetch path from RedCap report to resolve `subject_id -> labID` for discovered LSS subjects.
+- [x] Handle missing subject mappings as strict rebuild errors (no partial write).
+- [x] Ensure mapping logic is isolated for direct unit testing (no filesystem side effects).
+- [x] A test: add mapping unit tests in `act/tests/test_manifest_rebuild_from_lss.py` using monkeypatched report responses for found/missing subjects.
+
+Checkpoint note: Added `Save._fetch_redcap_subject_lab_rows()` and `Save.resolve_subject_lab_mapping()` with strict missing-subject failure and direct monkeypatch-friendly tests.
 
 ***Checkpoint 5: RDSS Metadata Resolution Layer***
 - [ ] Implement RDSS lookup that resolves required metadata (`filename`, `labID`, `date`) for each discovered LSS session.

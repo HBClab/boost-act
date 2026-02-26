@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import logging
 
+import pytest
+
 from act.utils.save import Save
 
 
@@ -11,6 +13,8 @@ def _make_save_for_lss(tmp_path):
     save.INT_DIR = str(tmp_path / "int")
     save.OBS_DIR = str(tmp_path / "obs")
     save.RDSS_DIR = str(tmp_path / "rdss")
+    save.token = "test-token"
+    save.daysago = 1
     return save
 
 
@@ -77,3 +81,36 @@ def test_discover_lss_sessions_flags_multi_csv_session_conflict(tmp_path):
     assert "8002" in conflicts
     assert len(conflicts["8002"]) == 1
     assert "multiple accel csv candidates" in conflicts["8002"][0]
+
+
+def test_resolve_subject_lab_mapping_success(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+
+    monkeypatch.setattr(
+        save,
+        "_fetch_redcap_subject_lab_rows",
+        lambda: [
+            {"boost_id": 8001, "lab_id": 1201},
+            {"boost_id": "7001", "lab_id": "2201"},
+        ],
+    )
+
+    mapping = save.resolve_subject_lab_mapping(["8001", "7001"])
+
+    assert mapping == {"7001": "2201", "8001": "1201"}
+
+
+def test_resolve_subject_lab_mapping_missing_subject_strict_error(tmp_path, monkeypatch):
+    save = _make_save_for_lss(tmp_path)
+
+    monkeypatch.setattr(
+        save,
+        "_fetch_redcap_subject_lab_rows",
+        lambda: [{"boost_id": 8001, "lab_id": 1201}],
+    )
+
+    with pytest.raises(ValueError) as exc:
+        save.resolve_subject_lab_mapping(["8001", "9999"])
+
+    assert "Missing RedCap subject->lab mappings" in str(exc.value)
+    assert "9999" in str(exc.value)

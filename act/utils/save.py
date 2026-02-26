@@ -225,6 +225,59 @@ class Save:
             return self.INT_DIR
         return self.OBS_DIR
 
+    def _fetch_redcap_subject_lab_rows(self):
+        token = getattr(self, "token", None)
+        if not token:
+            raise ValueError("RedCap token is required to fetch subject mappings")
+
+        rdss_dir = getattr(self, "RDSS_DIR", None) or "."
+        daysago = getattr(self, "daysago", None)
+
+        report_df, _ = ID_COMPARISONS(
+            rdss_dir=rdss_dir,
+            token=token,
+            daysago=daysago,
+        )._return_report()
+        return report_df
+
+    def resolve_subject_lab_mapping(self, subject_ids):
+        requested_subjects = sorted(
+            {
+                str(subject_id)
+                for subject_id in (subject_ids or [])
+                if str(subject_id).strip()
+            }
+        )
+        if not requested_subjects:
+            return {}
+
+        report_rows = self._fetch_redcap_subject_lab_rows()
+        if hasattr(report_rows, "to_dict"):
+            report_rows = report_rows.to_dict(orient="records")
+
+        mapping = {}
+        for row in report_rows or []:
+            if not isinstance(row, dict):
+                continue
+
+            boost_id = row.get("boost_id")
+            lab_id = row.get("lab_id")
+            if boost_id is None or lab_id is None:
+                continue
+
+            mapping[str(boost_id)] = str(lab_id)
+
+        missing_subjects = [
+            subject_id for subject_id in requested_subjects if subject_id not in mapping
+        ]
+        if missing_subjects:
+            raise ValueError(
+                "Missing RedCap subject->lab mappings for subject(s): "
+                + ", ".join(missing_subjects)
+            )
+
+        return {subject_id: mapping[subject_id] for subject_id in requested_subjects}
+
     def _session_run_from_folder(self, session_folder_name):
         match = re.fullmatch(r"ses-(\d+)", str(session_folder_name or ""))
         if not match:
