@@ -49,12 +49,13 @@ class Pipe:
         cls.OBS_DIR = paths["OBS_DIR"]
         cls.RDSS_DIR = paths["RDSS_DIR"]
 
-    def __init__(self, token, daysago, system="vosslnx"):
+    def __init__(self, token, daysago, system="vosslnx", rebuild_manifest_only=False):
         # ensure class attrs are set for everyone (Pipe.INT_DIR etc.)
         type(self).configure(system)
         self.token = token
         self.daysago = daysago
         self.system = system
+        self.rebuild_manifest_only = rebuild_manifest_only
 
     def run_pipe(self):
         save_instance = Save(

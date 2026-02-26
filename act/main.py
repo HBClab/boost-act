@@ -1,8 +1,9 @@
+import argparse
 import logging
 import os
-import sys
-from act.utils.group import Group
-from act.utils.pipe import Pipe
+
+
+DEFAULT_SYSTEMS = ("vosslnx", "vosslnxft", "argon", "local")
 
 
 def _configure_logging() -> None:
@@ -27,45 +28,92 @@ def _configure_logging() -> None:
     )
 
 
-if __name__ == "__main__":
-    _configure_logging()
-    # Expect at least 2 arguments: daysago (integer) and token (string)
-    if len(sys.argv) < 3:
-        print("Usage: python main.py <daysago> <token> [system]")
-        print("  <daysago> must be an integer, <token> must be a non-empty string.")
-        print(
-            "  [system] optional values: 'vosslnx', 'vosslnxft', 'argon', 'local' (default 'vosslnx')."
-        )
-        sys.exit(1)
-
-    # Parse daysago
+def _daysago_type(value: str) -> int:
     try:
-        daysago = int(sys.argv[1])
-    except ValueError:
-        print("Error: <daysago> must be an integer.")
-        sys.exit(1)
+        parsed = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("daysago must be an integer") from exc
 
-    # Parse token
-    token = sys.argv[2]
-    if not token:
-        print("Error: <token> cannot be empty.")
-        sys.exit(1)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("daysago must be non-negative")
+    return parsed
 
-    # Parse system
-    if len(sys.argv) > 3:
-        system = sys.argv[3]
-    else:
-        system = None
-    if not system:
-        print("System not specified, defaulting to 'vosslnx'.")
-    elif system not in ["vosslnx", "vosslnxft", "argon", "local"]:
-        print(
-            "Error: <system> must be one of 'vosslnx', 'vosslnxft', 'argon', or 'local'."
-        )
-        sys.exit(1)
 
-    p = Pipe(token, daysago, system)
+def _token_type(value: str) -> str:
+    if not value.strip():
+        raise argparse.ArgumentTypeError("token must be a non-empty string")
+    return value
+
+
+def _available_systems() -> tuple[str, ...]:
+    try:
+        from act.utils.pipe import Pipe
+
+        available = getattr(Pipe, "available_systems", None)
+        if callable(available):
+            return tuple(available())
+    except Exception:
+        pass
+
+    return DEFAULT_SYSTEMS
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="python -m act.main",
+        description=(
+            "Run BOOST ingest pipeline using explicit typed arguments. "
+            "Use --rebuild-manifest-only to enable manifest-only mode plumbing."
+        ),
+    )
+    parser.add_argument(
+        "--token",
+        type=_token_type,
+        required=True,
+        help="RedCap API token (required, non-empty)",
+    )
+    parser.add_argument(
+        "--daysago",
+        type=_daysago_type,
+        required=True,
+        help="Lookback window in days (required, integer >= 0)",
+    )
+    parser.add_argument(
+        "--system",
+        choices=_available_systems(),
+        required=True,
+        help="Target system path profile",
+    )
+    parser.add_argument(
+        "--rebuild-manifest-only",
+        action="store_true",
+        help=(
+            "Parse-only wiring for manifest rebuild mode. "
+            "Behavior routing is added in a later checkpoint."
+        ),
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    from act.utils.group import Group
+    from act.utils.pipe import Pipe
+
+    _configure_logging()
+    args = build_parser().parse_args(argv)
+
+    p = Pipe(
+        token=args.token,
+        daysago=args.daysago,
+        system=args.system,
+        rebuild_manifest_only=args.rebuild_manifest_only,
+    )
     p.run_pipe()
 
-    Group(system).plot_person()
-    Group(system).plot_session()
+    Group(args.system).plot_person()
+    Group(args.system).plot_session()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

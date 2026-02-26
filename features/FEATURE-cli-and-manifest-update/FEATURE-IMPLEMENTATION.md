@@ -4,10 +4,12 @@
 > Complete each step one at a time and run tests before completion. Upon completion, mark each checkbox as complete and add small notes for future checkpoints only if needed.
 
 ***Checkpoint 1: CLI Parser Foundation (`argparse`)***
-- [ ] Replace ad-hoc `sys.argv` parsing in `act/main.py` with a typed `argparse` parser.
-- [ ] Preserve required inputs (`token`, `daysago`, `system`) with explicit validation and help text.
-- [ ] Add new mode flag plumbing for `--rebuild-manifest-only` (parse-only wiring; no behavior switch yet).
-- [ ] A test: extend `act/tests/test_pipeline_smoke.py` with parser/entrypoint argument validation cases (valid + invalid invocations).
+- [x] Replace ad-hoc `sys.argv` parsing in `act/main.py` with a typed `argparse` parser.
+- [x] Preserve required inputs (`token`, `daysago`, `system`) with explicit validation and help text.
+- [x] Add new mode flag plumbing for `--rebuild-manifest-only` (parse-only wiring; no behavior switch yet).
+- [x] A test: extend `act/tests/test_pipeline_smoke.py` with parser/entrypoint argument validation cases (valid + invalid invocations).
+
+Checkpoint note: CLI now uses explicit required flags (`--token`, `--daysago`, `--system`) and carries `--rebuild-manifest-only` into `Pipe` without mode switching yet.
 
 ***Checkpoint 2: Mode Routing in Pipeline***
 - [ ] Add mode-aware execution path in `act/utils/pipe.py` so normal mode and `--rebuild-manifest-only` branch cleanly.

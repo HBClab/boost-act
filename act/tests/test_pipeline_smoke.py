@@ -4,6 +4,8 @@ import runpy
 import sys
 import types
 
+import pytest
+
 
 def _install_module(monkeypatch, name, module):
     monkeypatch.setitem(sys.modules, name, module)
@@ -86,8 +88,13 @@ def test_main_smoke_invokes_pipe_and_group(monkeypatch):
     call_state = {"pipe_args": None, "run_pipe": 0, "group_systems": []}
 
     class FakePipe:
-        def __init__(self, token, daysago, system):
-            call_state["pipe_args"] = (token, daysago, system)
+        def __init__(self, token, daysago, system, rebuild_manifest_only=False):
+            call_state["pipe_args"] = {
+                "token": token,
+                "daysago": daysago,
+                "system": system,
+                "rebuild_manifest_only": rebuild_manifest_only,
+            }
 
         def run_pipe(self):
             call_state["run_pipe"] += 1
@@ -118,11 +125,67 @@ def test_main_smoke_invokes_pipe_and_group(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["main.py", "2", "token-value", "local"],
+        [
+            "main.py",
+            "--daysago",
+            "2",
+            "--token",
+            "token-value",
+            "--system",
+            "local",
+        ],
     )
 
-    runpy.run_module("act.main", run_name="__main__")
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_module("act.main", run_name="__main__")
 
-    assert call_state["pipe_args"] == ("token-value", 2, "local")
+    assert exc.value.code == 0
+
+    assert call_state["pipe_args"] == {
+        "token": "token-value",
+        "daysago": 2,
+        "system": "local",
+        "rebuild_manifest_only": False,
+    }
     assert call_state["run_pipe"] == 1
     assert call_state["group_systems"] == ["local", "person", "local", "session"]
+
+
+def test_parse_args_valid_rebuild_manifest_only():
+    main_mod = importlib.import_module("act.main")
+    args = main_mod.build_parser().parse_args(
+        [
+            "--token",
+            "abc123",
+            "--daysago",
+            "3",
+            "--system",
+            "vosslnx",
+            "--rebuild-manifest-only",
+        ]
+    )
+
+    assert args.token == "abc123"
+    assert args.daysago == 3
+    assert args.system == "vosslnx"
+    assert args.rebuild_manifest_only is True
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["--token", "abc123", "--daysago", "3"],
+        ["--token", "abc123", "--daysago", "-1", "--system", "local"],
+        ["--token", "abc123", "--daysago", "three", "--system", "local"],
+        ["--token", "", "--daysago", "3", "--system", "local"],
+        ["--token", "abc123", "--daysago", "3", "--system", "unknown"],
+    ],
+)
+def test_parse_args_invalid_invocations(argv):
+    main_mod = importlib.import_module("act.main")
+    parser = main_mod.build_parser()
+
+    with pytest.raises(SystemExit) as exc:
+        parser.parse_args(argv)
+
+    assert exc.value.code == 2
