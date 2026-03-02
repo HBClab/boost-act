@@ -4,6 +4,7 @@ import logging
 
 import pytest
 
+import act.utils.save as save_module
 from act.utils.save import Save
 
 
@@ -140,7 +141,7 @@ def test_move_files_partial_copy_failure_continues(temp_study_roots, monkeypatch
             raise OSError("simulated copy failure")
         return original_copy(src, dst)
 
-    monkeypatch.setattr("act.utils.save.shutil.copy", flaky_copy)
+    monkeypatch.setattr(save_module.shutil, "copy", flaky_copy)
 
     save._move_files(matches)
 
