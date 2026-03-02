@@ -1,8 +1,8 @@
 import os
 import glob
 import pandas as pd
-from code.utils.pipe import Pipe
-from code.utils.plots import ACT_PLOTS, create_json
+from act.utils.pipe import Pipe
+from act.utils.plots import ACT_PLOTS, create_json
 
 
 class QC:

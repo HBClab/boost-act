@@ -10,6 +10,8 @@ An automation stack for synchronizing raw actigraphy exports, routing them throu
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
   - [Running the Pipeline](#running-the-pipeline)
+    - [Rebuild Manifest Only](#rebuild-manifest-only)
+    - [Operator Runbook](#operator-runbook)
   - [Configuration](#configuration)
   - [Testing \& QA](#testing--qa)
   - [Automation \& Cron Support](#automation--cron-support)
@@ -63,16 +65,55 @@ conda activate act-newer
 ## Running the Pipeline
 ```bash
 export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-python -m code.main <daysago> $BOOST_TOKEN <system>
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx
 ```
-- `daysago` filters RDSS files by acquisition date; use `1` for “yesterday’s drops”.
-- `system` controls filesystem roots: `vosslnx` (default), `vosslnxft`, `local`, or `argon`.
+- `--daysago` filters RDSS files by acquisition date; use `1` for “yesterday’s drops”.
+- `--system` controls filesystem roots: `vosslnx`, `vosslnxft`, `local`, or `argon`.
 - The run will:
   1. Create fresh symlinks under `../mnt` (see `utils.mnt`).
   2. Match REDCap IDs to RDSS filenames (`utils.comparison_utils`).
   3. Copy curated CSVs into the correct LSS project folders (`utils.save`).
   4. Call GGIR through `core/acc_new.R` and execute QC/plotting (`utils.qc`, `utils.group`).
   5. Write a subject manifest to `act/res/data.json`.
+
+### Rebuild Manifest Only
+Use this mode to rebuild `res/data.json` from current LSS session folders without ingest copy, GGIR, or plotting:
+
+```bash
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --rebuild-manifest-only
+```
+
+Behavior in `--rebuild-manifest-only` mode:
+- Source of truth is LSS layout (`sub-*/accel/ses-*/*_accel.csv`).
+- Run is derived directly from folder name (`ses-# -> run=#`).
+- RedCap resolves `subject_id -> labID` and RDSS enriches `filename`, `labID`, `date`.
+- Manifest writes are atomic (`temp -> fsync -> replace`) and preserve prior `res/data.json` on failure.
+
+Strict failure conditions (non-zero exit):
+- Multiple candidate accel CSVs in one session folder.
+- Missing RedCap mapping for any discovered subject.
+- Missing RDSS metadata (`filename`, `labID`, `date`) for any discovered session.
+
+### Operator Runbook
+Generic Linux (venv):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r act/requirements.txt
+export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system local --rebuild-manifest-only
+```
+
+NixOS / nix shell:
+
+```bash
+nix develop
+export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --rebuild-manifest-only
+```
+
+For routine ingest + GGIR runs, omit `--rebuild-manifest-only`.
 
 For ad-hoc diagnostics, re-run plot generation with `python act/tests/gt3x/plots.py` (requires adjusting the hard-coded file path).
 
@@ -99,7 +140,7 @@ For ad-hoc diagnostics, re-run plot generation with `python act/tests/gt3x/plots
 - Review git staging before enabling cron on a new host to avoid committing large raw exports.
 
 ## Troubleshooting Tips
-- **Missing symlinks:** run `python -c "from code.utils.mnt import create_symlinks; create_symlinks('../mnt', system='argon')"` (swap `system` as needed) and confirm mount availability.
+- **Missing symlinks:** run `python -c "from act.utils.mnt import create_symlinks; create_symlinks('../mnt', system='argon')"` (swap `system` as needed) and confirm mount availability.
 - **GGIR failures:** check the console output and logs under `act/core/` or R’s stderr; ensure the conda env includes GGIR dependencies.
 - **REDCap mismatches:** `utils.comparison_utils.ID_COMPARISONS` logs duplicate IDs; review its stdout and `AGENTS.md` for remediation steps.
 - **Permission errors:** verify the executing user can read RDSS and write to the LSS target directories.

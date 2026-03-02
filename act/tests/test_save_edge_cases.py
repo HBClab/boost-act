@@ -1,8 +1,10 @@
 import os
 import shutil
+import logging
 
 import pytest
 
+import act.utils.save as save_module
 from act.utils.save import Save
 
 
@@ -14,6 +16,8 @@ def _make_save(temp_study_roots):
     save.symlink = False
     save.matches = {}
     save.dupes = []
+    save.manifest = {}
+    save.logger = logging.getLogger("act.utils.save")
     return save
 
 
@@ -41,12 +45,20 @@ def test_save_edge_cases_matrix(
             {
                 "filename": "1002 (2025-01-01)RAW.csv",
                 "labID": "1002",
-                "date": "2025-01-01",
+                "date": "2025-01-01" if edge_case == "duplicate_date" else "2025-01-02",
             },
         ]
     }
 
     save._determine_run(matches)
+
+    if edge_case == "duplicate_date":
+        assert matches[subject_id] == []
+        save._determine_study(matches)
+        save._determine_location(matches)
+        assert matches[subject_id] == []
+        return
+
     save._determine_study(matches)
     save._determine_location(matches)
 
@@ -65,7 +77,7 @@ def test_save_edge_cases_matrix(
         assert os.path.basename(path).startswith(f"sub-{subject_id}_ses-")
         assert path.endswith("_accel.csv")
 
-    # Duplicate dates should be deterministic and stable on re-run.
+    # Re-running run assignment should be deterministic.
     save._determine_run(matches)
     assert [record["run"] for record in matches[subject_id]] == [1, 2]
 
@@ -129,7 +141,7 @@ def test_move_files_partial_copy_failure_continues(temp_study_roots, monkeypatch
             raise OSError("simulated copy failure")
         return original_copy(src, dst)
 
-    monkeypatch.setattr("act.utils.save.shutil.copy", flaky_copy)
+    monkeypatch.setattr(save_module.shutil, "copy", flaky_copy)
 
     save._move_files(matches)
 
@@ -137,3 +149,110 @@ def test_move_files_partial_copy_failure_continues(temp_study_roots, monkeypatch
     assert os.path.exists(second_dest)
     with open(second_dest, "r", encoding="utf-8") as handle:
         assert handle.read() == "second"
+
+
+@pytest.mark.parametrize(
+    "subject_id,study_key",
+    [
+        ("8003", "int"),
+        ("7003", "obs"),
+    ],
+)
+def test_manifest_driven_run_stability(temp_study_roots, subject_id, study_key):
+    save = _make_save(temp_study_roots)
+    save.manifest = {
+        subject_id: [
+            {
+                "filename": "3001 (2025-04-01)RAW.csv",
+                "labID": "3001",
+                "date": "2025-04-01",
+                "run": 1,
+                "study": study_key,
+            },
+            {
+                "filename": "3002 (2025-04-02)RAW.csv",
+                "labID": "3002",
+                "date": "2025-04-02",
+                "run": 2,
+                "study": study_key,
+            },
+        ]
+    }
+
+    incoming = {
+        subject_id: [
+            {
+                "filename": "3002 (2025-04-02)RAW.csv",
+                "labID": "3002",
+                "date": "2025-04-02",
+            }
+        ]
+    }
+
+    first = save._determine_run(incoming)
+    second = save._determine_run(incoming)
+
+    assert first[subject_id][0]["run"] == 2
+    assert second[subject_id][0]["run"] == 2
+
+    save._determine_study(first)
+    save._determine_location(first)
+
+    target_root = os.fspath(temp_study_roots[study_key])
+    assert first[subject_id][0]["file_path"].startswith(target_root)
+    assert "/ses-2/" in first[subject_id][0]["file_path"]
+
+
+@pytest.mark.parametrize(
+    "subject_id,study_key",
+    [
+        ("8004", "int"),
+        ("7004", "obs"),
+    ],
+)
+def test_manifest_gap_shift_backfill_assigns_dense_session(
+    temp_study_roots,
+    subject_id,
+    study_key,
+):
+    save = _make_save(temp_study_roots)
+    save.manifest = {
+        subject_id: [
+            {
+                "filename": "4001 (2025-05-01)RAW.csv",
+                "labID": "4001",
+                "date": "2025-05-01",
+                "run": 1,
+                "study": study_key,
+            },
+            {
+                "filename": "4002 (2025-05-03)RAW.csv",
+                "labID": "4002",
+                "date": "2025-05-03",
+                "run": 3,
+                "study": study_key,
+            },
+        ]
+    }
+
+    incoming = {
+        subject_id: [
+            {
+                "filename": "4003 (2025-05-02)RAW.csv",
+                "labID": "4003",
+                "date": "2025-05-02",
+            }
+        ]
+    }
+
+    result = save._determine_run(incoming)
+
+    assert result[subject_id][0]["run"] == 2
+
+    save._determine_study(result)
+    save._determine_location(result)
+
+    target_root = os.fspath(temp_study_roots[study_key])
+    path = result[subject_id][0]["file_path"]
+    assert path.startswith(target_root)
+    assert "/ses-2/" in path

@@ -141,7 +141,6 @@ class ID_COMPARISONS:
         if not os.path.isdir(rdss_dir):
             raise FileNotFoundError(f"RDSS directory not found: {rdss_dir}")
         for filename in os.listdir(rdss_dir):
-            print(filename)
             if filename.endswith(".csv"):
                 try:
                     base_name = filename.split(" ")[0]  # Extract lab_id
@@ -150,19 +149,24 @@ class ID_COMPARISONS:
                         {"ID": base_name, "Date": date_part, "filename": filename}
                     )
                 except IndexError:
-                    print(f"Skipping file with unexpected format: {filename}")
+                    logger.warning(
+                        "Skipping RDSS file with unexpected format: %s",
+                        filename,
+                    )
 
         df = pd.DataFrame(extracted_data)
-        print(f"EXTRACTED: {extracted_data}")
+        logger.info("RDSS csv candidates found: %s", len(df))
 
         if not df.empty:
             df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-            print(f"DATE CONVERTED: {df['Date']}")
 
             if daysago:
-                print(f"DAYS AGO: {daysago}")
                 cutoff_date = datetime.today() - timedelta(days=daysago)
-                print(f"CUTOFF DATE: {cutoff_date}")
+                logger.info(
+                    "Applying RDSS recency filter: last %s days (cutoff=%s)",
+                    daysago,
+                    cutoff_date.date(),
+                )
                 df = df[
                     df["Date"] >= cutoff_date
                 ]  # Filter files within the last `daysago` days
@@ -170,6 +174,12 @@ class ID_COMPARISONS:
                 df = df[
                     df["Date"] >= "2024-08-05"
                 ]  # Filter out rows before the threshold date
+                logger.info(
+                    "Applying default RDSS date threshold filter: %s",
+                    "2024-08-05",
+                )
+
+            logger.info("RDSS files remaining after date filter: %s", len(df))
 
         # Filter the file list to only include rows where ID is in the duplicate report (if any)
         if not duplicates.empty:
@@ -180,7 +190,7 @@ class ID_COMPARISONS:
             merged_df = pd.DataFrame()
             if df.empty:
                 logger.info("No RDSS files found after filtering.")
-        print(f"MERGED: {merged_df}")
+        logger.info("RDSS duplicate-overlap rows: %s", len(merged_df))
 
         return df, merged_df
 
