@@ -20,8 +20,8 @@ class Pipe:
             RDSS_DIR="/mnt/nfs/rdss/vosslab/Repositories/Accelerometer_Data",
         ),
         "local": dict(
-            INT_DIR="/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-test",
-            OBS_DIR="/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-test",
+            INT_DIR="/mnt/lss/Projects/BOOST/InterventionStudy/3-experiment/data/act-int-final-test-2",
+            OBS_DIR="/mnt/lss/Projects/BOOST/ObservationalStudy/3-experiment/data/act-obs-final-test-2",
             RDSS_DIR="/mnt/rdss/VossLab/Repositories/Accelerometer_Data",
         ),
         "argon": dict(

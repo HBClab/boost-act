@@ -41,6 +41,8 @@ class Save:
         self.INT_DIR = intdir
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
+        self.token = token
+        self.daysago = daysago
         self.symlink = symlink
         self.manifest_path = manifest_path
         self.manifest = {}

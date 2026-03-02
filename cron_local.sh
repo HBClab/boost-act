@@ -12,7 +12,7 @@ SYSTEM="${BOOST_SYSTEM:-local}"
 DAYS_AGO="${DAYS_AGO:-30}"
 
 mkdir -p "logs/${SYSTEM}"
-python -m act.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" | tee "logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
+python -m act.main --daysago "${DAYS_AGO}" --token "${BOOST_TOKEN}" --system "${SYSTEM}"  --rebuild-manifest-only | tee "logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
 
 
 
