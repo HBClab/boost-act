@@ -1222,6 +1222,14 @@
       "7736": [
         "data/obs/UI/7736/daily_plot.png",
         "data/obs/UI/7736/summary_plot.png"
+      ],
+      "7761": [
+        "data/obs/UI/7761/daily_plot.png",
+        "data/obs/UI/7761/summary_plot.png"
+      ],
+      "7751": [
+        "data/obs/UI/7751/daily_plot.png",
+        "data/obs/UI/7751/summary_plot.png"
       ]
     }
   }
