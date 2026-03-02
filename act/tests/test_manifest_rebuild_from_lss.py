@@ -297,6 +297,66 @@ def test_rebuild_manifest_payload_from_lss_aggregates_strict_errors(tmp_path, mo
     assert "missing RedCap subject->lab mapping" in message
 
 
+def test_rebuild_manifest_payload_from_lss_ignores_9000_subject_missing_mapping(
+    tmp_path, monkeypatch
+):
+    save = _make_save_for_lss(tmp_path)
+
+    monkeypatch.setattr(
+        save,
+        "discover_lss_sessions",
+        lambda: (
+            {
+                "9000123": [
+                    {
+                        "subject_id": "9000123",
+                        "study": "int",
+                        "run": 1,
+                        "file_path": "/lss/int/sub-9000123/accel/ses-1/sub-9000123_ses-1_accel.csv",
+                    }
+                ]
+            },
+            {},
+        ),
+    )
+    monkeypatch.setattr(save, "_fetch_redcap_subject_lab_rows", lambda: [])
+    monkeypatch.setattr(save, "_list_rdss_metadata_rows", lambda: [])
+
+    payload = save.rebuild_manifest_payload_from_lss()
+
+    assert payload == {}
+
+
+def test_rebuild_manifest_payload_from_lss_ignores_4digit_9000_series_missing_mapping(
+    tmp_path, monkeypatch
+):
+    save = _make_save_for_lss(tmp_path)
+
+    monkeypatch.setattr(
+        save,
+        "discover_lss_sessions",
+        lambda: (
+            {
+                "9002": [
+                    {
+                        "subject_id": "9002",
+                        "study": "int",
+                        "run": 1,
+                        "file_path": "/lss/int/sub-9002/accel/ses-1/sub-9002_ses-1_accel.csv",
+                    }
+                ]
+            },
+            {},
+        ),
+    )
+    monkeypatch.setattr(save, "_fetch_redcap_subject_lab_rows", lambda: [])
+    monkeypatch.setattr(save, "_list_rdss_metadata_rows", lambda: [])
+
+    payload = save.rebuild_manifest_payload_from_lss()
+
+    assert payload == {}
+
+
 def test_atomic_manifest_write_preserves_existing_manifest_on_failure(tmp_path, monkeypatch):
     save = _make_save_for_lss(tmp_path)
     manifest_path = tmp_path / "res" / "data.json"

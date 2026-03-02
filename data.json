@@ -232,6 +232,10 @@
       "8090": [
         "data/int/UI/8090/daily_plot.png",
         "data/int/UI/8090/summary_plot.png"
+      ],
+      "8085": [
+        "data/int/UI/8085/daily_plot.png",
+        "data/int/UI/8085/summary_plot.png"
       ]
     },
     "NE": {

@@ -340,6 +340,18 @@ class Save:
         except ValueError:
             return (1, subject)
 
+    def _subject_exempt_from_manifest_metadata_strictness(self, subject_id):
+        subject_text = str(subject_id).strip()
+        if subject_text.startswith("9000"):
+            return True
+
+        try:
+            subject_value = int(subject_text)
+        except (TypeError, ValueError):
+            return False
+
+        return 9000 <= subject_value <= 9999
+
     def _resolve_rdss_session_metadata_with_missing(
         self,
         discovered_sessions,
@@ -549,6 +561,8 @@ class Save:
             report_rows,
         )
         for subject_id in missing_subjects:
+            if self._subject_exempt_from_manifest_metadata_strictness(subject_id):
+                continue
             subject_errors.setdefault(subject_id, []).append(
                 "missing RedCap subject->lab mapping"
             )
