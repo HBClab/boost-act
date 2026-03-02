@@ -1,0 +1,61 @@
+name: PR Testing Suite
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: pip install -r act/requirements.txt
+
+      - name: Run Flake8
+        run: flake8 act/tests act/main.py act/utils/pipe.py act/utils/comparison_utils.py
+
+  test:
+    name: Tests and Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: pip install -r act/requirements.txt
+
+      - name: Run Pytest with Coverage
+        run: pytest -q --cov=act.utils.pipe --cov-report=term-missing --cov-fail-under=90
+
+  smoke-e2e:
+    name: Smoke E2E
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: pip install -r act/requirements.txt
+
+      - name: Run Smoke Integration Test
+        run: pytest -q act/tests/test_pipeline_smoke.py::test_pipeline_smoke_mocked_dependencies

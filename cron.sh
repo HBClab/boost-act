@@ -9,7 +9,7 @@ conda activate act
 
 cd "${REPO_ROOT}"
 
-git pull --ff-only origin final-test
+git pull --ff-only
 
 if [[ -z "${BOOST_TOKEN:-}" ]]; then
   echo "BOOST_TOKEN is required. Aborting." >&2
@@ -22,7 +22,7 @@ DAYS_AGO="${DAYS_AGO:-30}"
 mkdir -p "logs/${SYSTEM}"
 LOG_FILE="logs/${SYSTEM}/$(date +%Y%m%d_%H%M%S).log"
 export LOG_FILE
-python -m code.main "${DAYS_AGO}" "${BOOST_TOKEN}" "${SYSTEM}" >> "${LOG_FILE}" 2>&1
+python -m act.main --daysago "${DAYS_AGO}" --token "${BOOST_TOKEN}" --system "${SYSTEM}" --rebuild-manifest-only >> "${LOG_FILE}" 2>&1
 
 if ! git diff --quiet; then
   git add .

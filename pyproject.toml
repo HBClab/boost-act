@@ -8,6 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 
+[tool.pytest.ini_options]
+testpaths = ["act/tests"]
+python_files = ["test_*.py"]
+
 
 [build-system]
 requires = ["poetry-core"]

@@ -4,8 +4,8 @@
 #$ -q VOSSHBC
 #$ -m bea
 #$ -M zjgilliam@uiowa.edu
-#$ -o $HOME/boost-act/code/logs/myjob.out  # Standard output log
-#$ -e $HOME/boost-act/code/logs/myjob.err  # Standard error log
+#$ -o $HOME/boost-act/act/logs/myjob.out  # Standard output log
+#$ -e $HOME/boost-act/act/logs/myjob.err  # Standard error log
 
 export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/id_ed25519 -o IdentitiesOnly=yes"
 git config --global push.default simple
@@ -37,7 +37,7 @@ conda activate act-newer || {
 }
 
 # === Run R Script ===
-Rscript "$HOME/boost-act/code/tests/sleep/sleep_acc.R" || {
+Rscript "$HOME/boost-act/act/tests/sleep/sleep_acc.R" || {
   echo "❌ R script failed."
   exit 1
 }
