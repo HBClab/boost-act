@@ -98,7 +98,7 @@ main <- function() {
           datadir = datadir,
           outputdir = outputdir,
           studyname = "boost",
-          overwrite = FALSE,
+          overwrite = TRUE,
           desiredtz = "America/Chicago",
           print.filename = TRUE,
           idloc = 6,
