@@ -1222,6 +1222,34 @@
       "7736": [
         "data/obs/UI/7736/daily_plot.png",
         "data/obs/UI/7736/summary_plot.png"
+      ],
+      "7761": [
+        "data/obs/UI/7761/daily_plot.png",
+        "data/obs/UI/7761/summary_plot.png"
+      ],
+      "7751": [
+        "data/obs/UI/7751/daily_plot.png",
+        "data/obs/UI/7751/summary_plot.png"
+      ],
+      "7759": [
+        "data/obs/UI/7759/daily_plot.png",
+        "data/obs/UI/7759/summary_plot.png"
+      ],
+      "7749": [
+        "data/obs/UI/7749/daily_plot.png",
+        "data/obs/UI/7749/summary_plot.png"
+      ],
+      "7760": [
+        "data/obs/UI/7760/daily_plot.png",
+        "data/obs/UI/7760/summary_plot.png"
+      ],
+      "7748": [
+        "data/obs/UI/7748/daily_plot.png",
+        "data/obs/UI/7748/summary_plot.png"
+      ],
+      "7742": [
+        "data/obs/UI/7742/daily_plot.png",
+        "data/obs/UI/7742/summary_plot.png"
       ]
     }
   }
