@@ -77,64 +77,63 @@ main <- function() {
 
   # Run GGIR loop
   for (r in GGIRfiles) {
-      datadir <- normalizePath(datadirname(r), mustWork = FALSE)
-      outputdir <- SubjectGGIRDeriv(r)
-      print(paste("datadir: ", datadir))
-      print(paste("outputdir: ", outputdir))
-      if (!dir.exists(datadir)) {
-        stop(paste("Error: datadir does not exist ->", datadir))
-      }
-
-      assign("datadir", datadir, envir = .GlobalEnv)
-      assign("outputdir", outputdir, envir = .GlobalEnv)
-
-      try({
-        GGIR(
-          # ==== Initialization ====
-          mode = 1:6,
-          datadir = datadir,
-          outputdir = outputdir,
-          studyname = "boost",
-          overwrite = TRUE,
-          desiredtz = "America/Chicago",
-          print.filename = TRUE,
-          idloc = 6,
-
-          # ==== Part 1: Data loading and basic signal processing ====
-          do.report = c(2, 4, 5, 6),
-          epochvalues2csv = TRUE,
-          do.ENMO = TRUE,
-          acc.metric = "ENMO",
-          windowsizes = c(5, 900, 3600),
-
-          # ==== Part 2: Non-wear detection ====
-          ignorenonwear = TRUE,
-
-          # ==== Part 3: Sleep detection ====
-         #loglocation = SleepLog,
-         #colid = 1,
-         #coln1 = 2,
-         #sleepwindowType = "TimeInBed",
-         #imputeTimegaps = TRUE, # since idle sleep mode is on for actigraph devices
-
-          # ==== Part 4: Physical activity summaries ====
-          timewindow = c("WW", "MM", "OO"),
-
-          # ==== Part 5: Day-level summaries ====
-          hrs.del.start = 4,
-          hrs.del.end = 3,
-          maxdur = 9,
-          threshold.lig = 44.8,
-          threshold.mod = 100.6,
-          threshold.vig = 428.8,
-
-          # ==== Part 6: CR and other metrics ====
-          part6CR = TRUE,
-          visualreport = TRUE,
-          old_visualreport = FALSE
-        )
-      })
+    datadir <- normalizePath(datadirname(r), mustWork = FALSE)
+    outputdir <- SubjectGGIRDeriv(r)
+    print(paste("datadir: ", datadir))
+    print(paste("outputdir: ", outputdir))
+    if (!dir.exists(datadir)) {
+      stop(paste("Error: datadir does not exist ->", datadir))
     }
+
+    assign("datadir", datadir, envir = .GlobalEnv)
+    assign("outputdir", outputdir, envir = .GlobalEnv)
+
+    try({
+      GGIR(
+        # ==== Initialization ====
+        mode = 1:6,
+        datadir = datadir,
+        outputdir = outputdir,
+        studyname = "boost",
+        overwrite = TRUE,
+        desiredtz = "America/Chicago",
+        print.filename = TRUE,
+        idloc = 6,
+
+        # ==== Part 1: Data loading and basic signal processing ====
+        do.report = c(2, 4, 5, 6),
+        epochvalues2csv = TRUE,
+        do.ENMO = TRUE,
+        acc.metric = "ENMO",
+        windowsizes = c(5, 900, 3600),
+
+        # ==== Part 2: Non-wear detection ====
+        ignorenonwear = TRUE,
+
+        # ==== Part 3: Sleep detection ====
+       #loglocation = SleepLog,
+       #colid = 1,
+       #coln1 = 2,
+       #sleepwindowType = "TimeInBed",
+       #imputeTimegaps = TRUE, # since idle sleep mode is on for actigraph devices
+
+        # ==== Part 4: Physical activity summaries ====
+        timewindow = c("WW", "MM", "OO"),
+
+        # ==== Part 5: Day-level summaries ====
+        hrs.del.start = 4,
+        hrs.del.end = 3,
+        maxdur = 9,
+        threshold.lig = 44.8,
+        threshold.mod = 100.6,
+        threshold.vig = 428.8,
+
+        # ==== Part 6: CR and other metrics ====
+        part6CR = TRUE,
+        visualreport = TRUE,
+        old_visualreport = FALSE
+      )
+    })
   }
 }
 
