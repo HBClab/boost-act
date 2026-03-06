@@ -77,9 +77,6 @@ main <- function() {
 
   # Run GGIR loop
   for (r in GGIRfiles) {
-    if (dir.exists(paste0(SubjectGGIRDeriv(r), "/output_beh"))) {
-      next
-    } else {
       datadir <- normalizePath(datadirname(r), mustWork = FALSE)
       outputdir <- SubjectGGIRDeriv(r)
       print(paste("datadir: ", datadir))
@@ -98,7 +95,7 @@ main <- function() {
           datadir = datadir,
           outputdir = outputdir,
           studyname = "boost",
-          overwrite = FALSE,
+          overwrite = TRUE,
           desiredtz = "America/Chicago",
           print.filename = TRUE,
           idloc = 6,
