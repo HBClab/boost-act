@@ -503,7 +503,17 @@ class Save:
                 shutil.copyfileobj(source_handle, handle)
                 handle.flush()
                 os.fsync(handle.fileno())
-            shutil.copystat(source_path, temp_path, follow_symlinks=True)
+            try:
+                shutil.copystat(source_path, temp_path, follow_symlinks=True)
+            except OSError as exc:
+                if exc.errno not in (errno.EPERM, errno.EACCES):
+                    raise
+                self.logger.warning(
+                    "reconcile_copystat_skipped source=%s destination=%s error=%s",
+                    source_path,
+                    destination_path,
+                    exc,
+                )
             os.replace(temp_path, destination_path)
         except Exception:
             if temp_path and os.path.exists(temp_path):
