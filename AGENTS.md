@@ -22,6 +22,10 @@
 
 ## Testing Guidelines
 - Prefer pytest modules named `test_*.py` under `act/tests/`; reuse the existing subfolders to group by modality.
+- Each checkpoint should be commit-sized, independently unit-testable, and run
+  the current test suite before moving on.
+- Run end-to-end testing after the full implementation of a change set.
+- Tests should reflect real data shapes and edge cases likely in production.
 - Lightweight assertions should mock filesystem paths rather than writing to `/mnt`; see `utils.save` for patterns to isolate.
 - For manual QA, refresh notebooks (`act/tests/*/*.ipynb`) after dataset changes and export key figures to git-tracked PNG/CSV in the same folder.
 - Before submitting, run the pipeline in dry-run mode (use a low `daysago` and a sandbox token) and inspect `act/res/data.json`.
@@ -31,3 +35,10 @@
 - Squash WIP noise before PR; reference related issues or cron job IDs when relevant.
 - PR descriptions should list affected directories, expected data side-effects (moved files, new outputs), and screenshots of any new plots.
 - Flag any schema or path changes for downstream systems (cron jobs, dashboards) and mention required manual steps.
+
+## Active Technologies
+- Python 3.11 + pandas, requests, pytest, pytest-cov, flake8 (no new deps) (001-cli-and-manifest-update)
+- Filesystem (RDSS/LSS), JSON manifest at `/home/zak/work/hbc/boost/act/act/res/data.json` (001-cli-and-manifest-update)
+
+## Recent Changes
+- 001-cli-and-manifest-update: Added Python 3.11 + pandas, requests, pytest, pytest-cov, flake8 (no new deps)

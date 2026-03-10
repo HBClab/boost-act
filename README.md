@@ -128,6 +128,9 @@ For ad-hoc diagnostics, re-run plot generation with `python act/tests/gt3x/plots
   - `flake8 act/tests act/main.py act/utils/pipe.py act/utils/comparison_utils.py`
   - `pytest -q --cov=act.utils.pipe --cov-report=term-missing --cov-fail-under=90`
   - `pytest -q act/tests/test_pipeline_smoke.py::test_pipeline_smoke_mocked_dependencies`
+- Each checkpoint should be commit-sized, independently unit-testable, and run
+  the current test suite before moving on.
+- Run end-to-end testing after the full implementation of a change set.
 - CI runs on pull requests targeting `main` and fails when lint, tests, coverage (`< 90%` for scoped modules), or smoke integration checks fail.
 - Add or update tests under `act/tests/test_*.py` for Python-only validation; keep QA notebooks in `act/tests/*/*.ipynb` for manual exploratory checks.
 - `utils.qc` aggregates results into `logs/GGIR_QC_errs.csv`; inspect this file to confirm expected wear-time and calibration checks.

@@ -71,6 +71,11 @@
               pkgs.git
               pkgs.uv
             ];
+
+            shellHook = ''
+              uv tool install specify-cli --from git+https://github.com/github/spec-kit.git 
+              export PATH="$HOME/.local/bin:$PATH"
+            '';
             postShellHook = ''
               KERNEL_NAME="jl-313"
               KERNEL_DIR="$HOME/.local/share/jupyter/kernels/$KERNEL_NAME"
