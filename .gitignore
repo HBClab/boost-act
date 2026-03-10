@@ -4,6 +4,7 @@ act/tests/dsmc/
 act/tests/gt3x/
 act/tests/sleep/
 act/tests/non-wear/
+feature/session-signature-fix/.codex/auth.json
 
 # Python bytecode and caches
 __pycache__/
