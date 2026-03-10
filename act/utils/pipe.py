@@ -49,13 +49,21 @@ class Pipe:
         cls.OBS_DIR = paths["OBS_DIR"]
         cls.RDSS_DIR = paths["RDSS_DIR"]
 
-    def __init__(self, token, daysago, system="vosslnx", rebuild_manifest_only=False):
+    def __init__(
+        self,
+        token,
+        daysago,
+        system="vosslnx",
+        rebuild_manifest_only=False,
+        reconcile_manifest_only=False,
+    ):
         # ensure class attrs are set for everyone (Pipe.INT_DIR etc.)
         type(self).configure(system)
         self.token = token
         self.daysago = daysago
         self.system = system
         self.rebuild_manifest_only = rebuild_manifest_only
+        self.reconcile_manifest_only = reconcile_manifest_only
 
     def run_pipe(self):
         save_instance = Save(
@@ -76,9 +84,11 @@ class Pipe:
                 )
                 return None
 
+            if self.reconcile_manifest_only:
+                return save_instance.reconcile_manifest()
+
             matched = save_instance.save()
 
-            # (side note: your JSON writing was invalid; use json.dump)
             import json
             import pathlib
 

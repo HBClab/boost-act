@@ -27,8 +27,8 @@ description: "Task list for manifest reconciliation fix"
 
 **Purpose**: Minimal scaffolding to support reconciliation work
 
-- [ ] T001 Add CLI flag placeholder and help text for `--reconcile-manifest-only` in `/home/zak/work/hbc/boost/act/act/main.py`
-- [ ] T002 Document reconciliation mode usage and constraints in `/home/zak/work/hbc/boost/act/README.md`
+- [X] T001 Add CLI flag placeholder and help text for `--reconcile-manifest-only` in `/home/zak/work/hbc/boost/act/act/main.py`
+- [X] T002 Document reconciliation mode usage and constraints in `/home/zak/work/hbc/boost/act/README.md`
 
 ---
 
@@ -38,9 +38,9 @@ description: "Task list for manifest reconciliation fix"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Add file identity helpers (size + SHA-256) in `/home/zak/work/hbc/boost/act/act/utils/save.py`
-- [ ] T004 Add session directory CSV candidate validation helper in `/home/zak/work/hbc/boost/act/act/utils/save.py`
-- [ ] T005 Define reconcile report structure and aggregation helpers in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T003 Add file identity helpers (size + SHA-256) in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T004 Add session directory CSV candidate validation helper in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T005 Define reconcile report structure and aggregation helpers in `/home/zak/work/hbc/boost/act/act/utils/save.py`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -56,10 +56,10 @@ fixtures or a sandbox mount and verify summary logs + exit code behavior.
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Implement manifest reconciliation pass using `res/data.json` in `/home/zak/work/hbc/boost/act/act/utils/save.py`
-- [ ] T007 [US1] Replace mismatched destination files with RDSS sources using atomic copy in `/home/zak/work/hbc/boost/act/act/utils/save.py`
-- [ ] T008 [US1] Surface reconcile summary and exit code handling in `/home/zak/work/hbc/boost/act/act/main.py`
-- [ ] T009 [US1] Route reconcile-only mode through the pipeline in `/home/zak/work/hbc/boost/act/act/utils/pipe.py`
+- [X] T006 [US1] Implement manifest reconciliation pass using `res/data.json` in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T007 [US1] Replace mismatched destination files with RDSS sources using atomic copy in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T008 [US1] Surface reconcile summary and exit code handling in `/home/zak/work/hbc/boost/act/act/main.py`
+- [X] T009 [US1] Route reconcile-only mode through the pipeline in `/home/zak/work/hbc/boost/act/act/utils/pipe.py`
 
 **Checkpoint**: User Story 1 is functional and can run as a standalone
 operator command
@@ -77,9 +77,9 @@ per session and verify the operation fails with clear logs.
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] Fail fast when multiple `_accel.csv` files exist in a session directory in `/home/zak/work/hbc/boost/act/act/utils/save.py`
-- [ ] T011 [US2] Verify destination file identity before skip/rename in `/home/zak/work/hbc/boost/act/act/utils/save.py`
-- [ ] T012 [US2] Update log messages to include subject/run/source/destination identifiers in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T010 [US2] Fail fast when multiple `_accel.csv` files exist in a session directory in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T011 [US2] Verify destination file identity before skip/rename in `/home/zak/work/hbc/boost/act/act/utils/save.py`
+- [X] T012 [US2] Update log messages to include subject/run/source/destination identifiers in `/home/zak/work/hbc/boost/act/act/utils/save.py`
 
 **Checkpoint**: User Stories 1 AND 2 work independently with explicit failure
 signals for ambiguous session contents
@@ -90,9 +90,9 @@ signals for ambiguous session contents
 
 **Purpose**: Final alignment and documentation
 
-- [ ] T013 Update operator runbook and examples for reconcile-only mode in `/home/zak/work/hbc/boost/act/README.md`
-- [ ] T014 Ensure quickstart reflects reconcile-only usage in `/home/zak/work/hbc/boost/act/specs/001-cli-and-manifest-update/quickstart.md`
-- [ ] T015 Run E2E validation after full implementation (documented command) in `/home/zak/work/hbc/boost/act/specs/001-cli-and-manifest-update/quickstart.md`
+- [X] T013 Update operator runbook and examples for reconcile-only mode in `/home/zak/work/hbc/boost/act/README.md`
+- [X] T014 Ensure quickstart reflects reconcile-only usage in `/home/zak/work/hbc/boost/act/specs/001-cli-and-manifest-update/quickstart.md`
+- [X] T015 Run E2E validation after full implementation (documented command) in `/home/zak/work/hbc/boost/act/specs/001-cli-and-manifest-update/quickstart.md`
 
 ---
 

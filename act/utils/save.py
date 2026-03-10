@@ -1,4 +1,5 @@
 import errno
+import hashlib
 import json
 import logging
 import os
@@ -34,10 +35,7 @@ class Save:
         self.matches.pop("6022, 7143", None)
         self.matches.pop("7178, 8066", None)
         self.matches.pop("8057, 7219", None)
-
-        print(self.matches)
         self.dupes = results["duplicates"]
-        print(f"Type of Dupes: {type(self.dupes)}")
         self.INT_DIR = intdir
         self.OBS_DIR = obsdir
         self.RDSS_DIR = rdssdir
@@ -438,6 +436,172 @@ class Save:
                 candidates.append(os.path.join(session_dir, name))
         return candidates
 
+    def _validate_session_csv_candidate(self, session_dir):
+        candidates = self._candidate_session_csvs(session_dir)
+        if len(candidates) > 1:
+            raise ValueError(
+                f"multiple accel csv candidates in {session_dir}: "
+                + ", ".join(os.path.basename(path) for path in candidates)
+            )
+        if not candidates:
+            return None
+        return candidates[0]
+
+    def _file_size(self, path):
+        return os.path.getsize(path)
+
+    def _file_sha256(self, path):
+        digest = hashlib.sha256()
+        with open(path, "rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+
+    def _compare_file_identity(self, source_path, destination_path):
+        source_size = self._file_size(source_path)
+        destination_size = self._file_size(destination_path)
+        size_match = source_size == destination_size
+        hash_match = False
+        if size_match:
+            hash_match = self._file_sha256(source_path) == self._file_sha256(
+                destination_path
+            )
+
+        return {
+            "size_match": size_match,
+            "hash_match": hash_match,
+            "match": size_match and hash_match,
+        }
+
+    def _new_reconcile_report(self):
+        return {
+            "total_records": 0,
+            "repaired": 0,
+            "mismatched": 0,
+            "missing_source": 0,
+            "missing_dest": 0,
+            "ambiguous_dest": 0,
+            "errors": [],
+        }
+
+    def _record_reconcile_error(self, report, status, message):
+        report[status] = report.get(status, 0) + 1
+        report.setdefault("errors", []).append(message)
+
+    def _replace_file_atomically(self, source_path, destination_path):
+        destination_dir = os.path.dirname(destination_path) or "."
+        os.makedirs(destination_dir, exist_ok=True)
+
+        temp_path = None
+        try:
+            fd, temp_path = tempfile.mkstemp(
+                prefix=".reconcile-",
+                suffix=".csv",
+                dir=destination_dir,
+            )
+            with os.fdopen(fd, "wb") as handle, open(source_path, "rb") as source_handle:
+                shutil.copyfileobj(source_handle, handle)
+                handle.flush()
+                os.fsync(handle.fileno())
+            shutil.copystat(source_path, temp_path, follow_symlinks=True)
+            os.replace(temp_path, destination_path)
+        except Exception:
+            if temp_path and os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except OSError:
+                    pass
+            raise
+
+    def reconcile_manifest(self):
+        manifest = self._load_manifest(getattr(self, "manifest_path", "res/data.json"))
+        report = self._new_reconcile_report()
+
+        for subject_id in sorted(manifest.keys(), key=self._subject_order_key):
+            records = manifest.get(subject_id, [])
+            for record in sorted(records, key=lambda item: int(item.get("run", 0))):
+                report["total_records"] += 1
+
+                run = int(record.get("run", 0))
+                source_path = os.path.join(self.RDSS_DIR, str(record.get("filename", "")))
+                destination_path = str(record.get("file_path", ""))
+                session_dir = os.path.dirname(destination_path)
+                log_context = (
+                    f"subject={subject_id} run={run} source={source_path} "
+                    f"destination={destination_path}"
+                )
+
+                try:
+                    candidate = self._validate_session_csv_candidate(session_dir)
+                except ValueError as exc:
+                    self.logger.error("reconcile_failed %s error=%s", log_context, exc)
+                    self._record_reconcile_error(
+                        report,
+                        "ambiguous_dest",
+                        f"{log_context} error={exc}",
+                    )
+                    continue
+
+                if not os.path.exists(source_path):
+                    self.logger.error("reconcile_failed %s error=missing_source", log_context)
+                    self._record_reconcile_error(
+                        report,
+                        "missing_source",
+                        f"{log_context} error=missing_source",
+                    )
+                    continue
+
+                if not destination_path or not os.path.exists(destination_path):
+                    self.logger.error("reconcile_failed %s error=missing_dest", log_context)
+                    self._record_reconcile_error(
+                        report,
+                        "missing_dest",
+                        f"{log_context} error=missing_dest",
+                    )
+                    continue
+
+                if candidate != destination_path:
+                    self.logger.error(
+                        "reconcile_failed %s error=missing_dest candidate=%s",
+                        log_context,
+                        candidate,
+                    )
+                    self._record_reconcile_error(
+                        report,
+                        "missing_dest",
+                        f"{log_context} error=missing_dest candidate={candidate}",
+                    )
+                    continue
+
+                identity = self._compare_file_identity(source_path, destination_path)
+                if identity["match"]:
+                    self.logger.info("reconcile_ok %s", log_context)
+                    continue
+
+                report["mismatched"] += 1
+                self.logger.warning(
+                    "reconcile_mismatch %s size_match=%s hash_match=%s",
+                    log_context,
+                    identity["size_match"],
+                    identity["hash_match"],
+                )
+
+                try:
+                    self._replace_file_atomically(source_path, destination_path)
+                except Exception as exc:
+                    self.logger.error("reconcile_failed %s error=%s", log_context, exc)
+                    report.setdefault("errors", []).append(
+                        f"{log_context} error={exc}"
+                    )
+                    continue
+
+                report["repaired"] += 1
+                if self.symlink:
+                    self._refresh_subject_symlinks(destination_path)
+                self.logger.info("reconcile_repaired %s", log_context)
+
+        return report
+
     def discover_lss_sessions(self):
         discovered = {}
         conflicts = {}
@@ -464,19 +628,16 @@ class Save:
                     if not os.path.isdir(session_dir):
                         continue
 
-                    candidates = self._candidate_session_csvs(session_dir)
-                    if len(candidates) > 1:
-                        conflict_message = (
-                            f"multiple accel csv candidates in {session_dir}: "
-                            + ", ".join(os.path.basename(path) for path in candidates)
-                        )
+                    try:
+                        csv_path = self._validate_session_csv_candidate(session_dir)
+                    except ValueError as exc:
+                        conflict_message = str(exc)
                         conflicts.setdefault(subject_id, []).append(conflict_message)
                         continue
 
-                    if len(candidates) == 0:
+                    if csv_path is None:
                         continue
 
-                    csv_path = candidates[0]
                     discovered.setdefault(subject_id, []).append(
                         {
                             "subject_id": subject_id,
@@ -633,21 +794,34 @@ class Save:
     def _copy_subject_record(self, record):
         source_path = os.path.join(self.RDSS_DIR, record["filename"])
         destination_path = record["file_path"]
+        subject_id = str(record.get("subject_id", ""))
+        run = record.get("run")
+        log_context = (
+            f"subject={subject_id} run={run} source={source_path} "
+            f"destination={destination_path}"
+        )
 
         if not os.path.exists(source_path):
-            print(f"Source file not found: {source_path}. Skipping.")
-            return None
+            raise FileNotFoundError(f"Source file not found for {log_context}")
 
         destination_dir = os.path.dirname(destination_path)
         os.makedirs(destination_dir, exist_ok=True)
 
         if os.path.exists(destination_path):
-            print(f"File already exists at destination: {destination_path}. Skipping.")
+            identity = self._compare_file_identity(source_path, destination_path)
+            if not identity["match"]:
+                raise ValueError(
+                    "Destination identity mismatch for "
+                    f"{log_context} size_match={identity['size_match']} "
+                    f"hash_match={identity['hash_match']}"
+                )
+            self.logger.info("skip_existing %s", log_context)
             if self.symlink:
                 self._refresh_subject_symlinks(destination_path)
             return None
 
-        shutil.copy(source_path, destination_path)
+        shutil.copy2(source_path, destination_path)
+        self.logger.info("copied %s", log_context)
         if self.symlink:
             self._refresh_subject_symlinks(destination_path)
         return destination_path
@@ -693,6 +867,7 @@ class Save:
         canonical_lookup = {}
         for idx, record in enumerate(merged_records, start=1):
             canonical = dict(record)
+            canonical["subject_id"] = subject_key
             canonical["run"] = idx
             canonical["study"] = subject_study
             _, canonical_file = self._subject_session_paths(subject_key, subject_study, idx)
@@ -894,6 +1069,8 @@ class Save:
                 if not os.path.exists(old_dir):
                     continue
 
+                self._validate_session_csv_candidate(old_dir)
+
                 base_parent = os.path.dirname(old_dir)
                 temp_dir = os.path.join(
                     base_parent,
@@ -924,11 +1101,7 @@ class Save:
                 os.rename(temp_dir, new_dir)
                 moved_to_final.append(hop)
 
-                current_file = None
-                for name in os.listdir(new_dir):
-                    if name.lower().endswith("_accel.csv"):
-                        current_file = os.path.join(new_dir, name)
-                        break
+                current_file = self._validate_session_csv_candidate(new_dir)
 
                 if current_file and current_file != new_file:
                     if os.path.exists(new_file):
@@ -943,10 +1116,10 @@ class Save:
                     old_file = hop["old_file"]
                     current_file = None
                     if os.path.isdir(old_dir):
-                        for name in os.listdir(old_dir):
-                            if name.lower().endswith("_accel.csv"):
-                                current_file = os.path.join(old_dir, name)
-                                break
+                        try:
+                            current_file = self._validate_session_csv_candidate(old_dir)
+                        except ValueError:
+                            current_file = None
                     if current_file and current_file != old_file:
                         if os.path.exists(old_file):
                             os.remove(old_file)
@@ -1127,8 +1300,6 @@ class Save:
         Returns:
             dict: Updated matches dictionary with the 'run' key added to each entry.
         """
-        print(f"Type of matches: {type(matches)}")  # Debugging line
-        print(f"Value of matches: {matches}")  # Debugging line
         for boost_id, incoming_records in matches.items():
             subject_id = str(boost_id)
             existing_records = self.manifest.get(subject_id, [])
@@ -1260,7 +1431,7 @@ class Save:
                     record["file_path"] = file_path
 
             except TypeError as e:
-                print(f"Skipping subject {subject_id} due to error: {e}")
+                self.logger.warning("Skipping subject %s due to error: %s", subject_id, e)
                 continue  # Skip this subject and move to the next one
 
         return matches

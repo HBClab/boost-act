@@ -8,6 +8,11 @@ act/tests/non-wear/
 .codex/history.jsonl
 .codex/log/*
 .codex/sessions/
+.codex/tmp/
+.codex/state*
+.codex/**/*.png
+.codex/**/*.svg
+
 
 # Python bytecode and caches
 __pycache__/
@@ -155,3 +160,4 @@ Icon?
 *.gz
 *.bz2
 *.xz
+specs/001-cli-and-manifest-update/quickstart.md
