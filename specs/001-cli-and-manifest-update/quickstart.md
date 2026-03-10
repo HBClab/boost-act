@@ -25,5 +25,6 @@ python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --reconci
 
 ```bash
 pytest -q /home/zak/work/hbc/boost/act/act/tests/test_manifest_reconcile.py \
-  /home/zak/work/hbc/boost/act/act/tests/test_save_manifest_reindex.py
+  /home/zak/work/hbc/boost/act/act/tests/test_save_manifest_reindex.py \
+  /home/zak/work/hbc/boost/act/act/tests/test_pipeline_smoke.py
 ```

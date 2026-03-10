@@ -63,7 +63,8 @@ def build_parser() -> argparse.ArgumentParser:
         prog="python -m act.main",
         description=(
             "Run BOOST ingest pipeline using explicit typed arguments. "
-            "Use --rebuild-manifest-only to rebuild manifest and skip GGIR/plotting."
+            "Use --rebuild-manifest-only or --reconcile-manifest-only for "
+            "manifest-only maintenance modes."
         ),
     )
     parser.add_argument(
@@ -84,10 +85,16 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Target system path profile",
     )
-    parser.add_argument(
+    manifest_mode_group = parser.add_mutually_exclusive_group()
+    manifest_mode_group.add_argument(
         "--rebuild-manifest-only",
         action="store_true",
-        help="Rebuild manifest-only mode (skips GGIR and plotting)",
+        help="Rebuild manifest-only mode (skips ingest copy, GGIR, and plotting)",
+    )
+    manifest_mode_group.add_argument(
+        "--reconcile-manifest-only",
+        action="store_true",
+        help="Reconcile manifest-only mode (verifies or repairs canonical CSVs and skips GGIR/plotting)",
     )
     return parser
 
@@ -104,13 +111,27 @@ def main(argv: list[str] | None = None) -> int:
         daysago=args.daysago,
         system=args.system,
         rebuild_manifest_only=args.rebuild_manifest_only,
+        reconcile_manifest_only=args.reconcile_manifest_only,
     )
 
     try:
-        p.run_pipe()
+        result = p.run_pipe()
     except ValueError as exc:
         logging.error("%s", exc)
         return 1
+
+    if args.reconcile_manifest_only:
+        report = result or {}
+        logging.info(
+            "reconcile_summary total=%s repaired=%s mismatched=%s missing_source=%s missing_dest=%s ambiguous_dest=%s",
+            report.get("total_records", 0),
+            report.get("repaired", 0),
+            report.get("mismatched", 0),
+            report.get("missing_source", 0),
+            report.get("missing_dest", 0),
+            report.get("ambiguous_dest", 0),
+        )
+        return 0 if not report.get("errors") else 1
 
     if not args.rebuild_manifest_only:
         Group(args.system).plot_person()

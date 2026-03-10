@@ -11,6 +11,7 @@ An automation stack for synchronizing raw actigraphy exports, routing them throu
   - [Quick Start](#quick-start)
   - [Running the Pipeline](#running-the-pipeline)
     - [Rebuild Manifest Only](#rebuild-manifest-only)
+    - [Reconcile Manifest Only](#reconcile-manifest-only)
     - [Operator Runbook](#operator-runbook)
   - [Configuration](#configuration)
   - [Testing \& QA](#testing--qa)
@@ -94,6 +95,25 @@ Strict failure conditions (non-zero exit):
 - Missing RedCap mapping for any discovered subject.
 - Missing RDSS metadata (`filename`, `labID`, `date`) for any discovered session.
 
+### Reconcile Manifest Only
+Use this mode when `res/data.json` is already canonical and you need to verify or repair the on-disk `ses-*` CSVs against their RDSS source files:
+
+```bash
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --reconcile-manifest-only
+```
+
+Behavior in `--reconcile-manifest-only` mode:
+- Loads existing manifest records from `res/data.json`.
+- Verifies each destination CSV against the RDSS source using size plus SHA-256.
+- Repairs mismatched canonical files with an atomic replace from RDSS.
+- Skips ingest copy, GGIR, plotting, and manifest rebuild.
+
+Failure conditions (exit `1`):
+- RDSS source file is missing for a manifest record.
+- Canonical destination file is missing.
+- A `ses-*` directory contains multiple `_accel.csv` candidates.
+- A destination file exists but does not match the expected RDSS source during ingest skip logic.
+
 ### Operator Runbook
 Generic Linux (venv):
 
@@ -103,6 +123,7 @@ source .venv/bin/activate
 pip install -r act/requirements.txt
 export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system local --rebuild-manifest-only
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system local --reconcile-manifest-only
 ```
 
 NixOS / nix shell:
@@ -111,9 +132,10 @@ NixOS / nix shell:
 nix develop
 export BOOST_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --rebuild-manifest-only
+python -m act.main --daysago 1 --token "$BOOST_TOKEN" --system vosslnx --reconcile-manifest-only
 ```
 
-For routine ingest + GGIR runs, omit `--rebuild-manifest-only`.
+For routine ingest + GGIR runs, omit both manifest-only flags.
 
 For ad-hoc diagnostics, re-run plot generation with `python act/tests/gt3x/plots.py` (requires adjusting the hard-coded file path).
 
