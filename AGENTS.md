@@ -35,3 +35,10 @@
 - Squash WIP noise before PR; reference related issues or cron job IDs when relevant.
 - PR descriptions should list affected directories, expected data side-effects (moved files, new outputs), and screenshots of any new plots.
 - Flag any schema or path changes for downstream systems (cron jobs, dashboards) and mention required manual steps.
+
+## Active Technologies
+- Python 3.11 + pandas, requests, pytest, pytest-cov, flake8 (no new deps) (001-cli-and-manifest-update)
+- Filesystem (RDSS/LSS), JSON manifest at `/home/zak/work/hbc/boost/act/act/res/data.json` (001-cli-and-manifest-update)
+
+## Recent Changes
+- 001-cli-and-manifest-update: Added Python 3.11 + pandas, requests, pytest, pytest-cov, flake8 (no new deps)
