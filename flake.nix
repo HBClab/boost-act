@@ -69,8 +69,8 @@
             packages = [
               pythonEnv
               pkgs.git
+              pkgs.uv
             ];
-
             postShellHook = ''
               KERNEL_NAME="jl-313"
               KERNEL_DIR="$HOME/.local/share/jupyter/kernels/$KERNEL_NAME"
