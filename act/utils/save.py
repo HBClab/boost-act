@@ -624,7 +624,7 @@ class Save:
                 if not subject_folder.startswith("sub-"):
                     continue
 
-                subject_id = subject_folder[len("sub-") :]
+                subject_id = subject_folder[len("sub-"):]
                 accel_root = os.path.join(study_root, subject_folder, "accel")
                 if not os.path.isdir(accel_root):
                     continue

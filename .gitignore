@@ -12,6 +12,8 @@ act/tests/non-wear/
 .codex/state*
 .codex/**/*.png
 .codex/**/*.svg
+.codex/models_cache*
+.codex/shell_snapshots/
 
 
 # Python bytecode and caches
